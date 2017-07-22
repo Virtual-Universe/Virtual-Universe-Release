@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,10 +27,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
-using OpenMetaverse;
-
 
 namespace Universe.Modules.Terrain.FloodBrushes
 {
@@ -36,34 +37,33 @@ namespace Universe.Modules.Terrain.FloodBrushes
     {
         #region ITerrainFloodEffect Members
 
-        public void FloodEffect(ITerrainChannel map, UUID userID, float north,
+        public void FloodEffect (ITerrainChannel map, UUID userID, float north,
                                 float west, float south, float east, float strength)
         {
             float area = strength;
-            float step = strength/4;
+            float step = strength / 4;
 
-            for (int x = (int) west; x < (int) east; x++)
-            {
-                for (int y = (int) south; y < (int) north; y++)
-                {
-                    if (!map.Scene.Permissions.CanTerraformLand(userID, new Vector3(x, y, 0)))
+            for (int x = (int)west; x < (int)east; x++) {
+                for (int y = (int)south; y < (int)north; y++) {
+                    if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
                         continue;
 
                     float average = 0;
                     int avgsteps = 0;
 
                     float n;
-                    for (n = 0 - area; n < area; n += step)
-                    {
+                    for (n = 0 - area; n < area; n += step) {
                         float l;
-                        for (l = 0 - area; l < area; l += step)
-                        {
+                        for (l = 0 - area; l < area; l += step) {
                             avgsteps++;
-                            average += TerrainUtil.GetBilinearInterpolate(x + n, y + l, map);
+                            average += TerrainUtil.GetBilinearInterpolate (x + n, y + l, map);
                         }
                     }
 
-                    map[x, y] = average/avgsteps;
+                    if (avgsteps > 0)
+                        map [x, y] = average / avgsteps;
+                    else
+                        map [x, y] = 0;
                 }
             }
         }

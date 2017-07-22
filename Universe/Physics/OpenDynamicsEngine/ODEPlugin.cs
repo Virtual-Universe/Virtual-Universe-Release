@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -51,23 +53,21 @@ namespace Universe.Physics.OpenDynamicsEngine
 
         public PhysicsScene GetScene()
         {
-            lock (m_lock)
-            {
-                if (_mScene == null)
-                {
+            lock (m_lock) {
+                if (_mScene == null) {
                     if (!m_initialized) //Only initialize ode once!
                     {
                         // Initializing ODE only when a scene is created allows alternative ODE plugins to co-habit (according to
                         // http://opensimulator.org/mantis/view.php?id=2750).
-                        d.InitODE();
+                        d.InitODE ();
                         m_initialized = true;
                     }
 
-                    _mScene = new ODEPhysicsScene();
+                    _mScene = new ODEPhysicsScene ();
                 }
-            }
 
-            return _mScene;
+                return _mScene;
+            }
         }
 
         public string GetName()

@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -46,103 +48,176 @@ namespace Universe.Modules.Web
         protected string _gridNick;
         protected IHttpServer _server;
 
-        public void Initialize(IConfigSource config, IRegistryCore registry)
+        public void Initialize (IConfigSource config, IRegistryCore registry)
         {
             _registry = registry;
         }
 
-        public void Start(IConfigSource config, IRegistryCore registry)
+        public void Start (IConfigSource config, IRegistryCore registry)
         {
         }
 
-        public void FinishedStartup()
+        public void FinishedStartup ()
         {
-            _server = _registry.RequestModuleInterface<ISimulationBase>().GetHttpServer(0);
-            if (_server != null)
-            {
-                _server.AddStreamHandler(new GenericStreamHandler("GET", "/index.php?method=GridTexture", OnHTTPGetTextureImage));
-                _registry.RegisterModuleInterface<IWebHttpTextureService>(this);
+            _server = _registry.RequestModuleInterface<ISimulationBase> ().GetHttpServer (0);
+
+            if (_server != null) {
+                _server.AddStreamHandler (new GenericStreamHandler ("GET", "/index.php?method=GridTexture", OnHTTPGetTextureImage));
+                _server.AddStreamHandler (new GenericStreamHandler ("GET", "/index.php?method=AvatarTexture", OnHTTPGetAvatarImage));
+                _server.AddStreamHandler (new GenericStreamHandler ("GET", "/WebImage", OnHTTPGetImage));
+                _registry.RegisterModuleInterface<IWebHttpTextureService> (this);
             }
-            IGridInfo gridInfo = _registry.RequestModuleInterface<IGridInfo>();
+
+            IGridInfo gridInfo = _registry.RequestModuleInterface<IGridInfo> ();
             _gridNick = gridInfo != null
                             ? gridInfo.GridName
                             : "No Grid Name Available, please set this";
         }
 
-        public string GetTextureURL(UUID textureID)
+        public string GetTextureURL (UUID textureID)
         {
             return _server.ServerURI + "/index.php?method=GridTexture&uuid=" + textureID;
         }
 
-        public string GetRegionWorldViewURL(UUID RegionID)
+        public string GetRegionWorldViewURL (UUID RegionID)
         {
             return _server.ServerURI + "/worldview/" + RegionID;
         }
 
-        public byte[] OnHTTPGetTextureImage(string path, Stream request, OSHttpRequest httpRequest,
-                                            OSHttpResponse httpResponse)
+        public string GetAvatarImageURL (string imageURL)
         {
-            byte[] jpeg = new byte[0];
-            IAssetService m_AssetService = _registry.RequestModuleInterface<IAssetService>();
+            return _server.ServerURI + "/index.php?method=AvatarTexture&imageurl=" + imageURL;
+        }
 
-            using (MemoryStream imgstream = new MemoryStream())
-            {
+        public string GetImageURL (string imageURL)
+        {
+            return _server.ServerURI + "/WebImage?imageurl=" + imageURL;
+        }
+
+        public byte [] OnHTTPGetTextureImage (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        {
+            byte [] jpeg = new byte [0];
+            httpResponse.ContentType = "image/jpeg";
+            var imageUUID = httpRequest.QueryString ["uuid"];
+
+            // check for bogies
+            if (imageUUID == UUID.Zero.ToString ())
+                return jpeg;
+            
+            IAssetService m_AssetService = _registry.RequestModuleInterface<IAssetService> ();
+
+            using (MemoryStream imgstream = new MemoryStream ()) {
                 // Taking our jpeg2000 data, decoding it, then saving it to a byte array with regular jpeg data
 
                 // non-async because we know we have the asset immediately.
-                byte[] mapasset = m_AssetService.GetData(httpRequest.QueryString["uuid"]);
+                byte [] mapasset = m_AssetService.GetData (httpRequest.QueryString ["uuid"]);
 
-                if (mapasset != null)
-                {
+                if (mapasset != null) {
                     // Decode image to System.Drawing.Image
                     Image image;
                     ManagedImage managedImage;
-                    EncoderParameters myEncoderParameters = new EncoderParameters();
-                    myEncoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, 75L);
-                    if (OpenJPEG.DecodeToImage(mapasset, out managedImage, out image))
-                    {
-                        // Save to bitmap
-                        var texture = ResizeBitmap(image, 256, 256);
-                        var encInfo = GetEncoderInfo ("image/jpeg");
-                        if (encInfo != null)
-                            texture.Save(imgstream, GetEncoderInfo("image/jpeg"), myEncoderParameters);
+                    EncoderParameters myEncoderParameters = new EncoderParameters ();
+                    myEncoderParameters.Param [0] = new EncoderParameter (Encoder.Quality, 75L);
 
-                        // Write the stream to a byte array for output
-                        jpeg = imgstream.ToArray();
-                        
+                    if (OpenJPEG.DecodeToImage (mapasset, out managedImage, out image)) {
+                        // Save to bitmap
+                        var texture = ResizeBitmap (image, 256, 256);
+                        try {
+                            var encInfo = GetEncoderInfo ("image/jpeg");
+                            if (encInfo != null)
+                                texture.Save (imgstream, encInfo, myEncoderParameters);
+
+                            // Write the stream to a byte array for output
+                            jpeg = imgstream.ToArray ();
+                        } catch {
+                        }
                     }
-                    image.Dispose();
+
+                    myEncoderParameters.Dispose ();
+
+                    if (image != null)
+                        image.Dispose ();
                 }
             }
 
-            httpResponse.ContentType = "image/jpeg";
+            if (jpeg.Length > 0)
+                return jpeg;
 
-            return jpeg;
+            // no UUID here so...
+            string nouuid = "html/images/icons/no_image.png";
+            try {
+                return File.ReadAllBytes (nouuid);
+            } catch {
+            }
+
+            return new byte [0];
         }
 
-        Bitmap ResizeBitmap(Image b, int nWidth, int nHeight)
+        public byte [] OnHTTPGetAvatarImage (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
-            Bitmap newsize = new Bitmap(nWidth, nHeight);
-            Graphics temp = Graphics.FromImage(newsize);
-            temp.DrawImage(b, 0, 0, nWidth, nHeight);
-            temp.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            temp.DrawString(_gridNick, new Font("Arial", 8, FontStyle.Regular),
-                            new SolidBrush(Color.FromArgb(90, 255, 255, 50)), new Point(2, nHeight - 13));
+            httpResponse.ContentType = "image/jpeg";
 
-            temp.Dispose();
+            string uri = httpRequest.QueryString ["imageurl"];
+            string nourl = "html/images/icons/no_avatar.jpg";
+
+            try {
+                if (File.Exists (uri)) {
+                    return File.ReadAllBytes (uri);
+                }
+
+                return File.ReadAllBytes (nourl);
+            } catch {
+            }
+                
+            return new byte [0];
+        }
+
+        public byte [] OnHTTPGetImage (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        {
+            httpResponse.ContentType = "image/jpeg";
+
+            string uri = httpRequest.QueryString ["imageurl"];
+            string nourl = "html/images/noimage.jpg";
+
+            try {
+                if (File.Exists (uri)) {
+                    return File.ReadAllBytes (uri);
+                }
+
+                return File.ReadAllBytes (nourl);
+            } catch {
+            }
+
+            return new byte [0];
+        }
+
+        Bitmap ResizeBitmap (Image b, int nWidth, int nHeight)
+        {
+            Bitmap newsize = new Bitmap (nWidth, nHeight);
+            Graphics temp = Graphics.FromImage (newsize);
+            temp.DrawImage (b, 0, 0, nWidth, nHeight);
+            temp.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            temp.DrawString (_gridNick, new Font ("Arial", 8, FontStyle.Regular), new SolidBrush (Color.FromArgb (90, 255, 255, 50)), new Point (2, nHeight - 13));
+
+            temp.Dispose ();
             return newsize;
         }
 
         // From MSDN
-        static ImageCodecInfo GetEncoderInfo(String mimeType)
+        static ImageCodecInfo GetEncoderInfo (string mimeType)
         {
-            ImageCodecInfo[] encoders;
-            encoders = ImageCodecInfo.GetImageEncoders();
-            for (int j = 0; j < encoders.Length; ++j)
-            {
-                if (encoders[j].MimeType == mimeType)
-                    return encoders[j];
+            ImageCodecInfo [] encoders;
+            try {
+                encoders = ImageCodecInfo.GetImageEncoders ();
+            } catch {
+                return null;
             }
+
+            for (int j = 0; j < encoders.Length; ++j) {
+                if (encoders [j].MimeType == mimeType)
+                    return encoders [j];
+            }
+
             return null;
         }
     }

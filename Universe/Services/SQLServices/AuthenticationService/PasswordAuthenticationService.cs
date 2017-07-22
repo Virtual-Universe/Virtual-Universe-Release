@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,14 +27,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System;
 
 namespace Universe.Services
 {
@@ -45,93 +45,78 @@ namespace Universe.Services
     public class PasswordAuthenticationService :
         AuthenticationServiceBase, IAuthenticationService, IService
     {
-        public virtual string Name
-        {
-            get { return GetType().Name; }
+        public virtual string Name {
+            get { return GetType ().Name; }
         }
 
         #region IAuthenticationService Members
 
-        public string Authenticate(UUID principalID, string authType, string password, int lifetime)
+        public string Authenticate (UUID principalID, string authType, string password, int lifetime)
         {
             //Return automatically if we do not auth users
-            if (!m_authenticateUsers)
-            {
-                return GetToken(principalID, lifetime);
+            if (!m_authenticateUsers) {
+                return GetToken (principalID, lifetime);
             }
 
-            AuthData data = m_Database.Get(principalID, authType);
+            AuthData data = m_Database.Get (principalID, authType);
 
-            if (data == null)
-            {
-                if (!CheckExists(principalID, authType))
-                {
-                    MainConsole.Instance.DebugFormat("[AUTH SERVICE]: PrincipalID {0} not found", principalID);
+            if (data == null) {
+                if (!CheckExists (principalID, authType)) {
+                    MainConsole.Instance.DebugFormat ("[Auth service]: PrincipalID {0} not found", principalID);
+                } else {
+                    MainConsole.Instance.DebugFormat ("[Auth service]: PrincipalID {0} data not found", principalID);
                 }
-                else
-                {
-                    MainConsole.Instance.DebugFormat("[AUTH SERVICE]: PrincipalID {0} data not found", principalID);
-                }
-            }
-            else
-            {
-                if (authType != "UserAccount")
-                {
-                    if (data.PasswordHash == password)
-                    {
+            } else {
+                if (authType != "UserAccount") {
+                    if (data.PasswordHash == password) {
                         //Really should be moved out in the future
-                        if (authType == "WebLoginKey")
-                        {
-                            this.Remove(principalID, authType); //Only allow it to be used once
+                        if (authType == "WebLoginKey") {
+                            Remove (principalID, authType); //Only allow it to be used once
                         }
-                        return GetToken(principalID, lifetime);
+                        return GetToken (principalID, lifetime);
                     }
-                }
-                else
-                {
-                    string hashed = Util.Md5Hash(password + ":" + data.PasswordSalt);
+                } else {
+                    string hashed = Util.Md5Hash (password + ":" + data.PasswordSalt);
 
-                    MainConsole.Instance.TraceFormat("[PASS AUTH]: got {0}; hashed = {1}; stored = {2}", password,
+                    MainConsole.Instance.TraceFormat ("[Password auth]: got {0}; hashed = {1}; stored = {2}", password,
                                                      hashed, data.PasswordHash);
 
-                    if (data.PasswordHash == hashed)
-                    {
-                        return GetToken(principalID, lifetime);
+                    if (data.PasswordHash == hashed) {
+                        return GetToken (principalID, lifetime);
                     }
                 }
             }
 
-            return String.Empty;
+            return string.Empty;
         }
 
         #endregion
 
         #region IService Members
 
-        public void Initialize(IConfigSource config, IRegistryCore registry)
+        public void Initialize (IConfigSource config, IRegistryCore registry)
         {
-            IConfig handlerConfig = config.Configs["Handlers"];
-            if (handlerConfig.GetString("AuthenticationHandler", "") != Name)
+            IConfig handlerConfig = config.Configs ["Handlers"];
+            if (handlerConfig.GetString ("AuthenticationHandler", "") != Name)
                 return;
 
             //
             // Try reading the [AuthenticationService] section first, if it exists
             //
-            IConfig authConfig = config.Configs["AuthenticationService"];
-            if (authConfig != null)
-            {
-                m_authenticateUsers = authConfig.GetBoolean("AuthenticateUsers", m_authenticateUsers);
+            IConfig authConfig = config.Configs ["AuthenticationService"];
+            if (authConfig != null) {
+                m_authenticateUsers = authConfig.GetBoolean ("AuthenticateUsers", m_authenticateUsers);
             }
 
-            m_Database = Framework.Utilities.DataManager.RequestPlugin<IAuthenticationData>();
-            registry.RegisterModuleInterface<IAuthenticationService>(this);
+            m_Database = Framework.Utilities.DataManager.RequestPlugin<IAuthenticationData> ();
+            registry.RegisterModuleInterface<IAuthenticationService> (this);
         }
 
-        public void Start(IConfigSource config, IRegistryCore registry)
+        public void Start (IConfigSource config, IRegistryCore registry)
         {
         }
 
-        public void FinishedStartup()
+        public void FinishedStartup ()
         {
         }
 

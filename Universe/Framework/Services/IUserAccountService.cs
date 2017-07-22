@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -41,7 +43,7 @@ namespace Universe.Framework.Services
 
         public UUID PrincipalID { get; set; }
 
-        public int UserFlags = Constants.USER_FLAG_GUEST;
+        public int UserFlags = Constants.USER_FLAG_CITIZEN;
         public int UserLevel = Constants.USER_NORMAL;
 
         public UserAccount ()
@@ -232,13 +234,13 @@ namespace Universe.Framework.Services
         /// <param name="account"></param>
         /// <param name="password"></param>
         /// <returns>The error message (if one exists)</returns>
-        string CreateUser (UserAccount account, string password);
+        string CreateUser (UserAccount account, string md5password);
 
         /// <summary>
         ///     Delete a user from the database permanently
         /// </summary>
         /// <param name="userID">The user's ID</param>
-        /// <param name="password">The user's password</param>
+        /// <param name="password">The user's password(not used)</param>
         /// <param name="archiveInformation">Whether or not we should store the account's name and account information so that the user's information in world does not go null</param>
         /// <param name="wipeFromDatabase">Whether or not we should remove all of the user's data from other locations in the database</param>
         void DeleteUser (UUID userID, string name, string password, bool archiveInformation, bool wipeFromDatabase);
@@ -249,7 +251,6 @@ namespace Universe.Framework.Services
         /// <returns>The god level description.</returns>
         /// <param name="level">Level.</param>
         string UserGodLevel (int level);
-
     }
 
     /// <summary>

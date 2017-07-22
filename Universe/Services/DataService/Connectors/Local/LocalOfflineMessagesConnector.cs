@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -26,21 +28,20 @@
  */
 
 using System.Collections.Generic;
-
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
 
 namespace Universe.Services.DataService
 {
     public class LocalOfflineMessagesConnector : ConnectorBase, IOfflineMessagesConnector
     {
-        private IGenericData GD;
-        private int m_maxOfflineMessages = 20;
+        IGenericData GD;
+        int m_maxOfflineMessages = 20;
 
         #region IOfflineMessagesConnector Members
 
@@ -80,13 +81,13 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public List<GridInstantMessage> GetOfflineMessages(UUID agentID)
         {
-            object remoteValue = DoRemote(agentID);
-            if (remoteValue != null || m_doRemoteOnly)
-                return (List<GridInstantMessage>) remoteValue;
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemote (agentID);
+                return remoteValue != null ? (List<GridInstantMessage>)remoteValue : new List<GridInstantMessage> ();
+            }
 
             //Get all the messages
-            List<GridInstantMessage> Messages = GenericUtils.GetGenerics<GridInstantMessage>(agentID, "OfflineMessages",
-                                                                                             GD);
+            List<GridInstantMessage> Messages = GenericUtils.GetGenerics<GridInstantMessage>(agentID, "OfflineMessages",GD);
             Messages.AddRange(GenericUtils.GetGenerics<GridInstantMessage>(agentID, "GroupOfflineMessages", GD));
             //Clear them out now that we have them
             GenericUtils.RemoveGenericByType(agentID, "OfflineMessages", GD);
@@ -101,9 +102,10 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public bool AddOfflineMessage(GridInstantMessage message)
         {
-            object remoteValue = DoRemote(message);
-            if (remoteValue != null || m_doRemoteOnly)
-                return remoteValue == null ? false : (bool) remoteValue;
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemote (message);
+                return remoteValue != null && (bool)remoteValue;
+            }
 
             if (m_maxOfflineMessages <= 0 ||
                 GenericUtils.GetGenericCount(message.ToAgentID, "OfflineMessages", GD) < m_maxOfflineMessages)

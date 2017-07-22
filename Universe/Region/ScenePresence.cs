@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -45,8 +47,7 @@ using PrimType = Universe.Framework.SceneInfo.PrimType;
 
 namespace Universe.Region
 {
-    public delegate void SendCoarseLocationsMethod(
-        UUID scene, IScenePresence presence, List<Vector3> coarseLocations, List<UUID> avatarUUIDs);
+    public delegate void SendCoarseLocationsMethod(UUID scene, IScenePresence presence, List<Vector3> coarseLocations, List<UUID> avatarUUIDs);
 
     public class ScenePresence : EntityBase, IScenePresence
     {
@@ -69,7 +70,7 @@ namespace Universe.Region
         /// </summary>
         protected static readonly Vector3 SIT_TARGET_ADJUSTMENT = new Vector3(0.1f, 0.0f, 0.3f);
 
-        private UUID m_currentParcelUUID = UUID.Zero;
+        UUID m_currentParcelUUID = UUID.Zero;
 
         public UUID CurrentParcelUUID
         {
@@ -148,10 +149,10 @@ namespace Universe.Region
 
         protected const int LAND_VELOCITYMAG_MAX = 20;
 
-        private const float FLY_ROLL_MAX_RADIANS = 1.1f;
+        const float FLY_ROLL_MAX_RADIANS = 1.1f;
 
-        private const float FLY_ROLL_RADIANS_PER_UPDATE = 0.06f;
-        private const float FLY_ROLL_RESET_RADIANS_PER_UPDATE = 0.03f;
+        const float FLY_ROLL_RADIANS_PER_UPDATE = 0.06f;
+        const float FLY_ROLL_RESET_RADIANS_PER_UPDATE = 0.03f;
 
         // Default AV Height
         protected float m_defaultAvHeight = 1.56f;
@@ -183,7 +184,7 @@ namespace Universe.Region
         protected Vector3 m_autoPilotTarget;
         protected bool m_sitAtAutoTarget;
 
-        protected string m_nextSitAnimation = String.Empty;
+        protected string m_nextSitAnimation = string.Empty;
 
         //PauPaw:Proper PID Controller for autopilot
         protected bool m_moveToPositionInProgress;
@@ -196,7 +197,6 @@ namespace Universe.Region
         protected const int NumMovementsBetweenRayCast = 5;
 
         protected bool CameraConstraintActive;
-        //private int m_moveToPositionStateStatus;
 
         // Agent's Draw distance.
         protected float m_DrawDistance;
@@ -204,7 +204,7 @@ namespace Universe.Region
         /// <summary>
         ///     Implemented Control Flags
         /// </summary>
-        private enum Dir_ControlFlags
+        enum Dir_ControlFlags
         {
             DIR_CONTROL_FLAG_FORWARD = AgentManager.ControlFlags.AGENT_CONTROL_AT_POS,
             DIR_CONTROL_FLAG_BACK = AgentManager.ControlFlags.AGENT_CONTROL_AT_NEG,
@@ -223,17 +223,16 @@ namespace Universe.Region
         /// <summary>
         ///     Position at which a significant movement was made
         /// </summary>
-        private Vector3 posLastSignificantMove;
+        Vector3 posLastSignificantMove;
 
-        private UUID CollisionSoundID = UUID.Zero;
-        private int CollisionSoundLastTriggered = 0;
+        UUID CollisionSoundID = UUID.Zero;
+        int CollisionSoundLastTriggered = 0;
 
         #endregion
 
         #region Properties
 
         public bool AttachmentsLoaded { get; set; }
-
         public bool SuccessfullyMadeRootAgent { get; private set; }
 
         /// <summary>
@@ -328,11 +327,13 @@ namespace Universe.Region
             get { return m_DrawDistance; }
             set
             {
-                if (m_DrawDistance != value && value != 0)
+                if (value > 0 && Math.Abs(m_DrawDistance - value) > 0)       // we should never have a negative draw distance
                 {
                     m_DrawDistance = value;
+
                     //Fire the event
                     Scene.UniverseEventManager.FireGenericEventHandler("DrawDistanceChanged", this);
+
                     if (!IsChildAgent)
                     {
                         //Send an update to all child agents if we are a root agent
@@ -344,7 +345,7 @@ namespace Universe.Region
 
         public bool IsTainted { get; set; }
 
-        private PresenceTaint m_Taints = 0;
+        PresenceTaint m_Taints = 0;
 
         public PresenceTaint Taints
         {
@@ -392,6 +393,7 @@ namespace Universe.Region
             set
             {
                 m_setAlwaysRun = value;
+
                 if (PhysicsActor != null)
                 {
                     PhysicsActor.SetAlwaysRun = value;
@@ -414,13 +416,13 @@ namespace Universe.Region
         /// <summary>
         ///     This works out to be the ClientView object associated with this avatar, or it's client connection manager
         /// </summary>
-        private readonly IClientAPI m_controllingClient;
+        readonly IClientAPI m_controllingClient;
 
         protected PhysicsActor m_physicsActor;
 
-        /// <value>
+        /// <summary>
         ///     The client controlling this presence
-        /// </value>
+        /// </summary>
         public IClientAPI ControllingClient
         {
             get { return m_controllingClient; }
@@ -443,6 +445,7 @@ namespace Universe.Region
             set
             {
                 PhysicsActor actor = m_physicsActor;
+
                 if (actor != null)
                 {
                     try
@@ -455,7 +458,7 @@ namespace Universe.Region
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.Error("[Scene Presence]: Absolute Position " + e);
+                        MainConsole.Instance.Error("[Scene Presence]: Absolute position - " + e);
                     }
                 }
 
@@ -467,11 +470,11 @@ namespace Universe.Region
         public Vector3 GetAbsolutePosition()
         {
             PhysicsActor actor = m_physicsActor;
+
             if (actor != null)
                 m_pos = actor.Position;
             else
             {
-                //return m_pos; 
                 // OpenSim Mantis #4063. Obtain the correct position of a seated avatar. In addition
                 // to providing the correct position while the avatar is seated, this value will also
                 // be used as the location to unsit to.
@@ -485,10 +488,12 @@ namespace Universe.Region
                 if (m_parentID != UUID.Zero)
                 {
                     ISceneChildEntity part = m_scene.GetSceneObjectPart(m_parentID);
+
                     if (part != null)
                     {
                         return m_parentPosition + (m_pos * part.GetWorldRotation());
                     }
+
                     return m_parentPosition + m_pos;
                 }
             }
@@ -512,6 +517,7 @@ namespace Universe.Region
             get
             {
                 PhysicsActor actor = m_physicsActor;
+
                 if (actor != null)
                     return actor.Velocity;
 
@@ -522,6 +528,7 @@ namespace Universe.Region
             set
             {
                 PhysicsActor actor = m_physicsActor;
+
                 if (actor != null)
                 {
                     try
@@ -531,7 +538,7 @@ namespace Universe.Region
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.Error("[Scene Presence]: Velocity " + e.Message);
+                        MainConsole.Instance.Error("[Scene Presence]: Velocity - " + e.Message);
                     }
                 }
                 else
@@ -552,7 +559,7 @@ namespace Universe.Region
         }
 
         // Used for limited viewer 'fake' user rotations.
-        private Vector3 m_AngularVelocity = Vector3.Zero;
+        Vector3 m_AngularVelocity = Vector3.Zero;
 
         public Vector3 AngularVelocity
         {
@@ -570,6 +577,17 @@ namespace Universe.Region
         {
             get { return m_isChildAgent; }
             set { m_isChildAgent = value; }
+        }
+
+        /// <summary>
+        ///     The agent is an npc.
+        /// </summary>
+        protected bool m_isNpcAgent = false;
+
+        public bool IsNpcAgent
+        {
+            get { return m_isNpcAgent; }
+            set { m_isNpcAgent = value; }
         }
 
         protected UUID m_parentID;
@@ -615,6 +633,7 @@ namespace Universe.Region
             {
                 if (PhysicsActor != null)
                     return PhysicsActor.SpeedModifier;
+
                 return 1;
             }
             set
@@ -648,8 +667,7 @@ namespace Universe.Region
             m_sendCoarseLocationsMethod = SendCoarseLocationsDefault;
         }
 
-        public ScenePresence(IClientAPI client, IScene world)
-            : this()
+        public ScenePresence(IClientAPI client, IScene world) : this()
         {
             m_controllingClient = client;
             m_name = m_controllingClient.Name;
@@ -674,27 +692,19 @@ namespace Universe.Region
 
             AbsolutePosition = posLastSignificantMove = m_CameraCenter = m_controllingClient.StartPos;
 
-            // This won't send anything, as we are still a child here...
-            //Animator.TrySetMovementAnimation("STAND"); 
-
             // we created a new ScenePresence (a new child agent) in a fresh region.
             // Request info about all the (root) agents in this region
             // Note: This won't send data *to* other clients in that region (children don't send)
-            //SendInitialFullUpdateToAllClients();
-            //SendOtherAgentsAvatarDataToMe();
-            //Comment this out for now, just to see what happens
-            //SendOtherAgentsAppearanceToMe();
-
             RegisterToEvents();
             SetDirectionVectors();
         }
 
-        private void CreateSceneViewer()
+        void CreateSceneViewer()
         {
             m_sceneViewer = new SceneViewer(this);
         }
 
-        public virtual void RegisterToEvents()
+        void RegisterToEvents()
         {
             m_controllingClient.OnCompleteMovementToRegion += CompleteMovement;
             m_controllingClient.OnAgentUpdate += HandleAgentUpdate;
@@ -709,7 +719,7 @@ namespace Universe.Region
             m_controllingClient.OnNameFromUUIDRequest += HandleUUIDNameRequest;
         }
 
-        private void SetDirectionVectors()
+        void SetDirectionVectors()
         {
             Dir_Vectors[0] = Vector3.UnitX; //FORWARD
             Dir_Vectors[1] = -Vector3.UnitX; //BACK
@@ -725,7 +735,7 @@ namespace Universe.Region
             Dir_Vectors[11] = new Vector3(0f, 0f, 0.5f); //UP_Nudge
         }
 
-        private Vector3[] GetWalkDirectionVectors()
+        Vector3[] GetWalkDirectionVectors()
         {
             Vector3[] vector = new Vector3[12];
             vector[0] = new Vector3(m_CameraUpAxis.Z, 0f, -m_CameraAtAxis.Z); //FORWARD
@@ -766,9 +776,7 @@ namespace Universe.Region
             //Do this and SendInitialData FIRST before MakeRootAgent to try to get the updates to the client out so that appearance loads better
             m_controllingClient.MoveAgentIntoRegion(Scene.RegionInfo, AbsolutePosition, look);
 
-            MainConsole.Instance.DebugFormat(
-                "[Scene]: Upgrading child to root agent for {0} in {1}",
-                Name, m_scene.RegionInfo.RegionName);
+            MainConsole.Instance.DebugFormat("[Scene]: Upgrading child to root agent for {0} in {1}", Name, m_scene.RegionInfo.RegionName);
 
             // On the next prim update, all objects will be sent
             m_sceneViewer.Reset();
@@ -790,8 +798,6 @@ namespace Universe.Region
             // Don't send an animation pack here, since on a region crossing this will sometimes cause a flying 
             // avatar to return to the standing position in mid-air.  On login it looks like this is being sent
             // elsewhere anyway
-            // Animator.SendAnimPack();
-
             SendScriptEventToAllAttachments(Changed.TELEPORT);
 
             m_scene.EventManager.TriggerOnMakeRootAgent(this);
@@ -815,9 +821,9 @@ namespace Universe.Region
             agent.StartingPosition = AbsolutePosition;
 
             ISyncMessagePosterService syncPoster = Scene.RequestModuleInterface<ISyncMessagePosterService>();
+
             if (syncPoster != null)
-                syncPoster.PostToServer(SyncMessageHelper.ArrivedAtDestination(UUID, (int)DrawDistance, agent,
-                                                                               Scene.RegionInfo.RegionID));
+                syncPoster.PostToServer(SyncMessageHelper.ArrivedAtDestination(UUID, (int)DrawDistance, agent, Scene.RegionInfo.RegionID));
         }
 
         /// <summary>
@@ -831,6 +837,7 @@ namespace Universe.Region
             IsChildAgent = true;
             SuccessfullyMadeRootAgent = false;
             SuccessfulTransit();
+
             // It looks like m_animator is set to null somewhere, and MakeChild
             // is called after that. Probably in aborted teleports.
             if (m_animator == null)
@@ -838,9 +845,7 @@ namespace Universe.Region
             else
                 Animator.ResetAnimations();
 
-            MainConsole.Instance.DebugFormat(
-                "[Scene Presence]: Downgrading root agent {0}, {1} to a child agent in {2}",
-                Name, UUID, m_scene.RegionInfo.RegionName);
+            MainConsole.Instance.DebugFormat("[Scene Presence]: Downgrading root agent {0}, {1} to a child agent in {2}", Name, UUID, m_scene.RegionInfo.RegionName);
 
             RemoveFromPhysicalScene();
             m_sceneViewer.Reset();
@@ -872,22 +877,31 @@ namespace Universe.Region
                 {
                     if (OnRemovePhysics != null)
                         OnRemovePhysics();
+
                     if (m_physicsActor != null)
                         m_scene.PhysicsScene.RemoveAvatar(m_physicsActor);
+
                     if (m_physicsActor != null)
                         m_physicsActor.OnCollisionUpdate -= PhysicsCollisionUpdate;
+
                     if (m_physicsActor != null)
                         m_physicsActor.OnRequestTerseUpdate -= SendPhysicsTerseUpdateToAllClients;
+
                     if (m_physicsActor != null)
                         m_physicsActor.OnSignificantMovement -= CheckForSignificantMovement;
+
                     if (m_physicsActor != null)
                         m_physicsActor.OnPositionAndVelocityUpdate -= PhysicsUpdatePosAndVelocity;
+
                     if (m_physicsActor != null)
                         m_physicsActor.OnCheckForRegionCrossing -= CheckForBorderCrossing;
+
                     if (m_physicsActor != null)
                         m_physicsActor.OnOutOfBounds -= OutOfBoundsCall;
+
                     if (m_physicsActor != null)
                         m_scene.PhysicsScene.RemoveAvatar(PhysicsActor);
+
                     m_physicsActor = null;
                 }
             }
@@ -899,6 +913,7 @@ namespace Universe.Region
         public virtual void Teleport(Vector3 pos)
         {
             bool isFlying = false;
+
             if (m_physicsActor != null)
                 isFlying = m_physicsActor.Flying;
 
@@ -911,16 +926,18 @@ namespace Universe.Region
             SendTerseUpdateToAllClients();
         }
 
-        private void SendScriptEventToAllAttachments(Changed c)
+        void SendScriptEventToAllAttachments(Changed c)
         {
             IAttachmentsModule attMod = Scene.RequestModuleInterface<IAttachmentsModule>();
+
             if (attMod != null)
-                attMod.SendScriptEventToAttachments(UUID, "changed", new Object[] { c });
+                attMod.SendScriptEventToAttachments(UUID, "changed", new object[] { c });
         }
 
         public virtual void TeleportWithMomentum(Vector3 pos)
         {
             bool isFlying = false;
+
             if (m_physicsActor != null)
                 isFlying = m_physicsActor.Flying;
 
@@ -943,7 +960,7 @@ namespace Universe.Region
         /// <param name="amount">Positive or negative roll amount in radians</param>
         /// <param name="PressingUp"></param>
         /// <param name="PressingDown"></param>
-        private void ApplyFlyingRoll(float amount, bool PressingUp, bool PressingDown)
+        void ApplyFlyingRoll(float amount, bool PressingUp, bool PressingDown)
         {
             float rollAmount = Util.Clamp(m_AngularVelocity.Z + amount, -FLY_ROLL_MAX_RADIANS, FLY_ROLL_MAX_RADIANS);
             m_AngularVelocity.Z = rollAmount;
@@ -971,25 +988,27 @@ namespace Universe.Region
         /// </summary>
         /// <param name="amount">Positive roll amount in radians</param>
         /// <returns></returns>
-        private float CalculateFlyingRollResetToZero(float amount)
+        float CalculateFlyingRollResetToZero(float amount)
         {
             const float rollMinRadians = 0f;
 
             if (m_AngularVelocity.Z > 0)
             {
                 float leftOverToMin = m_AngularVelocity.Z - rollMinRadians;
+
                 if (amount > leftOverToMin)
                     return -leftOverToMin;
-                else
-                    return -amount;
+
+                return -amount;
             }
             else
             {
                 float leftOverToMin = -m_AngularVelocity.Z - rollMinRadians;
+
                 if (amount > leftOverToMin)
                     return leftOverToMin;
-                else
-                    return amount;
+
+                return amount;
             }
         }
 
@@ -1000,6 +1019,7 @@ namespace Universe.Region
         public void HandleUUIDNameRequest(UUID uuid, IClientAPI remote_client)
         {
             UserAccount account = m_scene.UserAccountService.GetUserAccount(m_scene.RegionInfo.AllScopeIDs, uuid);
+
             if (account != null)
             {
                 remote_client.SendNameReply(uuid, account.Name);
@@ -1007,6 +1027,7 @@ namespace Universe.Region
             else
             {
                 IScenePresence presence;
+
                 if ((presence = Scene.GetScenePresence(uuid)) != null)
                 {
                     remote_client.SendNameReply(uuid, presence.Name);
@@ -1017,11 +1038,13 @@ namespace Universe.Region
         public void RegionHandleRequest(IClientAPI client, UUID regionID)
         {
             ulong handle = 0;
+
             if (regionID == m_scene.RegionInfo.RegionID)
                 handle = m_scene.RegionInfo.RegionHandle;
             else
             {
                 GridRegion r = m_scene.GridService.GetRegionByUUID(client.AllScopeIDs, regionID);
+
                 if (r != null)
                     handle = r.RegionHandle;
             }
@@ -1035,21 +1058,20 @@ namespace Universe.Region
         ///     This is called upon a very important packet sent from the client,
         ///     so it's client-controlled. Never call this method directly.
         /// </summary>
-        private void CompleteMovement(IClientAPI client)
+        void CompleteMovement(IClientAPI client)
         {
-            //MainConsole.Instance.Debug("[Scene Presence]: CompleteMovement for " + Name + " in " + m_regionInfo.RegionName);
+            //MainConsole.Instance.Debug([Scene Presence]: CompleteMovement for " + Name + " in " + m_regionInfo.RegionName);
 
             string reason = "";
             Vector3 pos;
+
             //Get a good position and make sure that we exist in the grid
             AgentCircuitData agent = m_scene.AuthenticateHandler.GetAgentCircuitData(UUID);
 
             if (agent == null ||
-                !Scene.Permissions.AllowedIncomingTeleport(UUID, AbsolutePosition, agent.TeleportFlags, out pos,
-                                                           out reason))
+                !Scene.Permissions.AllowedIncomingTeleport(UUID, AbsolutePosition, agent.TeleportFlags, out pos, out reason))
             {
-                MainConsole.Instance.Error("[Scene Presence]: Error in MakeRootAgent! Could not authorize agent " + Name +
-                                           ", reason: " + reason);
+                MainConsole.Instance.Error("[Scene Presence]: Error in MakeRootAgent! Could not authorize agent " + Name + ", reason: " + reason);
                 return;
             }
 
@@ -1073,22 +1095,21 @@ namespace Universe.Region
         /// <param name="localid"></param>
         /// <param name="distance"></param>
         /// <param name="pNormal"></param>
-        public void RayCastCameraCallback(bool hitYN, Vector3 collisionPoint, uint localid, float distance,
-                                          Vector3 pNormal)
+        public void RayCastCameraCallback(bool hitYN, Vector3 collisionPoint, uint localid, float distance, Vector3 pNormal)
         {
             if (m_followCamAuto)
             {
                 if (hitYN)
                 {
                     CameraConstraintActive = true;
-                    //MainConsole.Instance.DebugFormat("[RAY CAST RESULT]: {0}, {1}, {2}, {3}", hitYN, collisionPoint, localid, distance);
+                    //MainConsole.Instance.DebugFormat("[Raycast Result]: {0}, {1}, {2}, {3}", hitYN, collisionPoint, localid, distance);
 
                     Vector3 normal = Vector3.Normalize(new Vector3(0f, 0f, collisionPoint.Z) - collisionPoint);
-                    ControllingClient.SendCameraConstraint(new Vector4(normal.X, normal.Y, normal.Z,
-                                                                       -1 *
-                                                                       Vector3.Distance(
-                                                                           new Vector3(0, 0, collisionPoint.Z),
-                                                                           collisionPoint)));
+                    ControllingClient.SendCameraConstraint(
+                        new Vector4(normal.X,
+                                    normal.Y,
+                                    normal.Z,
+                                    -1 * Vector3.Distance(new Vector3(0, 0, collisionPoint.Z), collisionPoint)));
                 }
                 else
                 {
@@ -1109,6 +1130,7 @@ namespace Universe.Region
             m_perfMonMS = Util.EnvironmentTickCount();
 
             ++m_movementUpdateCount;
+
             if (m_movementUpdateCount < 1)
                 m_movementUpdateCount = 1;
 
@@ -1148,14 +1170,14 @@ namespace Universe.Region
             m_CameraAtAxis = agentData.CameraAtAxis;
             m_CameraLeftAxis = agentData.CameraLeftAxis;
             m_CameraUpAxis = agentData.CameraUpAxis;
+
             // The Agent's Draw distance setting
             DrawDistance = agentData.Far;
 
             // Check if Client has camera in 'follow cam' or 'build' mode.
             Vector3 camdif = (Vector3.One * m_bodyRot - Vector3.One * CameraRotation);
 
-            m_followCamAuto = ((m_CameraUpAxis.Z > 0.959f && m_CameraUpAxis.Z < 0.98f)
-                               && (Math.Abs(camdif.X) < 0.4f && Math.Abs(camdif.Y) < 0.4f));
+            m_followCamAuto = ((m_CameraUpAxis.Z > 0.959f && m_CameraUpAxis.Z < 0.98f) && (Math.Abs(camdif.X) < 0.4f && Math.Abs(camdif.Y) < 0.4f));
 
             m_mouseLook = (flags & AgentManager.ControlFlags.AGENT_CONTROL_MOUSELOOK) != 0;
             m_leftButtonDown = (flags & AgentManager.ControlFlags.AGENT_CONTROL_LBUTTON_DOWN) != 0;
@@ -1169,6 +1191,7 @@ namespace Universe.Region
             }
 
             //MainConsole.Instance.DebugFormat("[Follow Cam]: {0}", m_followCamAuto);
+
             // Raycast from the avatar's head to the camera to see if there's anything blocking the view
             if ((m_movementUpdateCount % NumMovementsBetweenRayCast) == 0 && m_scene.PhysicsScene.SupportsRayCast())
             {
@@ -1180,12 +1203,14 @@ namespace Universe.Region
                                                       RayCastCameraCallback);
                 }
             }
+
             if (!m_CameraCenter.IsFinite())
             {
                 m_CameraCenter = new Vector3(128, 128, 128);
             }
 
             IScriptControllerModule m = RequestModuleInterface<IScriptControllerModule>();
+
             if (m != null) //Tell any scripts about it
                 m.OnNewMovement(ref flags);
 
@@ -1196,11 +1221,13 @@ namespace Universe.Region
             // Here's where you get them.
             if (!SitGround)
                 SitGround = (flags & AgentManager.ControlFlags.AGENT_CONTROL_SIT_ON_GROUND) != 0;
+
             m_AgentControlFlags = flags;
             m_headrotation = agentData.HeadRotation;
             m_state = agentData.State;
 
             PhysicsActor actor = PhysicsActor;
+
             if (actor == null)
             {
                 //This happens while sitting, don't spam it
@@ -1221,6 +1248,7 @@ namespace Universe.Region
                     AddNewMovement(Vector3.Zero, bodyRotation);
                     return;
                 }
+
                 if (agentData.UseClientAgentPosition)
                 {
                     m_moveToPositionInProgress = (agentData.ClientAgentPosition - AbsolutePosition).Length() > 0.2f;
@@ -1249,6 +1277,7 @@ namespace Universe.Region
                 {
                     Quaternion delta = Quaternion.Inverse(m_bodyRot) * q;
                     m_bodyRot = q;
+
                     if (!(Math.Abs(delta.X) < 1e-5f && Math.Abs(delta.Y) < 1e-5f && Math.Abs(delta.Z) < 1e-5f))
                         update_rotation = true;
                 }
@@ -1270,16 +1299,15 @@ namespace Universe.Region
                     // The fact that m_movementflag is a byte needs to be fixed
                     // it really should be a uint
                     const uint nudgehack = 250;
+
                     //Do these two like this to block out all others because it will slow it down
-                    if ((flags & AgentManager.ControlFlags.AGENT_CONTROL_NUDGE_LEFT_POS) ==
-                        AgentManager.ControlFlags.AGENT_CONTROL_NUDGE_LEFT_POS)
+                    if ((flags & AgentManager.ControlFlags.AGENT_CONTROL_NUDGE_LEFT_POS) == AgentManager.ControlFlags.AGENT_CONTROL_NUDGE_LEFT_POS)
                     {
                         bResetMoveToPosition = true;
                         DCFlagKeyPressed = true;
                         agent_control_v3 += dirVectors[8];
                     }
-                    else if ((flags & AgentManager.ControlFlags.AGENT_CONTROL_NUDGE_LEFT_NEG) ==
-                             AgentManager.ControlFlags.AGENT_CONTROL_NUDGE_LEFT_NEG)
+                    else if ((flags & AgentManager.ControlFlags.AGENT_CONTROL_NUDGE_LEFT_NEG) == AgentManager.ControlFlags.AGENT_CONTROL_NUDGE_LEFT_NEG)
                     {
                         bResetMoveToPosition = true;
                         DCFlagKeyPressed = true;
@@ -1298,12 +1326,11 @@ namespace Universe.Region
 
                                 if ((m_movementflag & (uint)DCF) == 0)
                                 {
-                                    if (DCF == Dir_ControlFlags.DIR_CONTROL_FLAG_FORWARD_NUDGE ||
-                                        DCF == Dir_ControlFlags.DIR_CONTROL_FLAG_BACKWARD_NUDGE)
+                                    if (DCF == Dir_ControlFlags.DIR_CONTROL_FLAG_FORWARD_NUDGE || DCF == Dir_ControlFlags.DIR_CONTROL_FLAG_BACKWARD_NUDGE)
                                     {
-                                        //m_movementflag |= (byte)nudgehack;
                                         m_movementflag |= nudgehack;
                                     }
+
                                     m_movementflag += (uint)DCF;
                                     update_movementflag = true;
                                 }
@@ -1358,11 +1385,10 @@ namespace Universe.Region
                                 // Theoretically we might need a more complex PID approach here if other 
                                 // unknown forces are acting on the avatar and we need to adaptively respond
                                 // to such forces, but the following simple approach seems to works fine.
-                                Vector3 LocalVectorToTarget3D =
-                                    (m_moveToPositionTarget - AbsolutePosition)
+                                Vector3 LocalVectorToTarget3D = (m_moveToPositionTarget - AbsolutePosition)
                                     // vector from cur. pos to target in global coords
-                                    //* Matrix4.CreateFromQuaternion(Quaternion.Inverse(bodyRotation)); // change to avatar coords
                                     * Quaternion.Inverse(bodyRotation);
+
                                 // mult by matix is faster but with creation, use *quarternion
                                 // Ignore z component of vector
                                 Vector3 LocalVectorToTarget2D;
@@ -1396,6 +1422,7 @@ namespace Universe.Region
                                 if (LocalVectorToTarget2D.Y > 0) //MoveLeft
                                 {
                                     m_movementflag += (uint)Dir_ControlFlags.DIR_CONTROL_FLAG_LEFT;
+
                                     //AgentControlFlags
                                     AgentControlFlags |= (uint)Dir_ControlFlags.DIR_CONTROL_FLAG_LEFT;
                                     update_movementflag = true;
@@ -1406,6 +1433,7 @@ namespace Universe.Region
                                     AgentControlFlags |= (uint)Dir_ControlFlags.DIR_CONTROL_FLAG_RIGHT;
                                     update_movementflag = true;
                                 }
+
                                 if (LocalVectorToTarget2D.X < 0) //MoveBack
                                 {
                                     m_movementflag += (uint)Dir_ControlFlags.DIR_CONTROL_FLAG_BACK;
@@ -1457,7 +1485,7 @@ namespace Universe.Region
                     }
                     else
                     {
-                        if (m_AngularVelocity.Z != 0)
+                        if (Math.Abs(m_AngularVelocity.Z) > 0f)
                             m_AngularVelocity.Z += CalculateFlyingRollResetToZero(FLY_ROLL_RESET_RADIANS_PER_UPDATE);
                     }
 
@@ -1483,19 +1511,18 @@ namespace Universe.Region
                 // which occurs later in the main scene loop
                 if (update_movementflag || (update_rotation && DCFlagKeyPressed))
                 {
-                    //MainConsole.Instance.DebugFormat("{0} {1}", update_movementflag, (update_rotation && DCFlagKeyPressed));
-                    //MainConsole.Instance.DebugFormat("In {0} adding velocity to {1} of {2}", m_scene.RegionInfo.RegionName, Name, agent_control_v3);
+                    // MainConsole.Instance.DebugFormat("{0} {1}", update_movementflag, (update_rotation && DCFlagKeyPressed));
+                    // MainConsole.Instance.DebugFormat("In {0} adding velocity to {1} of {2}", m_scene.RegionInfo.RegionName, Name, agent_control_v3);
 
                     AddNewMovement(agent_control_v3, q);
                 }
             }
 
             if ((update_movementflag || update_rotation) && (m_parentID == UUID.Zero))
-                Animator.UpdateMovementAnimations(false);
+                Animator.UpdateMovementAnimations(true);
 
+            IAgentUpdateMonitor reporter = m_scene.RequestModuleInterface<IMonitorModule>().GetMonitor<IAgentUpdateMonitor>(Scene);
 
-            IAgentUpdateMonitor reporter =
-                m_scene.RequestModuleInterface<IMonitorModule>().GetMonitor<IAgentUpdateMonitor>(Scene);
             if (reporter != null)
                 reporter.AddAgentTime(Util.EnvironmentTickCountSubtract(m_perfMonMS));
         }
@@ -1506,20 +1533,18 @@ namespace Universe.Region
             m_autoPilotTarget = Pos;
             m_sitAtAutoTarget = false;
             PrimitiveBaseShape proxy = PrimitiveBaseShape.Default;
-            //proxy.PCode = (byte)PCode.ParticleSystem;
 
             proxyObjectGroup = new SceneObjectGroup(UUID, Pos, Rotation, proxy, "", m_scene);
             proxyObjectGroup.AttachToScene(m_scene);
-
             proxyObjectGroup.ScheduleGroupUpdate(PrimUpdateFlags.ForcedFullUpdate);
-            remote_client.SendSitResponse(proxyObjectGroup.UUID, Vector3.Zero, Quaternion.Identity, true, Vector3.Zero,
-                                          Vector3.Zero, false);
+            remote_client.SendSitResponse(proxyObjectGroup.UUID, Vector3.Zero, Quaternion.Identity, true, Vector3.Zero, Vector3.Zero, false);
             IBackupModule backup = m_scene.RequestModuleInterface<IBackupModule>();
+
             if (backup != null)
                 backup.DeleteSceneObjects(new[] { proxyObjectGroup }, true, true);
         }
 
-        public void DoMoveToPosition(Object sender, string method, List<String> args)
+        public void DoMoveToPosition(object sender, string method, List<string> args)
         {
             try
             {
@@ -1537,9 +1562,10 @@ namespace Universe.Region
                 }
                 catch (InvalidCastException)
                 {
-                    MainConsole.Instance.Error("[CLIENT]: Invalid autopilot request");
+                    MainConsole.Instance.Error("[Scene Presence]: Invalid autopilot request");
                     return;
                 }
+
                 m_moveToPositionInProgress = true;
                 m_moveToPositionTarget = new Vector3(locx, locy, locz);
                 //MainConsole.Instance.Warn("Moving to " + m_moveToPositionTarget);
@@ -1551,7 +1577,7 @@ namespace Universe.Region
             }
         }
 
-        private void CheckAtSitTarget()
+        void CheckAtSitTarget()
         {
             //MainConsole.Instance.Debug("[Auto Pilot]: " + Util.GetDistanceTo(AbsolutePosition, m_autoPilotTarget).ToString());
             if (Util.GetDistanceTo(AbsolutePosition, m_autoPilotTarget) <= 1.5)
@@ -1559,12 +1585,14 @@ namespace Universe.Region
                 if (m_sitAtAutoTarget)
                 {
                     ISceneChildEntity part = m_scene.GetSceneObjectPart(m_requestedSitTargetUUID);
+
                     if (part != null)
                     {
                         m_autoPilotTarget = Vector3.Zero;
                         m_autopilotMoving = false;
                         SendSitResponse(ControllingClient, m_requestedSitTargetUUID, Vector3.Zero, Quaternion.Identity);
                     }
+
                     m_requestedSitTargetUUID = UUID.Zero;
                     m_sitting = false;
                 }
@@ -1582,12 +1610,15 @@ namespace Universe.Region
             if (m_parentID != UUID.Zero)
             {
                 ISceneChildEntity part = m_scene.GetSceneObjectPart(m_parentID);
+
                 if (part != null)
                 {
                     //Block movement of vehicles for a bit until after the changed event has fired
                     if (part.PhysActor != null)
                         part.PhysActor.Selected = true;
+
                     IScriptControllerModule m = RequestModuleInterface<IScriptControllerModule>();
+
                     if (m != null)
                         m.RemoveAllScriptControllers(part);
 
@@ -1600,12 +1631,15 @@ namespace Universe.Region
                 m_parentPosition = Vector3.Zero;
                 Rotation = Quaternion.Identity;
             }
+
             m_parentID = UUID.Zero;
+
             if (m_physicsActor == null)
                 AddToPhysicalScene(false, false);
 
             m_requestedSitTargetUUID = UUID.Zero;
             m_sitting = false;
+
             foreach (IScenePresence sp in m_scene.GetScenePresences())
             {
                 if (sp.SceneViewer.Culler.ShowEntityToClient(sp, this, Scene))
@@ -1617,14 +1651,15 @@ namespace Universe.Region
 
         #region Sit code
 
-        private ISceneChildEntity FindNextAvailableSitTarget(UUID targetID)
+        ISceneChildEntity FindNextAvailableSitTarget(UUID targetID)
         {
             ISceneChildEntity targetPart = m_scene.GetSceneObjectPart(targetID);
             if (targetPart == null)
                 return null;
 
             // If the primitive the player clicked on has a sit target and that sit target is not full, that sit target is used.
-            // If the primitive the player clicked on has no sit target, and one or more other linked objects have sit targets that are not full, the sit target of the object with the lowest link number will be used.
+            // If the primitive the player clicked on has no sit target, and one or more other linked objects have sit 
+            //   targets that are not full, the sit target of the object with the lowest link number will be used.
 
             // Get our own copy of the part array, and sort into the order we want to test
             ISceneChildEntity[] partArray = targetPart.ParentEntity.ChildrenEntities().ToArray();
@@ -1644,9 +1679,11 @@ namespace Universe.Region
                 Vector3 avSitOffSet = part.SitTargetPosition;
                 Quaternion avSitOrientation = part.SitTargetOrientation;
 
+                //TODO: probably can use this >>//      public bool ApproxEquals (Vector3 vec, float tolerance);
                 bool SitTargetisSet =
-                    (!(avSitOffSet.X == 0f && avSitOffSet.Y == 0f && avSitOffSet.Z == 0f && avSitOrientation.W == 1f &&
-                       avSitOrientation.X == 0f && avSitOrientation.Y == 0f && avSitOrientation.Z == 0f));
+                    (!(Util.ApproxZero(avSitOffSet.X) && Util.ApproxZero(avSitOffSet.Y) &&
+                       Util.ApproxZero(avSitOffSet.Z) && Util.ApproxEqual(avSitOrientation.W, 1f) &&
+                       Util.ApproxZero(avSitOrientation.X) && Util.ApproxZero(avSitOrientation.Y) && Util.ApproxZero(avSitOrientation.Z)));
 
                 if (SitTargetisSet)
                 {
@@ -1659,7 +1696,7 @@ namespace Universe.Region
             return targetPart;
         }
 
-        private ISceneChildEntity FindNextAvailableSitTarget(UUID targetID, UUID notID)
+        ISceneChildEntity FindNextAvailableSitTarget(UUID targetID, UUID notID)
         {
             ISceneChildEntity targetPart = m_scene.GetSceneObjectPart(targetID);
             if (targetPart == null)
@@ -1687,8 +1724,9 @@ namespace Universe.Region
                 Quaternion avSitOrientation = part.SitTargetOrientation;
 
                 bool SitTargetisSet =
-                    (!(avSitOffSet.X == 0f && avSitOffSet.Y == 0f && avSitOffSet.Z == 0f && avSitOrientation.W == 1f &&
-                       avSitOrientation.X == 0f && avSitOrientation.Y == 0f && avSitOrientation.Z == 0f));
+                    (!(Util.ApproxZero(avSitOffSet.X) && Util.ApproxZero(avSitOffSet.Y) &&
+                       Util.ApproxZero(avSitOffSet.Z) && Util.ApproxEqual(avSitOrientation.W, 1f) &&
+                       Util.ApproxZero(avSitOrientation.X) && Util.ApproxZero(avSitOrientation.Y) && Util.ApproxZero(avSitOrientation.Z)));
 
                 if (SitTargetisSet && part.UUID != notID)
                 {
@@ -1701,7 +1739,7 @@ namespace Universe.Region
             return targetPart;
         }
 
-        private SittingObjectData m_objectToSitOn = null;
+        SittingObjectData m_objectToSitOn = null;
 
         public void SitOnObjectAfterCrossing(SittingObjectData sod)
         {
@@ -1711,7 +1749,7 @@ namespace Universe.Region
             if (part == null)
                 return;
 
-            if (String.IsNullOrEmpty(sod.m_animation))
+            if (string.IsNullOrEmpty(sod.m_animation))
                 m_nextSitAnimation = "SIT";
 
             m_requestedSitTargetUUID = targetID;
@@ -1721,6 +1759,7 @@ namespace Universe.Region
             Quaternion sitTargetOrient = sod.m_sitTargetRot;
 
             m_pos = new Vector3(sitTargetPos.X, sitTargetPos.Y, sitTargetPos.Z);
+            //m_pos += SIT_TARGET_ADJUSTMENT;
             m_bodyRot = sitTargetOrient;
             m_parentPosition = part.AbsolutePosition;
             m_parentID = m_requestedSitTargetUUID;
@@ -1737,7 +1776,7 @@ namespace Universe.Region
             Animator.TrySetMovementAnimation(m_nextSitAnimation);
         }
 
-        private void SendSitResponse(IClientAPI remoteClient, UUID targetID, Vector3 offset, Quaternion pSitOrientation)
+        void SendSitResponse(IClientAPI remoteClient, UUID targetID, Vector3 offset, Quaternion pSitOrientation)
         {
             bool autopilot = true;
             Vector3 pos = new Vector3();
@@ -1746,8 +1785,20 @@ namespace Universe.Region
             Vector3 cameraAtOffset = Vector3.Zero;
 
             ISceneChildEntity part = FindNextAvailableSitTarget(targetID);
+            if (part == null)
+            {
+                MainConsole.Instance.ErrorFormat("[Scene presence]: Tried to sit on non existent target {0}", targetID);
+                return;
+            }
+
             if (part.SitTargetAvatar.Count > 0)
                 part = FindNextAvailableSitTarget(targetID, part.UUID);
+
+            if (part == null)
+            {
+                MainConsole.Instance.ErrorFormat("[Scene presence]: Tried to sit on non exisxtent target part {0}", targetID);
+                return;
+            }
 
             m_requestedSitTargetUUID = part.UUID;
             m_sitting = true;
@@ -1758,16 +1809,16 @@ namespace Universe.Region
             bool UseSitTarget = false;
 
             bool SitTargetisSet =
-                (!(avSitOffSet.X == 0f && avSitOffSet.Y == 0f && avSitOffSet.Z == 0f &&
+                (!(Util.ApproxZero(avSitOffSet.X) && Util.ApproxZero(avSitOffSet.Y) && Util.ApproxZero(avSitOffSet.Z) &&
                    (
-                       avSitOrientation.X == 0f && avSitOrientation.Y == 0f && avSitOrientation.Z == 0f &&
-                       avSitOrientation.W == 1f // Valid Zero Rotation quaternion
+                       Util.ApproxZero(avSitOrientation.X) && Util.ApproxZero(avSitOrientation.Y) &&
+                       Util.ApproxZero(avSitOrientation.Z) && Util.ApproxEqual(avSitOrientation.W, 1f) // Valid Zero Rotation quaternion
                        ||
-                       avSitOrientation.X == 0f && avSitOrientation.Y == 0f && avSitOrientation.Z == 1f &&
-                       avSitOrientation.W == 0f // W-Z Mapping was invalid at one point
+                       Util.ApproxZero(avSitOrientation.X) && Util.ApproxZero(avSitOrientation.Y) &&
+                       Util.ApproxEqual(avSitOrientation.Z, 1f) && Util.ApproxZero(avSitOrientation.W) // W-Z Mapping was invalid at one point
                        ||
-                       avSitOrientation.X == 0f && avSitOrientation.Y == 0f && avSitOrientation.Z == 0f &&
-                       avSitOrientation.W == 0f // Invalid Quaternion
+                       Util.ApproxZero(avSitOrientation.X) && Util.ApproxZero(avSitOrientation.Y) &&
+                       Util.ApproxZero(avSitOrientation.Z) && Util.ApproxZero(avSitOrientation.W) // Invalid Quaternion
                    )
                   ));
 
@@ -1782,7 +1833,7 @@ namespace Universe.Region
                 UseSitTarget = true;
             }
 
-            pos = part.AbsolutePosition;
+            pos = part.AbsolutePosition; // +offset;
             if (m_physicsActor != null)
             {
                 // If we're not using the client autopilot, we're immediately warping the avatar to the location
@@ -1816,6 +1867,7 @@ namespace Universe.Region
                                     Position.Z += part.Scale.Z / 2f;
                                     Position.Z += appearance.Appearance.AvatarHeight / 2;
                                     Position.Z -= (float)(SIT_TARGET_ADJUSTMENT.Z / 1.5);
+                                    //m_appearance.AvatarHeight / 15;
                                     MovePos.X = (part.Scale.X / 2) + .1f;
                                     MovePos *= Rotation;
                                     break;
@@ -1823,12 +1875,12 @@ namespace Universe.Region
                                     Position.Z += part.Scale.Z / 2f;
                                     Position.Z += appearance.Appearance.AvatarHeight / 2;
                                     Position.Z -= (float)(SIT_TARGET_ADJUSTMENT.Z / 1.5);
+                                    //m_appearance.AvatarHeight / 15;
                                     MovePos.X = (float)(part.Scale.X / 2.5);
                                     MovePos *= Rotation;
                                     break;
                             }
                         }
-
                         Position += MovePos;
                         AbsolutePosition = Position;
                     }
@@ -1856,7 +1908,7 @@ namespace Universe.Region
             m_autoPilotTarget = pos;
             m_sitAtAutoTarget = autopilot;
             if (!autopilot)
-                HandleAgentSit(remoteClient, UUID, String.IsNullOrEmpty(m_nextSitAnimation) ? "SIT" : m_nextSitAnimation,
+                HandleAgentSit(remoteClient, UUID, string.IsNullOrEmpty(m_nextSitAnimation) ? "SIT" : m_nextSitAnimation,
                                UseSitTarget);
         }
 
@@ -1871,7 +1923,7 @@ namespace Universe.Region
 
             if (part != null)
             {
-                if (!String.IsNullOrEmpty(part.SitAnimation))
+                if (!string.IsNullOrEmpty(part.SitAnimation))
                     m_nextSitAnimation = part.SitAnimation;
 
                 m_sitting = true;
@@ -1880,7 +1932,7 @@ namespace Universe.Region
                 SendSitResponse(remoteClient, targetID, offset, Quaternion.Identity);
             }
             else
-                MainConsole.Instance.Warn("[Sit]: Sit requested on unknown object: " + targetID.ToString());
+                MainConsole.Instance.Warn("[Scene presence]: Sit requested on unknown object: " + targetID);
         }
 
         public void HandleAgentRequestSit(IClientAPI remoteClient, UUID agentID, UUID targetID, Vector3 offset,
@@ -1889,7 +1941,7 @@ namespace Universe.Region
             if (m_parentID != UUID.Zero)
                 StandUp();
 
-            m_nextSitAnimation = !String.IsNullOrEmpty(sitAnimation) ? sitAnimation : "SIT";
+            m_nextSitAnimation = !string.IsNullOrEmpty(sitAnimation) ? sitAnimation : "SIT";
 
             ISceneChildEntity part = FindNextAvailableSitTarget(targetID);
             if (part != null)
@@ -1897,16 +1949,16 @@ namespace Universe.Region
                 m_requestedSitTargetUUID = targetID;
                 m_sitting = true;
 
-                MainConsole.Instance.DebugFormat("[Sit]: Client requested Sit Position: {0}", offset);
+                MainConsole.Instance.DebugFormat("[SIT]: Client requested Sit Position: {0}", offset);
                 SendSitResponse(remoteClient, targetID, offset, Quaternion.Identity);
             }
             else
-                MainConsole.Instance.Warn("[Sit]: Sit requested on unknown object: " + targetID);
+                MainConsole.Instance.Warn("Sit requested on unknown object: " + targetID);
         }
 
         public void HandleAgentSit(IClientAPI remoteClient, UUID agentID)
         {
-            HandleAgentSit(remoteClient, agentID, !String.IsNullOrEmpty(m_nextSitAnimation) ? m_nextSitAnimation : "SIT",
+            HandleAgentSit(remoteClient, agentID, !string.IsNullOrEmpty(m_nextSitAnimation) ? m_nextSitAnimation : "SIT",
                            false);
         }
 
@@ -1956,7 +2008,6 @@ namespace Universe.Region
                         sp.SceneViewer.Culler.ShowEntityToClient(sp, this, Scene))
                         sp.ControllingClient.SendAvatarDataImmediate(this);
                 }
-
                 Animator.TrySetMovementAnimation(sitAnimation);
             }
         }
@@ -2002,7 +2053,7 @@ namespace Universe.Region
             {
                 // WHAT??? we can't make them a root agent though... what if they shouldn't be here?
                 //  Or even worse, what if they are spoofing the client???
-                MainConsole.Instance.Info("[Scene Presence]: AddNewMovement() called on child agent for " + Name +
+                MainConsole.Instance.Info("[Scene presence]: AddNewMovement() called on child agent for " + Name +
                                           "! Possible attempt to force a fake agent into a sim!");
                 return;
             }
@@ -2028,8 +2079,10 @@ namespace Universe.Region
             m_sceneViewer.Close();
 
             RemoveFromPhysicalScene();
+
             if (m_animator == null)
                 return;
+
             m_animator.Close();
             m_animator = null;
         }
@@ -2039,6 +2092,7 @@ namespace Universe.Region
             if (!IsChildAgent && m_parentID != UUID.Zero)
             {
                 SceneObjectPart part = Scene.GetSceneObjectPart(m_parentID) as SceneObjectPart;
+
                 if (part != null)
                 {
                     part.SetPhysActorCameraPos((m_AgentControlFlags & AgentManager.ControlFlags.AGENT_CONTROL_MOUSELOOK) ==
@@ -2047,30 +2101,38 @@ namespace Universe.Region
                                                    : Quaternion.Identity);
                 }
             }
+
             if ((Taints & PresenceTaint.SignificantMovement) == PresenceTaint.SignificantMovement)
             {
                 Taints &= ~PresenceTaint.SignificantMovement;
+
                 //Trigger the movement now
                 TriggerSignificantClientMovement();
             }
+
             if ((Taints & PresenceTaint.TerseUpdate) == PresenceTaint.TerseUpdate)
             {
                 Taints &= ~PresenceTaint.TerseUpdate;
+
                 //Send the terse update
                 SendTerseUpdateToAllClients();
             }
+
             if ((Taints & PresenceTaint.Movement) == PresenceTaint.Movement)
             {
                 Taints &= ~PresenceTaint.Movement;
+
                 //Finish out the event
                 UpdatePosAndVelocity();
             }
+
             if (m_enqueueSendChildAgentUpdate &&
                 m_enqueueSendChildAgentUpdateTime != new DateTime())
             {
                 if (DateTime.Now > m_enqueueSendChildAgentUpdateTime)
                 {
                     Taints &= ~PresenceTaint.Other;
+
                     //Reset it now
                     m_enqueueSendChildAgentUpdateTime = new DateTime();
                     m_enqueueSendChildAgentUpdate = false;
@@ -2090,13 +2152,13 @@ namespace Universe.Region
 
                     //Send the child agent data update
                     ISyncMessagePosterService syncPoster = Scene.RequestModuleInterface<ISyncMessagePosterService>();
+
                     if (syncPoster != null)
-                        syncPoster.PostToServer(SyncMessageHelper.SendChildAgentUpdate(agentpos,
-                                                                                       m_scene.RegionInfo.RegionID));
+                        syncPoster.PostToServer(SyncMessageHelper.SendChildAgentUpdate(agentpos, m_scene.RegionInfo.RegionID));
                 }
                 else
+                    // We have not sent the update yet, so we need to keep tainting
                     Scene.SceneGraph.TaintPresenceForUpdate(this, PresenceTaint.Other);
-                //We haven't sent the update yet, keep tainting
             }
         }
 
@@ -2120,10 +2182,8 @@ namespace Universe.Region
         /// <param name="remoteClient"></param>
         public virtual void SendTerseUpdateToClient(IScenePresence remoteClient)
         {
-            //MainConsole.Instance.DebugFormat("[Scene Presence]: TerseUpdate: Pos={0} Rot={1} Vel={2}", m_pos, m_bodyRot, m_velocity);
-            remoteClient.SceneViewer.QueuePresenceForUpdate(
-                this,
-                PrimUpdateFlags.TerseUpdate);
+            //MainConsole.Instance.DebugFormat("[Scene Presence]:Update: Pos={0} Rot={1} Vel={2}", m_pos, m_bodyRot, m_velocity);
+            remoteClient.SceneViewer.QueuePresenceForUpdate(this, PrimUpdateFlags.TerseUpdate);
         }
 
         /// <summary>
@@ -2135,8 +2195,8 @@ namespace Universe.Region
 
             m_scene.ForEachScenePresence(SendTerseUpdateToClient);
 
-            IAgentUpdateMonitor reporter =
-                m_scene.RequestModuleInterface<IMonitorModule>().GetMonitor<IAgentUpdateMonitor>(Scene);
+            IAgentUpdateMonitor reporter = m_scene.RequestModuleInterface<IMonitorModule>().GetMonitor<IAgentUpdateMonitor>(Scene);
+
             if (reporter != null)
             {
                 reporter.AddAgentTime(Util.EnvironmentTickCountSubtract(m_perfMonMS));
@@ -2149,13 +2209,12 @@ namespace Universe.Region
             SendCoarseLocationsDefault(m_scene.RegionInfo.RegionID, this, coarseLocations, avatarUUIDs);
         }
 
-        public virtual void SendCoarseLocationsDefault(UUID sceneId, IScenePresence p, List<Vector3> coarseLocations,
-                                                       List<UUID> avatarUUIDs)
+        void SendCoarseLocationsDefault(UUID sceneId, IScenePresence p, List<Vector3> coarseLocations, List<UUID> avatarUUIDs)
         {
             m_perfMonMS = Util.EnvironmentTickCount();
             m_controllingClient.SendCoarseLocationUpdate(avatarUUIDs, coarseLocations);
-            IAgentUpdateMonitor reporter =
-                m_scene.RequestModuleInterface<IMonitorModule>().GetMonitor<IAgentUpdateMonitor>(Scene);
+            IAgentUpdateMonitor reporter = m_scene.RequestModuleInterface<IMonitorModule>().GetMonitor<IAgentUpdateMonitor>(Scene);
+
             if (reporter != null)
                 reporter.AddAgentTime(Util.EnvironmentTickCountSubtract(m_perfMonMS));
         }
@@ -2179,16 +2238,16 @@ namespace Universe.Region
                 Scene.SceneGraph.TaintPresenceForUpdate(this, PresenceTaint.SignificantMovement);
                 Scene.SceneGraph.TaintPresenceForUpdate(this, PresenceTaint.Movement);
             }
-            
+
             if (m_sceneViewer == null || m_sceneViewer.Prioritizer == null)
                 return;
 
             // Minimum Draw distance is 64 meters, the Radius of the draw distance sphere is 32m
             double tmpsq = m_sceneViewer.Prioritizer.ChildReprioritizationDistance;
             tmpsq *= tmpsq;
+
             if (Vector3.DistanceSquared(AbsolutePosition, m_lastChildAgentUpdatePosition) >= tmpsq ||
                 Vector3.DistanceSquared(CameraPosition, m_lastChildAgentUpdateCamPosition) >= tmpsq)
-
             {
                 m_lastChildAgentUpdatePosition = AbsolutePosition;
                 m_lastChildAgentUpdateCamPosition = CameraPosition;
@@ -2200,12 +2259,10 @@ namespace Universe.Region
             //   as with lots of clients, this will lag the client badly.
             //
             // Moving collision sound ID inside this loop so that we don't trigger it too much
-            if (CollisionSoundID != UUID.Zero && (CollisionSoundLastTriggered == 0 ||
-                                                  Util.EnvironmentTickCount() - CollisionSoundLastTriggered > 0))
+            if (CollisionSoundID != UUID.Zero && (CollisionSoundLastTriggered == 0 || Util.EnvironmentTickCount() - CollisionSoundLastTriggered > 0))
             {
                 ISoundModule module = Scene.RequestModuleInterface<ISoundModule>();
-                module.TriggerSound(CollisionSoundID, UUID, UUID, UUID.Zero, 1, AbsolutePosition,
-                                    Scene.RegionInfo.RegionHandle, 100);
+                module.TriggerSound(CollisionSoundID, UUID, UUID, UUID.Zero, 1, AbsolutePosition, Scene.RegionInfo.RegionHandle, 100);
                 CollisionSoundLastTriggered = Util.EnvironmentTickCount() + 100; //Only 10 a second please!
                 CollisionSoundID = UUID.Zero;
             }
@@ -2227,10 +2284,10 @@ namespace Universe.Region
 
         #region Border Crossing Methods
 
-        private readonly Dictionary<UUID, int> m_failedNeighborCrossing = new Dictionary<UUID, int>();
-        private Vector3 m_lastSigInfiniteRegionPos = Vector3.Zero;
-        private bool m_foundNeighbors = false;
-        private List<GridRegion> m_nearbyInfiniteRegions = new List<GridRegion>();
+        readonly Dictionary<UUID, int> m_failedNeighborCrossing = new Dictionary<UUID, int>();
+        Vector3 m_lastSigInfiniteRegionPos = Vector3.Zero;
+        bool m_foundNeighbors = false;
+        List<GridRegion> m_nearbyInfiniteRegions = new List<GridRegion>();
 
         /// <summary>
         ///     Checks to see if the avatar is in range of a border and calls CrossToNewRegion
@@ -2239,6 +2296,7 @@ namespace Universe.Region
         {
             if (IsChildAgent)
                 return false;
+
             //Don't check if the avatar is sitting on something. Crossing should be called
             // directly by the SOG if the object needs to cross.
             if (m_parentID != UUID.Zero)
@@ -2264,14 +2322,15 @@ namespace Universe.Region
                             m_foundNeighbors = true;
                             m_lastSigInfiniteRegionPos = AbsolutePosition;
                             IGridRegisterModule neighborService = Scene.RequestModuleInterface<IGridRegisterModule>();
+
                             if (neighborService != null)
                                 m_nearbyInfiniteRegions = neighborService.GetNeighbors(Scene);
                         }
 
                         double TargetX = Scene.RegionInfo.RegionLocX + (double)pos2.X;
                         double TargetY = Scene.RegionInfo.RegionLocY + (double)pos2.Y;
-                        float halfRegionX = Scene.RegionInfo.RegionSizeX / 2;
-                        float halfRegionY = Scene.RegionInfo.RegionSizeY / 2;
+                        float halfRegionX = Scene.RegionInfo.RegionSizeX / 2f;
+                        float halfRegionY = Scene.RegionInfo.RegionSizeY / 2f;
 
                         if (m_lastSigInfiniteRegionPos.X - AbsolutePosition.X > halfRegionX ||
                             m_lastSigInfiniteRegionPos.X - AbsolutePosition.X < -halfRegionX ||
@@ -2298,15 +2357,14 @@ namespace Universe.Region
                         {
                             if (m_failedNeighborCrossing.ContainsKey(neighborRegion.RegionID))
                             {
-                                int diff =
-                                    Util.EnvironmentTickCountSubtract(m_failedNeighborCrossing[neighborRegion.RegionID]);
+                                int diff = Util.EnvironmentTickCountSubtract(m_failedNeighborCrossing[neighborRegion.RegionID]);
+
+                                // This should only be allowed to retry every 10 seconds
                                 if (diff > 10 * 1000)
                                     m_failedNeighborCrossing.Remove(neighborRegion.RegionID);
-                                //Only allow it to retry every 10 seconds
                                 else
                                 {
-                                    MainConsole.Instance.DebugFormat(
-                                        "[Scene Presence]: Unable to cross to a neighboring region, because we failed to contact the other region");
+                                    MainConsole.Instance.DebugFormat("[Scene Presence]: Unable to cross to a neighboring region, because we failed to contact the other region");
                                     return false;
                                 }
                             }
@@ -2318,33 +2376,35 @@ namespace Universe.Region
                                 isFlying = m_physicsActor.Flying;
 
                             IEntityTransferModule transferModule = Scene.RequestModuleInterface<IEntityTransferModule>();
+
                             if (transferModule != null)
                                 transferModule.Cross(this, isFlying, neighborRegion);
                             else
-                                MainConsole.Instance.DebugFormat(
-                                    "[Scene Presence]: Unable to cross agent to neighboring region, because there is no AgentTransferModule");
+                                MainConsole.Instance.DebugFormat("[Scene Presence]: Unable to cross agent to neighboring region, because there is no AgentTransferModule");
                         }
+
                         return true;
                     }
                     else
                     {
                         //If we are headed out of the region, make sure we have a region there
                         IGridRegisterModule neighborService = Scene.RequestModuleInterface<IGridRegisterModule>();
+
                         if (neighborService != null)
                         {
                             List<GridRegion> neighbors = neighborService.GetNeighbors(Scene);
 
-                            double TargetX = (double)Scene.RegionInfo.RegionLocX + (double)pos2.X;
-                            double TargetY = (double)Scene.RegionInfo.RegionLocY + (double)pos2.Y;
+                            double TargetX = Scene.RegionInfo.RegionLocX + pos2.X;
+                            double TargetY = Scene.RegionInfo.RegionLocY + pos2.Y;
 
                             GridRegion neighborRegion = null;
 
                             foreach (GridRegion region in neighbors)
                             {
-                                if (TargetX >= (double)region.RegionLocX
-                                    && TargetY >= (double)region.RegionLocY
-                                    && TargetX < (double)(region.RegionLocX + region.RegionSizeX)
-                                    && TargetY < (double)(region.RegionLocY + region.RegionSizeY))
+                                if (TargetX >= region.RegionLocX
+                                    && TargetY >= region.RegionLocY
+                                    && TargetX < region.RegionLocX + region.RegionSizeX
+                                    && TargetY < region.RegionLocY + region.RegionSizeY)
                                 {
                                     neighborRegion = region;
                                     break;
@@ -2355,16 +2415,14 @@ namespace Universe.Region
                             {
                                 if (m_failedNeighborCrossing.ContainsKey(neighborRegion.RegionID))
                                 {
-                                    int diff =
-                                        Util.EnvironmentTickCountSubtract(
-                                            m_failedNeighborCrossing[neighborRegion.RegionID]);
+                                    int diff = Util.EnvironmentTickCountSubtract(m_failedNeighborCrossing[neighborRegion.RegionID]);
+
+                                    // This should only be allowed to retry every 10 seconds
                                     if (diff > 10 * 1000)
                                         m_failedNeighborCrossing.Remove(neighborRegion.RegionID);
-                                    //Only allow it to retry every 10 seconds
                                     else
                                     {
-                                        MainConsole.Instance.DebugFormat(
-                                            "[Scene Presence]: Unable to cross to a neighboring region, because we failed to contact the other region");
+                                        MainConsole.Instance.DebugFormat("[Scene Presence]: Unable to cross to a neighboring region, because we failed to contact the other region");
                                         return false;
                                     }
                                 }
@@ -2375,18 +2433,15 @@ namespace Universe.Region
                                 if (m_physicsActor != null)
                                     isFlying = m_physicsActor.Flying;
 
-                                IEntityTransferModule transferModule =
-                                    Scene.RequestModuleInterface<IEntityTransferModule>();
+                                IEntityTransferModule transferModule = Scene.RequestModuleInterface<IEntityTransferModule>();
+
                                 if (transferModule != null)
                                     transferModule.Cross(this, isFlying, neighborRegion);
                                 else
-                                    MainConsole.Instance.DebugFormat(
-                                        "[Scene Presence]: Unable to cross agent to neighboring region, because there is no AgentTransferModule");
+                                    MainConsole.Instance.DebugFormat("[Scene Presence]: Unablee to cross agent to neighboring region, because there is no AgentTransferModule");
 
                                 return true;
                             }
-                            //else
-                            //    MainConsole.Instance.Debug("[Scene Presence]: Could not find region for " + Name + " to cross into @ {" + TargetX / 256 + ", " + TargetY / 256 + "}");
                         }
                     }
                 }
@@ -2422,6 +2477,7 @@ namespace Universe.Region
         public void SuccessfulCrossingTransit(GridRegion crossingRegion)
         {
             m_inTransit = false;
+
             //We got there fine, remove it
             m_failedNeighborCrossing.Remove(crossingRegion.RegionID);
         }
@@ -2432,17 +2488,17 @@ namespace Universe.Region
             m_failedNeighborCrossing[failedCrossingRegion.RegionID] = Util.EnvironmentTickCount();
         }
 
-        private void Reset()
+        void Reset()
         {
             //Reset the parcel UUID for the user
             CurrentParcelUUID = UUID.Zero;
             CurrentParcel = null;
+
             // Put the child agent back at the center
             m_parentID = UUID.Zero;
             m_parentPosition = Vector3.Zero;
             ControllingClient.Reset();
-            AbsolutePosition
-                = new Vector3(Scene.RegionInfo.RegionSizeX * 0.5f, Scene.RegionInfo.RegionSizeY * 0.5f, 70);
+            AbsolutePosition = new Vector3(Scene.RegionInfo.RegionSizeX * 0.5f, Scene.RegionInfo.RegionSizeY * 0.5f, 70);
             SuccessfulTransit();
         }
 
@@ -2452,10 +2508,6 @@ namespace Universe.Region
 
         public virtual void ChildAgentDataUpdate(AgentData cAgentData)
         {
-            //MainConsole.Instance.Debug("   >>> ChildAgentDataUpdate <<< " + Scene.RegionInfo.RegionName);
-            //if (!IsChildAgent)
-            //    return;
-
             CopyFrom(cAgentData);
         }
 
@@ -2463,8 +2515,7 @@ namespace Universe.Region
         ///     This updates important decision making data about a child agent
         ///     The main purpose is to figure out what objects to send to a child agent that's in a neighboring region
         /// </summary>
-        public virtual void ChildAgentDataUpdate(AgentPosition cAgentData, int tRegionX, int tRegionY, int rRegionX,
-                                                 int rRegionY)
+        public virtual void ChildAgentDataUpdate(AgentPosition cAgentData, int tRegionX, int tRegionY, int rRegionX, int rRegionY)
         {
             if (!IsChildAgent)
                 return;
@@ -2489,6 +2540,7 @@ namespace Universe.Region
         {
             if (OnSignificantClientMovement != null)
                 OnSignificantClientMovement();
+
             m_scene.EventManager.TriggerSignificantClientMovement(this);
         }
 
@@ -2496,44 +2548,41 @@ namespace Universe.Region
         {
             cAgent.AgentID = UUID;
             cAgent.RegionID = Scene.RegionInfo.RegionID;
-
             cAgent.Position = AbsolutePosition + OffsetPosition;
             cAgent.Velocity = Velocity;
             cAgent.Center = m_CameraCenter;
             cAgent.AtAxis = m_CameraAtAxis;
             cAgent.LeftAxis = m_CameraLeftAxis;
             cAgent.UpAxis = m_CameraUpAxis;
-
             cAgent.Far = DrawDistance;
 
             // Throttles 
             float multiplier = 1;
             int innacurateNeighbors = m_scene.RequestModuleInterface<IGridRegisterModule>().GetNeighbors(m_scene).Count;
+
             if (innacurateNeighbors != 0)
             {
                 multiplier = 1f / innacurateNeighbors;
             }
+
             if (multiplier <= 0.25f)
             {
                 multiplier = 0.25f;
             }
-            //MainConsole.Instance.Info("[Neighbor Throttle]: " + m_scene.GetInaccurateNeighborCount().ToString() + " - m: " + multiplier.ToString());
-            cAgent.Throttles = ControllingClient.GetThrottlesPacked(multiplier);
 
+            //MainConsole.Instance.Info("[NeighborThrottle]: " + m_scene.GetInaccurateNeighborCount().ToString() + " - m: " + multiplier.ToString());
+            cAgent.Throttles = ControllingClient.GetThrottlesPacked(multiplier);
             cAgent.HeadRotation = m_headrotation;
             cAgent.BodyRotation = m_bodyRot;
             cAgent.ControlFlags = (uint)m_AgentControlFlags;
 
             //This is checked by the other sim, so we don't have to validate it at all
-            //if (m_scene.Permissions.IsGod(new UUID(cAgent.AgentID)))
             cAgent.GodLevel = (byte)m_godLevel;
-            //else 
-            //    cAgent.GodLevel = (byte) 0;
-
             cAgent.Speed = SpeedModifier;
             cAgent.DrawDistance = DrawDistance;
             cAgent.AlwaysRun = m_setAlwaysRun;
             IAvatarAppearanceModule appearance = RequestModuleInterface<IAvatarAppearanceModule>();
+
             if (appearance != null)
             {
                 cAgent.SentInitialWearables = appearance.InitialHasWearablesBeenSent;
@@ -2541,13 +2590,16 @@ namespace Universe.Region
             }
 
             IScriptControllerModule m = RequestModuleInterface<IScriptControllerModule>();
+
             if (m != null)
                 cAgent.Controllers = m.Serialize();
 
             cAgent.SittingObjects = new SittingObjectData();
+
             if (Sitting)
             {
                 ISceneChildEntity child = Scene.GetSceneObjectPart(SittingOnUUID);
+
                 if (child != null && child.ParentEntity != null)
                 {
                     cAgent.SittingObjects.m_sittingObjectXML = child.ParentEntity.ToXml2();
@@ -2567,11 +2619,13 @@ namespace Universe.Region
             try
             {
                 m_pos = cAgent.Position;
+
                 if (PhysicsActor != null)
                 {
                     AbsolutePosition = cAgent.Position;
                     PhysicsActor.ForceSetPosition(cAgent.Position);
                 }
+
                 Velocity = cAgent.Velocity;
                 m_CameraCenter = cAgent.Center;
                 SetHeight(cAgent.Size.Z);
@@ -2592,14 +2646,16 @@ namespace Universe.Region
                 SpeedModifier = cAgent.Speed;
                 DrawDistance = cAgent.DrawDistance;
                 m_setAlwaysRun = cAgent.AlwaysRun;
+
                 if (cAgent.IsCrossing)
                 {
-                    m_scene.AuthenticateHandler.GetAgentCircuitData(UUID).TeleportFlags |=
-                        (uint)TeleportFlags.ViaRegionID;
+                    // We are going to be a root
+                    m_scene.AuthenticateHandler.GetAgentCircuitData(UUID).TeleportFlags |= (uint)TeleportFlags.ViaRegionID;
                     m_scene.AuthenticateHandler.GetAgentCircuitData(UUID).IsChildAgent = false;
-                    //We're going to be a root
                 }
+
                 IAvatarAppearanceModule appearance = RequestModuleInterface<IAvatarAppearanceModule>();
+
                 if (appearance != null)
                 {
                     appearance.InitialHasWearablesBeenSent = cAgent.SentInitialWearables;
@@ -2621,6 +2677,7 @@ namespace Universe.Region
                     {
                         ISceneEntity sceneObject = null;
                         IRegionSerializerModule mod = Scene.RequestModuleInterface<IRegionSerializerModule>();
+
                         if (mod != null)
                             sceneObject = mod.DeserializeGroupFromXml2(cAgent.SittingObjects.m_sittingObjectXML, Scene);
 
@@ -2631,6 +2688,7 @@ namespace Universe.Region
                             {
                                 if (sceneObject.IsSelected)
                                     sceneObject.RootChild.CreateSelected = true;
+
                                 sceneObject.ScheduleGroupUpdate(PrimUpdateFlags.ForcedFullUpdate);
                                 sceneObject.CreateScriptInstances(0, false, StateSource.PrimCrossing, UUID.Zero, false);
 
@@ -2696,8 +2754,9 @@ namespace Universe.Region
             //Set this so we don't do it multiple times
             m_creatingPhysicalRepresentation = true;
 
-            Vector3 size = new Vector3(0, 0, m_defaultAvHeight);
+            Vector3 size = new Vector3(0.45f, 0.6f, m_defaultAvHeight);
             IAvatarAppearanceModule appearance = RequestModuleInterface<IAvatarAppearanceModule>();
+
             if (appearance != null)
                 size.Z = appearance.Appearance.AvatarHeight;
 
@@ -2711,20 +2770,29 @@ namespace Universe.Region
 
             m_physicsActor = scene.AddAvatar(Name, pVec, Rotation, size, isFlying, LocalId, UUID);
 
-            m_physicsActor.OnRequestTerseUpdate += SendPhysicsTerseUpdateToAllClients;
-            m_physicsActor.OnSignificantMovement += CheckForSignificantMovement;
-            m_physicsActor.OnCollisionUpdate += PhysicsCollisionUpdate;
-            m_physicsActor.OnPositionAndVelocityUpdate += PhysicsUpdatePosAndVelocity;
-            m_physicsActor.OnCheckForRegionCrossing += CheckForBorderCrossing;
+            if (m_physicsActor != null)
+            {
+                m_physicsActor.OnRequestTerseUpdate += SendPhysicsTerseUpdateToAllClients;
+                m_physicsActor.OnSignificantMovement += CheckForSignificantMovement;
+                m_physicsActor.OnCollisionUpdate += PhysicsCollisionUpdate;
+                m_physicsActor.OnPositionAndVelocityUpdate += PhysicsUpdatePosAndVelocity;
+                m_physicsActor.OnCheckForRegionCrossing += CheckForBorderCrossing;
+                m_physicsActor.OnOutOfBounds += OutOfBoundsCall; // Called for PhysicsActors when there's something wrong
+                m_physicsActor.Orientation = Rotation;
+                m_physicsActor.SetAlwaysRun = m_setAlwaysRun;
+                m_physicsActor.Flying = isFlying;
 
-            m_physicsActor.OnOutOfBounds += OutOfBoundsCall; // Called for PhysicsActors when there's something wrong
-            m_physicsActor.Orientation = Rotation;
-
-            m_physicsActor.Flying = isFlying;
-
-            //Tell any events about it
-            if (OnAddPhysics != null)
-                OnAddPhysics();
+                //Tell any events about it
+                if (OnAddPhysics != null)
+                    try
+                    {
+                        OnAddPhysics();
+                    }
+                    catch
+                    {
+                        // Windows can generte an IdentityNotMapped exception here
+                    }
+            }
 
             //All done, reset this
             m_creatingPhysicalRepresentation = false;
@@ -2736,7 +2804,7 @@ namespace Universe.Region
         public virtual void SetHeight(float height)
         {
             //If the av exists, set their new size, if not, add them to the region
-            if (height != 0 && PhysicsActor != null && !IsChildAgent)
+            if (Math.Abs(height) > 0 && PhysicsActor != null && !IsChildAgent)
             {
                 if (Math.Abs(height - PhysicsActor.Size.Z) > 0.1)
                 {
@@ -2748,16 +2816,16 @@ namespace Universe.Region
 
         protected void OutOfBoundsCall(Vector3 pos)
         {
-            m_pos = new Vector3(m_scene.RegionInfo.RegionSizeX / 2, m_scene.RegionInfo.RegionSizeY / 2,
-                                128);
+            m_pos = new Vector3(m_scene.RegionInfo.RegionSizeX / 2, m_scene.RegionInfo.RegionSizeY / 2, 128);
+
             if (PhysicsActor != null)
             {
                 PhysicsActor.ForceSetPosition(m_pos);
                 PhysicsActor.ForceSetVelocity(Vector3.Zero);
                 RemoveFromPhysicalScene();
             }
-            MainConsole.Instance.Error(
-                "[Avatar]: NonFinite Avatar position detected... Reset Position, the client may be messed up now.");
+
+            MainConsole.Instance.Error("[Scene presence]: NonFinite Avatar position detected... Reset Position, the client may be messed up now.");
 
             //Make them fly so that they don't just fall
             AddToPhysicalScene(true, false);
@@ -2767,8 +2835,7 @@ namespace Universe.Region
             SceneViewer.SendPresenceFullUpdate(this);
 
             if (ControllingClient != null)
-                ControllingClient.SendAgentAlertMessage(
-                    "Physics is having a problem with your avatar.  You may not be able to move until you restart.", true);
+                ControllingClient.SendAgentAlertMessage("Physics is having a problem with your avatar.  You may not be able to move until you restart.", true);
         }
 
         protected void PhysicsUpdatePosAndVelocity()
@@ -2786,7 +2853,7 @@ namespace Universe.Region
 
         #region Cached Attachments (Internal Use Only!)
 
-        private ISceneEntity[] m_cachedAttachments = new ISceneEntity[0];
+        ISceneEntity[] m_cachedAttachments = new ISceneEntity[0];
 
         public void SetAttachments(ISceneEntity[] groups)
         {
@@ -2795,7 +2862,8 @@ namespace Universe.Region
 
         #endregion
 
-        private static readonly UUID SoundWoodCollision = new UUID("063c97d3-033a-4e9b-98d8-05c8074922cb");
+        static readonly UUID SoundWoodCollision = new UUID("063c97d3-033a-4e9b-98d8-05c8074922cb");
+
         // Event called by the physics plugin to tell the avatar about a collision.
         protected virtual void PhysicsCollisionUpdate(EventArgs e)
         {
@@ -2820,6 +2888,7 @@ namespace Universe.Region
             {
                 //Play collision sounds
                 ISceneChildEntity child;
+
                 if (localID != 0 && CollisionSoundID == UUID.Zero && !IsChildAgent &&
                     (child = Scene.GetSceneObjectPart(localID)) != null &&
                     child.ParentEntity.RootChild.PhysActor != null && child.ParentEntity.RootChild.PhysActor.IsPhysical)
@@ -2842,14 +2911,13 @@ namespace Universe.Region
                         {
                             ContactPoint lowest;
                             lowest.SurfaceNormal = Vector3.Zero;
-                            lowest.Position = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue)
-                            { Z = Single.NaN };
+                            lowest.Position = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) { Z = float.NaN };
 
                             //Find the lowest contact to use first
                             foreach (ContactPoint contact in coldata.Values)
                             {
-                                if (Single.IsNaN(lowest.Position.Z) ||
-                                    contact.Position.Z != 0 && contact.Position.Z < lowest.Position.Z)
+                                if (float.IsNaN(lowest.Position.Z) ||
+                                    Math.Abs(contact.Position.Z) > 0f && contact.Position.Z < lowest.Position.Z)
                                 {
                                     if (contact.Type != ActorTypes.Agent)
                                         lowest = contact;
@@ -2859,8 +2927,7 @@ namespace Universe.Region
                             //Then if the normal isn't zero, set it (if its zero, it tends to do odd things in the client)
                             if (lowest.Position != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue))
                             {
-                                Vector4 newPlane = new Vector4(-lowest.SurfaceNormal,
-                                                               -Vector3.Dot(lowest.Position, lowest.SurfaceNormal));
+                                Vector4 newPlane = new Vector4(-lowest.SurfaceNormal, -Vector3.Dot(lowest.Position, lowest.SurfaceNormal));
 
                                 if (!CollisionPlane.ApproxEquals(newPlane, 0.5f))
                                 {
@@ -2871,6 +2938,7 @@ namespace Universe.Region
                                 }
                             }
                         }
+
                         break;
                 }
             }

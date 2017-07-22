@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,7 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
@@ -33,32 +34,32 @@ namespace Universe.Modules.Monitoring.Monitors
 {
     public class PhysicsFrameMonitor : IPhysicsFrameMonitor
     {
-        private float physicsFPS;
+        float physicsFPS;
 
-        public PhysicsFrameMonitor(IScene scene)
+        public PhysicsFrameMonitor (IScene scene)
         {
         }
 
         #region Implementation of IMonitor
 
-        public double GetValue()
+        public double GetValue ()
         {
             return LastReportedPhysicsFPS;
         }
 
-        public string GetName()
+        public string GetName ()
         {
             return "Total Physics Frame Time";
         }
 
-        public string GetInterfaceName()
+        public string GetInterfaceName ()
         {
             return "IPhysicsFrameMonitor";
         }
 
-        public string GetFriendlyValue()
+        public string GetFriendlyValue ()
         {
-            return (int) GetValue() + "ms";
+            return (int)GetValue () + "ms";
         }
 
         #endregion
@@ -67,7 +68,7 @@ namespace Universe.Modules.Monitoring.Monitors
 
         #region IMonitor Members
 
-        public void ResetStats()
+        public void ResetStats ()
         {
             physicsFPS = 0;
         }
@@ -76,7 +77,7 @@ namespace Universe.Modules.Monitoring.Monitors
 
         #region IPhysicsFrameMonitor Members
 
-        public void AddFPS(int value)
+        public void AddFPS (int value)
         {
             physicsFPS += value;
         }
@@ -89,8 +90,7 @@ namespace Universe.Modules.Monitoring.Monitors
 
         public float LastReportedPhysicsFPS { get; set; }
 
-        public float PhysicsFPS
-        {
+        public float PhysicsFPS {
             get { return physicsFPS; }
         }
 

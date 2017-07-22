@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -35,29 +37,23 @@ namespace Universe.Services
 {
     public class SyncMessageRecievedService : IService, ISyncMessageRecievedService
     {
-        public string Name
-        {
-            get { return GetType().Name; }
+        public string Name {
+            get { return GetType ().Name; }
         }
 
         #region ISyncMessageRecievedService Members
 
         public event MessageReceived OnMessageReceived;
 
-        public OSDMap FireMessageReceived(OSDMap message)
+        public OSDMap FireMessageReceived (OSDMap message)
         {
             OSDMap result = null;
-
-            if (OnMessageReceived != null)
-            {
+            if (OnMessageReceived != null) {
                 MessageReceived eventCopy = OnMessageReceived;
-                foreach (OSDMap r in from MessageReceived messagedelegate in eventCopy.GetInvocationList()
-                                     select messagedelegate(message)
-                                     into r
-                                     where r != null
-                                     select r) { result = r; }
+                foreach (OSDMap r in from MessageReceived messagedelegate in eventCopy.GetInvocationList ()
+                                     select messagedelegate (message)
+                                     into r where r != null select r) {result = r;}
             }
-
             return result;
         }
 
@@ -65,16 +61,16 @@ namespace Universe.Services
 
         #region IService Members
 
-        public void Initialize(IConfigSource config, IRegistryCore registry)
+        public void Initialize (IConfigSource config, IRegistryCore registry)
         {
-            registry.RegisterModuleInterface<ISyncMessageRecievedService>(this);
+            registry.RegisterModuleInterface<ISyncMessageRecievedService> (this);
         }
 
-        public void Start(IConfigSource config, IRegistryCore registry)
+        public void Start (IConfigSource config, IRegistryCore registry)
         {
         }
 
-        public void FinishedStartup()
+        public void FinishedStartup ()
         {
         }
 

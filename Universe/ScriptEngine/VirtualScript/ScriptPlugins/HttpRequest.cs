@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,18 +27,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Collections.Generic;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System.Collections.Generic;
 
 namespace Universe.ScriptEngine.VirtualScript.Plugins
 {
     public class HttpRequestPlugin : IScriptPlugin
     {
-        private readonly List<IHttpRequestModule> m_modules = new List<IHttpRequestModule>();
+        readonly List<IHttpRequestModule> m_modules = new List<IHttpRequestModule>();
         public ScriptEngine m_ScriptEngine;
 
         #region IScriptPlugin Members
@@ -82,16 +84,15 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
 
                     iHttpReq.RemoveCompletedRequest(info);
 
-                    object[] resobj = new object[]
-                                          {
-                                              new LSL_Types.LSLString(info.ReqID.ToString()),
-                                              new LSL_Types.LSLInteger(info.Status),
-                                              new LSL_Types.list(info.Metadata),
-                                              new LSL_Types.LSLString(info.ResponseBody)
-                                          };
+                    object[] resobj = {
+                        new LSL_Types.LSLString(info.ReqID.ToString()),
+                        new LSL_Types.LSLInteger(info.Status),
+                        new LSL_Types.list(info.Metadata),
+                        new LSL_Types.LSLString(info.ResponseBody)
+                    };
 
                     m_ScriptEngine.AddToObjectQueue(info.PrimID, "http_response", new DetectParams[0], resobj);
-                    if (info.Status == (int)499 && //Too many for this prim
+                    if (info.Status == 499 && //Too many for this prim
                         info.VerbroseThrottle)
                     {
                         ISceneChildEntity part = m_ScriptEngine.Scene.GetSceneObjectPart(info.PrimID);

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -55,6 +57,12 @@ namespace Universe.Framework.Modules
         /// </summary>
         /// <returns>The avatar archive filenames.</returns>
         List<string> GetAvatarArchiveFilenames (bool fullName);
+
+        /// <summary>
+        /// Gets a list of available avatar archive images.
+        /// </summary>
+        /// <returns>The avatar archive images.</returns>
+        List<string> GetAvatarArchiveImages ();
 
     }
 }

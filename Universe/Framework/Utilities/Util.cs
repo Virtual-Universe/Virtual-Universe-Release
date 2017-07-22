@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -81,7 +83,9 @@ namespace Universe.Framework.Utilities
     ///     Miscellaneous utility functions
     /// </summary>
     public static class Util
-    {
+    {    	
+    	public static double TimeStampClockPeriodMS;
+    	
         static uint nextXferID = 5000;
         static readonly Random randomClass = new ThreadSafeRandom ();
 
@@ -130,6 +134,9 @@ namespace Universe.Framework.Utilities
                             .SetSurrogate (typeof (MediaEntrySurrogate));
             RuntimeTypeModel.Default.Add (typeof (System.Drawing.Color), false)
                             .SetSurrogate (typeof (ColorSurrogate));
+            
+            // Time related changes
+            TimeStampClockPeriodMS = 1000.0D / (double)Stopwatch.Frequency;
         }
 
         #region Protobuf helpers
@@ -517,6 +524,63 @@ namespace Universe.Framework.Utilities
         /// </value>
         public static UUID BLANK_TEXTURE_UUID = new UUID ("5748decc-f629-461c-9a36-a35a221fe21f");
 
+        #region General maths helpers
+        /// <summary>
+        /// Values are equal within float variation.
+        /// </summary>
+        /// <returns>The equals.</returns>
+        /// <param name="valA">Value a.</param>
+        /// <param name="valB">Value b.</param>
+        public static bool ApproxEqual (float valA, float valB)
+        {
+            return Math.Abs (valA - valB) <= Constants.FloatDifference;
+        }
+
+        /// <summary>
+        /// Value is approximately zero (within float difference).
+        /// </summary>
+        /// <returns>The zero.</returns>
+        /// <param name="valA">Value a.</param>
+        public static bool ApproxZero (float valA)
+        {
+            return Math.Abs (valA) <= Constants.FloatDifference;
+        }
+
+        // double variations
+
+        /// <summary>
+        /// Values are equal within float variation.
+        /// </summary>
+        /// <returns>The equals.</returns>
+        /// <param name="valA">Value a.</param>
+        /// <param name="valB">Value b.</param>
+        public static bool ApproxEqual (double valA, double valB)
+        {
+            return Math.Abs (valA - valB) <= Constants.FloatDifference;
+        }
+
+        /// <summary>
+        /// Value is approximately zero (within float difference).
+        /// </summary>
+        /// <returns>The zero.</returns>
+        /// <param name="valA">Value a.</param>
+        public static bool ApproxZero (double valA)
+        {
+            return Math.Abs (valA) <= Constants.FloatDifference;
+        }
+
+        /// <summary>
+        /// VAlue is > then the float difference. ( not == 0f)
+        /// </summary>
+        /// <returns><c>true</c>, if greater than float difference, <c>false</c> otherwise.</returns>
+        /// <param name="valA">Value a.</param>
+        public static bool NotZero (double valA)
+        {
+            return Math.Abs (valA) >= Constants.FloatDifference;
+        }
+
+        #endregion
+
         #region Vector Equations
 
         /// <summary>
@@ -602,8 +666,9 @@ namespace Universe.Framework.Utilities
             return false;
         }
 
-        # endregion
-
+        #endregion
+       
+        #region Quaternion Equations
         public static Quaternion Axes2Rot (Vector3 fwd, Vector3 left, Vector3 up)
         {
             float s;
@@ -651,6 +716,8 @@ namespace Universe.Framework.Utilities
                 
             }
         }
+
+        #endregion
 
         public static Random RandomClass {
             get { return randomClass; }
@@ -1504,6 +1571,26 @@ namespace Universe.Framework.Utilities
             return retVal;
         }
 
+        public static int ConvertEventMaturityToDBMaturity (DirectoryManager.EventFlags maturity)
+        {
+            // filtering on pg == 0 is problematic
+            // convert to a bit checkable format
+            int retVal = 0;
+            switch ((int) maturity) {
+            case 0: //PG
+                retVal = 1;
+                break;
+            case 1: //Mature
+                retVal = 2;
+                break;
+            case 2: // Adult
+                retVal = 4;
+                break;
+            }
+
+            return retVal;
+        }
+
         /// <summary>
         ///     Produces an OSDMap from its string representation on a stream
         /// </summary>
@@ -1614,6 +1701,13 @@ namespace Universe.Framework.Utilities
             paths.Add (baseDir);
 
             return paths.SelectMany (p => Directory.GetFiles (p, endFind)).ToArray ();
+        }
+        
+        // Returns a timestamp using the time resolution 
+        // available to StopWatch in ms as double
+        public static double GetTimeStampMS()
+        {
+            return (double)Stopwatch.GetTimestamp() * TimeStampClockPeriodMS;
         }
 
         public static byte [] StringToBytes256 (string str, params object [] args)
@@ -2784,6 +2878,7 @@ namespace Universe.Framework.Utilities
             else
                 EmitBoxIfNeeded (il, method.ReturnType);
             il.Emit (OpCodes.Ret);
+
             return dynamicMethod.Invoke (null, new object [] { invokeClass, invokeParameters });
             /*FastInvokeHandler invoder =
               (FastInvokeHandler)dynamicMethod.CreateDelegate(

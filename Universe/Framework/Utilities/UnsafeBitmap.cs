@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -28,7 +30,6 @@
 //Downloaded from
 //Visual C# Kicks - http://www.vcskicks.com/
 
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -39,7 +40,7 @@ namespace Universe.Framework.Utilities
     {
         readonly Bitmap workingBitmap;
         BitmapData bitmapData;
-        Byte* pBase = null;
+        byte* pBase = null;
         PixelData* pixelData = null;
         int width;
 
@@ -58,7 +59,7 @@ namespace Universe.Framework.Utilities
 
             //Lock Image
             bitmapData = workingBitmap.LockBits(bounds, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-            pBase = (Byte*) bitmapData.Scan0.ToPointer();
+            pBase = (byte*) bitmapData.Scan0.ToPointer();
         }
 
         public Color GetPixel(int x, int y)
@@ -76,10 +77,13 @@ namespace Universe.Framework.Utilities
         public void SetPixel(int x, int y, Color color)
         {
             PixelData* data = (PixelData*)(pBase + y * width + x * sizeof(PixelData));
-            data->alpha = color.A;
-            data->red = color.R;
-            data->green = color.G;
-            data->blue = color.B;
+            try {
+                data->alpha = color.A;
+                data->red = color.R;
+                data->green = color.G;
+                data->blue = color.B;
+            } catch {
+            }
         }
 
         public void UnlockBitmap()
@@ -105,7 +109,7 @@ namespace Universe.Framework.Utilities
 
             public override string ToString()
             {
-                return "(" + alpha.ToString() + ", " + red.ToString() + ", " + green.ToString() + ", " + blue.ToString() +
+                return "(" + alpha + ", " + red + ", " + green + ", " + blue +
                        ")";
             }
         }

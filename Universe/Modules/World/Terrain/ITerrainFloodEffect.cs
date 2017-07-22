@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,15 +27,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Modules;
 using OpenMetaverse;
-
+using Universe.Framework.Modules;
 
 namespace Universe.Modules.Terrain
 {
     public interface ITerrainFloodEffect
     {
-        void FloodEffect(ITerrainChannel map, UUID userID, float north,
-                         float west, float south, float east, float strength);
+        void FloodEffect(ITerrainChannel map, UUID userID, float north, float west, float south, float east, float strength);
     }
 }

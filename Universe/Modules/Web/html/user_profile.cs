@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -67,53 +69,47 @@ namespace Universe.Modules.Web
             response = null;
             var vars = new Dictionary<string, object>();
 
-            IWebHttpTextureService webhttpService =
-                webInterface.Registry.RequestModuleInterface<IWebHttpTextureService> ();
+            IWebHttpTextureService webhttpService = webInterface.Registry.RequestModuleInterface<IWebHttpTextureService>();
 
-            //string username = filename.Split('/').LastOrDefault();
             UserAccount account = Authenticator.GetAuthentication(httpRequest);
+
             if (account == null)
                 return vars;
 
-            /* Allow access to the syatem user info - needed for Estate owner Profiles of regions
-
-            if ( Utilities.IsSystemUser(account.PrincipalID))
-                return vars;
-            */
-
             vars.Add("UserName", account.Name);
             //  TODO: User Profile inworld shows this as the standard mm/dd/yyyy
-            //  Do we want this to be localised into the users Localisation or keep it as standard ?
-            //
-            //  vars.Add("UserBorn", Culture.LocaleDate(Util.ToDateTime(account.Created)));
+            //  Do we want this to be localised into the users Localisation or keep it as standard 
             vars.Add("UserBorn", Util.ToDateTime(account.Created).ToShortDateString());
 
-            IUserProfileInfo profile = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>().
-                GetUserProfile(account.PrincipalID);
+            IUserProfileInfo profile = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>().GetUserProfile(account.PrincipalID);
             string picUrl = "../images/icons/no_avatar.jpg";
+
             if (profile != null)
             {
-                vars.Add ("UserType", profile.MembershipGroup == "" ? "Resident" : profile.MembershipGroup);
+                vars.Add("UserType", profile.MembershipGroup == "" ? "Citizen" : profile.MembershipGroup);
 
                 if (profile.Partner != UUID.Zero)
                 {
-                    account = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().
-                        GetUserAccount (null, profile.Partner);
-                    vars.Add ("UserPartner", account.Name);
-                } else
-                    vars.Add ("UserPartner", "No partner");
-                vars.Add ("UserAboutMe", profile.AboutText == "" ? "Nothing here" : profile.AboutText);
+                    account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().GetUserAccount(null, profile.Partner);
+                    vars.Add("UserPartner", account.Name);
+                }
+                else
+                    vars.Add("UserPartner", "No partner");
+
+                vars.Add("UserAboutMe", profile.AboutText == "" ? "Nothing here" : profile.AboutText);
+
                 if (webhttpService != null && profile.Image != UUID.Zero)
-                    picUrl = webhttpService.GetTextureURL (profile.Image);
-            } else
+                    picUrl = webhttpService.GetTextureURL(profile.Image);
+            }
+            else
             {
                 // no profile yet
-                vars.Add ("UserType", "Guest");
-                vars.Add ("UserPartner", "Not specified yet");
-                vars.Add ("UserAboutMe", "Nothing here yet");
-
+                vars.Add("UserType", "Citizen");
+                vars.Add("UserPartner", "Not specified yet");
+                vars.Add("UserAboutMe", "Nothing here yet");
             }
-            vars.Add ("UserPictureURL", picUrl);
+
+            vars.Add("UserPictureURL", picUrl);
 
             // TODO:  This is only showing online status if you are logged in ??
             UserAccount ourAccount = Authenticator.GetAuthentication(httpRequest);
@@ -122,14 +118,16 @@ namespace Universe.Modules.Web
                 IFriendsService friendsService = webInterface.Registry.RequestModuleInterface<IFriendsService>();
                 var friends = friendsService.GetFriends(account.PrincipalID);
                 UUID friendID = UUID.Zero;
+
                 if (friends.Any(f => UUID.TryParse(f.Friend, out friendID) && friendID == ourAccount.PrincipalID))
                 {
-                    IAgentInfoService agentInfoService =
-                        webInterface.Registry.RequestModuleInterface<IAgentInfoService>();
+                    IAgentInfoService agentInfoService = webInterface.Registry.RequestModuleInterface<IAgentInfoService>();
                     IGridService gridService = webInterface.Registry.RequestModuleInterface<IGridService>();
                     UserInfo ourInfo = agentInfoService.GetUserInfo(account.PrincipalID.ToString());
+
                     if (ourInfo != null && ourInfo.IsOnline)
                         vars.Add("OnlineLocation", gridService.GetRegionByUUID(null, ourInfo.CurrentRegionID).RegionName);
+
                     vars.Add("UserIsOnline", ourInfo != null && ourInfo.IsOnline);
                     vars.Add("IsOnline",
                         ourInfo != null && ourInfo.IsOnline
@@ -152,43 +150,45 @@ namespace Universe.Modules.Web
 
             vars.Add("UsersGroupsText", translator.GetTranslatedString("UsersGroupsText"));
 
-            IGroupsServiceConnector groupsConnector =
-                Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector>();
-            List<Dictionary<string, object>> groups = new List<Dictionary<string, object>> ();
+            IGroupsServiceConnector groupsConnector = Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector>();
+            List<Dictionary<string, object>> groups = new List<Dictionary<string, object>>();
 
             if (groupsConnector != null)
             {
                 var groupsIn = groupsConnector.GetAgentGroupMemberships(account.PrincipalID, account.PrincipalID);
+
                 if (groupsIn != null)
                 {
                     foreach (var grp in groupsIn)
                     {
-                        var grpData = groupsConnector.GetGroupProfile (account.PrincipalID, grp.GroupID);
+                        var grpData = groupsConnector.GetGroupProfile(account.PrincipalID, grp.GroupID);
                         string url = "../images/icons/no_groups.jpg";
-                        if (webhttpService != null && grpData.InsigniaID != UUID.Zero)
-                            url = webhttpService.GetTextureURL (grpData.InsigniaID);
-                        groups.Add (new Dictionary<string, object> {
+
+                        if (grpData != null)
+                        {
+                            if (webhttpService != null && grpData.InsigniaID != UUID.Zero)
+                                url = webhttpService.GetTextureURL(grpData.InsigniaID);
+
+                            groups.Add(new Dictionary<string, object> {
                             { "GroupPictureURL", url },
                             { "GroupName", grp.GroupName }
                         });
+                        }
                     }
                 }
-            
 
                 if (groups.Count == 0)
                 {
-                    groups.Add (new Dictionary<string, object> {
+                    groups.Add(new Dictionary<string, object> {
                         { "GroupPictureURL", "../images/icons/no_groups.jpg" },
                         { "GroupName", "None yet" }
                     });
-
                 }
-
             }
 
             vars.Add("GroupNameText", translator.GetTranslatedString("GroupNameText"));
-            vars.Add ("Groups", groups);
-            vars.Add ("GroupsJoined", groups.Count);
+            vars.Add("Groups", groups);
+            vars.Add("GroupsJoined", groups.Count);
 
             // Menus
             vars.Add("MenuProfileTitle", translator.GetTranslatedString("MenuProfileTitle"));
@@ -224,11 +224,14 @@ namespace Universe.Modules.Web
             vars.Add("en", translator.GetTranslatedString("en"));
             vars.Add("fr", translator.GetTranslatedString("fr"));
             vars.Add("de", translator.GetTranslatedString("de"));
+            vars.Add("ga", translator.GetTranslatedString("ga"));
             vars.Add("it", translator.GetTranslatedString("it"));
             vars.Add("es", translator.GetTranslatedString("es"));
             vars.Add("nl", translator.GetTranslatedString("nl"));
+            vars.Add("ru", translator.GetTranslatedString("ru"));
+            vars.Add("zh_CN", translator.GetTranslatedString("zh_CN"));
 
-            var settings = webInterface.GetWebUISettings ();
+            var settings = webInterface.GetWebUISettings();
             vars.Add("ShowLanguageTranslatorBar", !settings.HideLanguageTranslatorBar);
             vars.Add("ShowStyleBar", !settings.HideStyleBar);
 

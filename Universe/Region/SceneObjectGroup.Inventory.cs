@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
@@ -150,7 +151,7 @@ namespace Universe.Region
                 return true;
             }
             MainConsole.Instance.ErrorFormat(
-                "[Prim inventory]: Couldn't find prim local ID {0} in group {1}, {2} to add inventory item ID {3}",
+                "[Prim Inventory]: Couldn't find prim local ID {0} in group {1}, {2} to add inventory item ID {3}",
                 localID, Name, UUID, newItemId);
 
             return false;
@@ -170,7 +171,7 @@ namespace Universe.Region
                 return part.Inventory.GetInventoryItem(itemID);
             }
             MainConsole.Instance.ErrorFormat(
-                "[Prim inventory]: Couldn't find prim local ID {0} in prim {1}, {2} to get inventory item ID {3}",
+                "[Prim Inventory]: Couldn't find prim local ID {0} in prim {1}, {2} to get inventory item ID {3}",
                 primID, "unknown", "unknown", itemID);
 
             return null;
@@ -194,7 +195,7 @@ namespace Universe.Region
                 return true;
             }
             MainConsole.Instance.ErrorFormat(
-                "[Prim inventory]: Couldn't find prim ID {0} to update item {1}, {2}",
+                "[Prim Inventory]: Couldn't find prim ID {0} to update item {1}, {2}",
                 item.ParentPartID, item.Name, item.ItemID);
 
             return false;

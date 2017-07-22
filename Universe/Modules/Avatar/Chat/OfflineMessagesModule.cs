@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -188,7 +189,7 @@ namespace Universe.Modules.Chat
 
             if (!OfflineMessagesConnector.AddOfflineMessage (im)) {
                 if ((!im.FromGroup) && (reason != "User does not exist.") && (client != null))
-                    client.SendInstantMessage (new GridInstantMessage () {
+                    client.SendInstantMessage (new GridInstantMessage {
                         FromAgentID = im.ToAgentID,
                         FromAgentName = "System",
                         ToAgentID = im.FromAgentID,
@@ -230,7 +231,7 @@ namespace Universe.Modules.Chat
                 }
 
                 if (im.Dialog == (byte)InstantMessageDialog.MessageFromAgent && !im.FromGroup) {
-                    client.SendInstantMessage (new GridInstantMessage () {
+                    client.SendInstantMessage (new GridInstantMessage {
                         FromAgentID = im.ToAgentID,
                         FromAgentName = "System",
                         ToAgentID = im.FromAgentID,
@@ -242,11 +243,11 @@ namespace Universe.Modules.Chat
                 }
 
                 if (im.Dialog == (byte)InstantMessageDialog.InventoryOffered)
-                    client.SendAlertMessage ("User is not online. Inventory has been saved");
+                    client.SendAlertMessage ("User is not currently online. (Inventory has been saved)");
             } else if (im.Offline == 0) {
                 if (client == null) return;
                 if (im.Dialog == (byte)InstantMessageDialog.MessageFromAgent && !im.FromGroup) {
-                    client.SendInstantMessage (new GridInstantMessage () {
+                    client.SendInstantMessage (new GridInstantMessage {
                         FromAgentID = im.ToAgentID,
                         FromAgentName = "System",
                         ToAgentID = im.FromAgentID,
@@ -258,7 +259,7 @@ namespace Universe.Modules.Chat
                 }
 
                 if (im.Dialog == (byte)InstantMessageDialog.InventoryOffered)
-                    client.SendAlertMessage ("User not able to be found. Inventory has been saved");
+                    client.SendAlertMessage ("User is not currently online. (Inventory has been saved)");
             }
         }
     }

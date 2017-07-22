@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,7 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
@@ -34,9 +35,9 @@ namespace Universe.Modules.Monitoring.Monitors
 {
     public class LastFrameTimeMonitor : IMonitor, ILastFrameTimeMonitor
     {
-        private int MonitorLastFrameTick;
+        int MonitorLastFrameTick;
 
-        public LastFrameTimeMonitor(IScene scene)
+        public LastFrameTimeMonitor (IScene scene)
         {
         }
 
@@ -44,27 +45,27 @@ namespace Universe.Modules.Monitoring.Monitors
 
         #region IMonitor Members
 
-        public double GetValue()
+        public double GetValue ()
         {
-            return Util.EnvironmentTickCountSubtract(MonitorLastFrameTick);
+            return Util.EnvironmentTickCountSubtract (MonitorLastFrameTick);
         }
 
-        public string GetName()
+        public string GetName ()
         {
             return "Last Completed Frame At";
         }
 
-        public string GetInterfaceName()
+        public string GetInterfaceName ()
         {
             return "ILastFrameTimeMonitor";
         }
 
-        public string GetFriendlyValue()
+        public string GetFriendlyValue ()
         {
-            return (int) GetValue() + "ms ago";
+            return (int)GetValue () + "ms ago";
         }
 
-        public void ResetStats()
+        public void ResetStats ()
         {
         }
 
@@ -72,7 +73,7 @@ namespace Universe.Modules.Monitoring.Monitors
 
         #region ISetMonitor Members
 
-        public void SetValue(int value)
+        public void SetValue (int value)
         {
             MonitorLastFrameTick = value;
         }

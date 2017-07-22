@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -68,12 +70,12 @@ namespace Universe.Modules.Web
 
             if (requestParameters.ContainsKey("Submit"))
             {
-
                 IGridService gridService = webInterface.Registry.RequestModuleInterface<IGridService>();
                 string regionname = requestParameters["regionname"].ToString();
                 int start = httpRequest.Query.ContainsKey("Start")
                                 ? int.Parse(httpRequest.Query["Start"].ToString())
                                 : 0;
+
                 uint count = gridService.GetRegionsByNameCount(null, regionname);
                 int maxPages = (int) (count/amountPerQuery) - 1;
 
@@ -85,6 +87,7 @@ namespace Universe.Modules.Web
                 vars.Add("BackOne", start - 1 < 0 ? 0 : start - 1);
 
                 var regions = gridService.GetRegionsByName(null, regionname, (uint) start, amountPerQuery);
+
                 if (regions != null)
                 {
                     noDetails = "";
@@ -105,7 +108,6 @@ namespace Universe.Modules.Web
                         });
                     }
                 }
-
             }
             else
             {

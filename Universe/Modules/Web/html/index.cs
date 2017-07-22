@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -39,7 +41,7 @@ namespace Universe.Modules.Web
                 return new[]
                            {
                                "html/index.html",
-                               "html/javascripts/menu.js"
+                               "html/js/menu.js"
                            };
             }
         }
@@ -74,8 +76,10 @@ namespace Universe.Modules.Web
             {
                 if (page.LoggedOutRequired && Authenticator.CheckAuthentication(httpRequest))
                     continue;
+
                 if (page.LoggedInRequired && !Authenticator.CheckAuthentication(httpRequest))
                     continue;
+
                 if (page.AdminRequired && !Authenticator.CheckAdminAuthentication(httpRequest, page.AdminLevelRequired))
                     continue;
 
@@ -85,8 +89,10 @@ namespace Universe.Modules.Web
                 {
                     if (childPage.LoggedOutRequired && Authenticator.CheckAuthentication(httpRequest))
                         continue;
+
                     if (childPage.LoggedInRequired && !Authenticator.CheckAuthentication(httpRequest))
                         continue;
+
                     if (childPage.AdminRequired &&
                         !Authenticator.CheckAdminAuthentication(httpRequest, childPage.AdminLevelRequired))
                         continue;
@@ -96,14 +102,8 @@ namespace Universe.Modules.Web
                                            {"ChildMenuItemID", childPage.MenuID},
                                            {"ChildShowInMenu", childPage.ShowInMenu},
                                            {"ChildMenuItemLocation", childPage.Location},
-                                           {
-                                               "ChildMenuItemTitleHelp",
-                                               GetTranslatedString(translator, childPage.MenuToolTip, childPage, true)
-                                           },
-                                           {
-                                               "ChildMenuItemTitle",
-                                               GetTranslatedString(translator, childPage.MenuTitle, childPage, false)
-                                           }
+                                           {"ChildMenuItemTitleHelp", GetTranslatedString(translator, childPage.MenuToolTip, childPage, true)},
+                                           {"ChildMenuItemTitle", GetTranslatedString(translator, childPage.MenuTitle, childPage, false)}
                                        });
 
                     //Add one for menu.js
@@ -123,10 +123,11 @@ namespace Universe.Modules.Web
                                   {"ChildrenMenuItems", childPages},
                                   {"MenuItemLocation", page.Location},
                                   {"MenuItemTitleHelp", GetTranslatedString(translator, page.MenuToolTip, page, true)},
-                        {"MenuItemTitle", GetTranslatedString(translator, page.MenuTitle, page, false)},
-                        {"MenuItemToolTip", GetTranslatedString(translator, page.MenuToolTip, page, true)}
+                                  {"MenuItemTitle", GetTranslatedString(translator, page.MenuTitle, page, false)},
+                                  {"MenuItemToolTip", GetTranslatedString(translator, page.MenuToolTip, page, true)}
                               });
             }
+
             vars.Add("MenuItems", pages);
 
             #endregion
@@ -147,12 +148,15 @@ namespace Universe.Modules.Web
             vars.Add("StyleSwitcherChoiceText", translator.GetTranslatedString("StyleSwitcherChoiceText"));
 
             // Language Switcher
-            vars.Add("en", translator.GetTranslatedString("en"));
-            vars.Add("fr", translator.GetTranslatedString("fr"));
-            vars.Add("de", translator.GetTranslatedString("de"));
-            vars.Add("it", translator.GetTranslatedString("it"));
-            vars.Add("es", translator.GetTranslatedString("es"));
-            vars.Add("nl", translator.GetTranslatedString("nl"));
+            vars.Add ("en", translator.GetTranslatedString ("en"));
+            vars.Add ("fr", translator.GetTranslatedString ("fr"));
+            vars.Add ("de", translator.GetTranslatedString ("de"));
+            vars.Add ("ga", translator.GetTranslatedString ("ga"));
+            vars.Add ("it", translator.GetTranslatedString ("it"));
+            vars.Add ("es", translator.GetTranslatedString ("es"));
+            vars.Add ("nl", translator.GetTranslatedString ("nl"));
+            vars.Add ("ru", translator.GetTranslatedString ("ru"));
+            vars.Add ("zh_CN", translator.GetTranslatedString ("zh_CN"));
 
             // Index Page
             vars.Add("HomeText", translator.GetTranslatedString("HomeText"));
@@ -184,11 +188,13 @@ namespace Universe.Modules.Web
             return vars;
         }
 
-        private string GetTranslatedString(ITranslator translator, string name, GridPage page, bool isTooltip)
+        string GetTranslatedString(ITranslator translator, string name, GridPage page, bool isTooltip)
         {
             string retVal = translator.GetTranslatedString(name);
+
             if (retVal == "UNKNOWN CHARACTER")
                 return isTooltip ? page.MenuToolTip : page.MenuTitle;
+
             return retVal;
         }
 

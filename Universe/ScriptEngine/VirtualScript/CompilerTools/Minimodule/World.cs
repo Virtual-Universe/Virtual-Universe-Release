@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -28,21 +30,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
-using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
     public class World : MarshalByRefObject, IWorld, IWorldAudio
     {
-        private readonly Heightmap m_heights;
-        private readonly IScene m_internalScene;
+        readonly Heightmap m_heights;
+        readonly IScene m_internalScene;
 
-        private readonly ObjectAccessor m_objs;
-        private readonly ISecurityCredential m_security;
+        readonly ObjectAccessor m_objs;
+        readonly ISecurityCredential m_security;
 
         public World(IScene internalScene, ISecurityCredential securityCredential)
         {
@@ -56,7 +58,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 
         #region OnNewUser
 
-        private bool _OnNewUserActive;
+        bool _OnNewUserActive;
 
         public event OnNewUserDelegate OnNewUser
         {
@@ -84,7 +86,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 
         private event OnNewUserDelegate _OnNewUser;
 
-        private void EventManager_OnNewPresence(IScenePresence presence)
+        void EventManager_OnNewPresence(IScenePresence presence)
         {
             if (_OnNewUser != null)
             {
@@ -102,7 +104,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 
         #region OnChat
 
-        private bool _OnChatActive;
+        bool _OnChatActive;
 
         public IWorldAudio Audio
         {
@@ -137,7 +139,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 
         private event OnChatDelegate _OnChat;
 
-        private void EventManager_OnChatFromWorld(object sender, OSChatMessage chat)
+        void EventManager_OnChatFromWorld(object sender, OSChatMessage chat)
         {
             if (_OnChat != null)
             {
@@ -146,7 +148,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
             }
         }
 
-        private void HandleChatPacket(OSChatMessage chat)
+        void HandleChatPacket(OSChatMessage chat)
         {
             if (string.IsNullOrEmpty(chat.Message))
                 return;
@@ -180,7 +182,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
             // Skip if other
         }
 
-        private void EventManager_OnChatFromClient(object sender, OSChatMessage chat)
+        void EventManager_OnChatFromClient(object sender, OSChatMessage chat)
         {
             if (_OnChat != null)
             {

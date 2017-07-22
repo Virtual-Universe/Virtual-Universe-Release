@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -80,6 +82,14 @@ namespace Universe.Framework.Services
         byte[] GetData(string id);
 
         /// <summary>
+        /// Gets asset data for the given asset.
+        /// </summary>
+        /// <returns>The data.</returns>
+        /// <param name="id">Identifier.</param>
+        /// <param name="showWarnings">If set to <c>true</c> show warnings.</param>
+        byte [] GetData (string id, bool showWarnings);
+
+        /// <summary>
         ///     Synchronously fetches an asset from the local cache only
         /// </summary>
         /// <param name="id">Asset ID</param>
@@ -133,7 +143,7 @@ namespace Universe.Framework.Services
         AssetBase GetMeta(UUID uuid);
         UUID Store(AssetBase asset);
         bool StoreAsset(AssetBase asset);
-        void UpdateContent(UUID id, byte[] asset, out UUID newID);
+        void UpdateContent(UUID id, byte[] assetData, out UUID newID);
         bool ExistsAsset(UUID uuid);
         bool Delete(UUID id);
         bool Delete(UUID id, bool ignoreFlags);

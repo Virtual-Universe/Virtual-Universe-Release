@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -34,7 +36,7 @@ namespace Universe.ScriptEngine.VirtualScript
     [Serializable]
     public class AssemblyResolver : MarshalByRefObject
     {
-        private readonly string PathToSearch = "";
+        readonly string PathToSearch = "";
 
         public AssemblyResolver(string pathToSearch)
         {
@@ -47,18 +49,17 @@ namespace Universe.ScriptEngine.VirtualScript
             if (!(sender is AppDomain))
                 return null;
 
-            string[] pathList = new[]
-                                    {
-                                        Path.Combine(Directory.GetCurrentDirectory(), "bin"),
-                                        Path.Combine(Directory.GetCurrentDirectory(), PathToSearch),
-                                        Path.Combine(Directory.GetCurrentDirectory(),
-                                                     Path.Combine(PathToSearch, "Scripts")),
-                                        Directory.GetCurrentDirectory(),
-                                    };
+            string[] pathList = {
+                Path.Combine(Directory.GetCurrentDirectory(), "bin"),
+                Path.Combine(Directory.GetCurrentDirectory(), PathToSearch),
+                Path.Combine(Directory.GetCurrentDirectory(), 
+                             Path.Combine(PathToSearch, "Scripts")),
+                Directory.GetCurrentDirectory()
+            };
 
             string assemblyName = args.Name;
-            if (assemblyName.IndexOf(",") != -1)
-                assemblyName = args.Name.Substring(0, args.Name.IndexOf(","));
+            if (assemblyName.IndexOf (",", StringComparison.Ordinal) != -1)
+                assemblyName = args.Name.Substring(0, args.Name.IndexOf (",", StringComparison.Ordinal));
 
             foreach (string s in pathList)
             {

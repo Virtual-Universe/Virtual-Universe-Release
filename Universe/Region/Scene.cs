@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -45,6 +47,12 @@ namespace Universe.Region
     public class Scene : RegistryCore, IScene
     {
         #region Fields
+        const int m_update_physics = 1; //Trigger the physics update
+        const int m_update_entities = 5; // Send prim updates for clients
+        const int m_update_events = 1; //Trigger the OnFrame event and tell any modules about the new frame
+
+        const int m_update_coarse_locations = 30;
+        //Trigger the sending of coarse location updates (minimap updates)
 
         readonly List<ISceneEntity> m_PhysicsReturns = new List<ISceneEntity>();
 
@@ -126,6 +134,7 @@ namespace Universe.Region
             protected set;
         }
 
+
         float m_basesimfps = 45f;
         float m_basesimphysfps = 45f;
 
@@ -133,12 +142,6 @@ namespace Universe.Region
         protected float m_physicstimespan = 0.022f;
         protected DateTime m_lastphysupdate = DateTime.UtcNow;
 
-        const int m_update_physics = 1; //Trigger the physics update
-        const int m_update_entities = 5; // Send prim updates for clients
-        const int m_update_events = 1; //Trigger the OnFrame event and tell any modules about the new frame
-
-        const int m_update_coarse_locations = 30;
-                          //Trigger the sending of coarse location updates (minimap updates)
 
         volatile bool shuttingdown;
 
@@ -531,7 +534,7 @@ namespace Universe.Region
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.Error("[REGION]: Failed with exception " + e + " in region: " +
+                    MainConsole.Instance.Error("[Scene]: Failed with exception " + e + " in region: " +
                                                RegionInfo.RegionName);
                     return;
                 }
@@ -575,11 +578,14 @@ namespace Universe.Region
                 physicsState.SavePhysicsState();
 
             //Then clear all the velocity and stuff on objects
-            foreach (PhysicsActor o in PhysicsScene.ActiveObjects)
-            {
-                o.ClearVelocity();
-                o.RequestPhysicsterseUpdate();
+            var activeObjects = PhysicsScene.ActiveObjects;
+            if (activeObjects != null) {
+                foreach (PhysicsActor o in activeObjects) {
+                    o.ClearVelocity ();
+                    o.RequestPhysicsterseUpdate ();
+                }
             }
+
             foreach (IScenePresence sp in GetScenePresences())
             {
                 sp.PhysicsActor.ForceSetVelocity(Vector3.Zero);
@@ -714,7 +720,7 @@ namespace Universe.Region
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[SCENE] Scene.cs:RemoveClient:Presence.Close exception: " + e);
+                MainConsole.Instance.Error("[Scene]: Scene.cs:RemoveClient:Presence.Close exception: " + e);
             }
 
             //Remove any interfaces it might have stored

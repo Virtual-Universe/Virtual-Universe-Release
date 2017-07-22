@@ -5,7 +5,7 @@ In this folder are example 'ini' files to run individual servers for each of the
 
 Note:  These files are NOT INCLUDED in the standard grid configuration.
 To use your configurations you will need to modify the '[Handlers]' 
-section of 'UniverseServer.ini'
+section of 'Universe.Server.ini'
 
 Example: To configure for a seperate Asset Server the Configuration for
 the 'Universe.Server.exe' instance could be changed to...

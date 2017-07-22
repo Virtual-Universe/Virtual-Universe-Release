@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,23 +26,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-//#define UseRemovingEntityUpdates
 
+//#define UseRemovingEntityUpdates
 #define UseDictionaryForEntityUpdates
 
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.PresenceInfo;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.SceneInfo.Entities;
-using Universe.Framework.Utilities;
-using OpenMetaverse;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Timers;
+using OpenMetaverse;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.PresenceInfo;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.SceneInfo.Entities;
+using Universe.Framework.Utilities;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Region
@@ -49,8 +51,8 @@ namespace Universe.Region
     {
         #region Declares
 
-        private const double MINVIEWDSTEP = 16;
-        private const double MINVIEWDSTEPSQ = MINVIEWDSTEP*MINVIEWDSTEP;
+        const double MINVIEWDSTEP = 16;
+        const double MINVIEWDSTEPSQ = MINVIEWDSTEP*MINVIEWDSTEP;
 
         protected IScenePresence m_presence;
         protected IScene m_scene;
@@ -65,38 +67,38 @@ namespace Universe.Region
         protected Prioritizer m_prioritizer;
         protected Culler m_culler;
         protected bool m_forceCullCheck;
-        private readonly object m_presenceUpdatesToSendLock = new object();
-        private readonly object m_presenceAnimationsToSendLock = new object();
-        private readonly object m_objectPropertiesToSendLock = new object();
-        private readonly object m_objectUpdatesToSendLock = new object();
+        readonly object m_presenceUpdatesToSendLock = new object();
+        readonly object m_presenceAnimationsToSendLock = new object();
+        readonly object m_objectPropertiesToSendLock = new object();
+        readonly object m_objectUpdatesToSendLock = new object();
 #if UseRemovingEntityUpdates
-        private OrderedDictionary/*<UUID, EntityUpdate>*/ m_presenceUpdatesToSend = new OrderedDictionary/*<UUID, EntityUpdate>*/ ();
+        OrderedDictionary/*<UUID, EntityUpdate>*/ m_presenceUpdatesToSend = new OrderedDictionary/*<UUID, EntityUpdate>*/ ();
 #elif UseDictionaryForEntityUpdates
-        private readonly Dictionary<uint, EntityUpdate> m_presenceUpdatesToSend = new Dictionary<uint, EntityUpdate>();
+        readonly Dictionary<uint, EntityUpdate> m_presenceUpdatesToSend = new Dictionary<uint, EntityUpdate>();
 #else
-        private Queue<EntityUpdate> m_presenceUpdatesToSend = new Queue<EntityUpdate>();
+        Queue<EntityUpdate> m_presenceUpdatesToSend = new Queue<EntityUpdate>();
 #endif
 
-        private readonly Queue<AnimationGroup> m_presenceAnimationsToSend =
+        readonly Queue<AnimationGroup> m_presenceAnimationsToSend =
             new Queue<AnimationGroup> /*<UUID, AnimationGroup>*/();
 
-        private readonly OrderedDictionary /*<UUID, EntityUpdate>*/
+        readonly OrderedDictionary /*<UUID, EntityUpdate>*/
             m_objectUpdatesToSend = new OrderedDictionary /*<UUID, EntityUpdate>*/();
 
-        private readonly OrderedDictionary /*<UUID, ISceneChildEntity>*/
+        readonly OrderedDictionary /*<UUID, ISceneChildEntity>*/
             m_objectPropertiesToSend = new OrderedDictionary /*<UUID, ISceneChildEntity>*/();
 
-        private HashSet<ISceneEntity> lastGrpsInView = new HashSet<ISceneEntity>();
-        private readonly Dictionary<UUID, IScenePresence> lastPresencesDInView = new Dictionary<UUID, IScenePresence>();
-        private readonly object m_lastPresencesInViewLock = new object();
-        private Vector3 m_lastUpdatePos;
-        private int m_numberOfLoops;
-        private Timer m_drawDistanceChangedTimer;
-        private readonly object m_drawDistanceTimerLock = new object();
-        private const int NUMBER_OF_LOOPS_TO_WAIT = 30;
+        HashSet<ISceneEntity> lastGrpsInView = new HashSet<ISceneEntity>();
+        readonly Dictionary<UUID, IScenePresence> lastPresencesDInView = new Dictionary<UUID, IScenePresence>();
+        readonly object m_lastPresencesInViewLock = new object();
+        Vector3 m_lastUpdatePos;
+        int m_numberOfLoops;
+        Timer m_drawDistanceChangedTimer;
+        readonly object m_drawDistanceTimerLock = new object();
+        const int NUMBER_OF_LOOPS_TO_WAIT = 30;
 
-        private const float PresenceSendPercentage = 0.60f;
-        private const float PrimSendPercentage = 0.40f;
+        const float PresenceSendPercentage = 0.60f;
+        const float PrimSendPercentage = 0.40f;
 
         public IPrioritizer Prioritizer
         {
@@ -127,19 +129,19 @@ namespace Universe.Region
             m_culler = new Culler(presence.Scene);
         }
 
-        private void EventManager_OnClosingClient(IClientAPI client)
+        void EventManager_OnClosingClient(IClientAPI client)
         {
             lock (m_lastPresencesInViewLock)
                 if (lastPresencesDInView.ContainsKey(client.AgentId))
                     lastPresencesDInView.Remove(client.AgentId);
         }
 
-        private void EventManager_OnMakeChildAgent(IScenePresence presence, GridRegion destination)
+        void EventManager_OnMakeChildAgent(IScenePresence presence, GridRegion destination)
         {
             RemoveAvatarFromView(presence);
         }
 
-        private object UniverseEventManager_OnGenericEvent(string FunctionName, object parameters)
+        object UniverseEventManager_OnGenericEvent(string FunctionName, object parameters)
         {
             if (m_culler != null && m_culler.UseCulling && FunctionName == "DrawDistanceChanged")
             {
@@ -179,7 +181,7 @@ namespace Universe.Region
             return null;
         }
 
-        private void m_drawDistanceChangedTimer_Elapsed(object sender, ElapsedEventArgs e)
+        void m_drawDistanceChangedTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             lock (m_drawDistanceTimerLock)
                 m_drawDistanceChangedTimer.Stop();
@@ -229,7 +231,7 @@ namespace Universe.Region
             AddPresenceUpdate(presence, PrimUpdateFlags.ForcedFullUpdate);
         }
 
-        private void AddPresenceUpdate(IScenePresence presence, PrimUpdateFlags flags)
+        void AddPresenceUpdate(IScenePresence presence, PrimUpdateFlags flags)
         {
             lock (m_presenceUpdatesToSendLock)
             {
@@ -284,9 +286,12 @@ namespace Universe.Region
             {
                 //Is this really necessary? -7/21
                 //Very much so... the client cannot get a terse update before a full update -7/25
+                bool lpinview;
                 lock (m_lastPresencesInViewLock)
-                    if (lastPresencesDInView.ContainsKey(presence.UUID))
-                        AddPresenceUpdate(presence, PrimUpdateFlags.TerseUpdate);
+                    lpinview = lastPresencesDInView.ContainsKey (presence.UUID);
+
+                if (lpinview)
+                    AddPresenceUpdate(presence, PrimUpdateFlags.TerseUpdate);
                 //Only send updates if they are in view
             }
             else
@@ -347,7 +352,7 @@ namespace Universe.Region
         ///     NOTE: DO THE LOCKING ON YOUR OWN
         /// </summary>
         /// <param name="update"></param>
-        private void QueueEntityUpdate(EntityUpdate update)
+        void QueueEntityUpdate(EntityUpdate update)
         {
             EntityUpdate o = (EntityUpdate) m_objectUpdatesToSend[update.Entity.UUID];
             if (o == null)
@@ -385,28 +390,32 @@ namespace Universe.Region
                 lastPresencesDInView.Remove(sp.UUID);
         }
 
-        public void SendPresenceFullUpdate(IScenePresence presence)
+        public void SendPresenceFullUpdate (IScenePresence presence)
         {
-            if (m_culler != null && !m_culler.ShowEntityToClient(m_presence, presence, m_scene))
-                m_presence.ControllingClient.SendAvatarDataImmediate(presence);
-            lock (m_lastPresencesInViewLock)
-                if (!lastPresencesDInView.ContainsKey(presence.UUID))
-                    AddPresenceToCurrentlyInView(presence);
+            if (presence != null) {
+                if (m_culler != null && !m_culler.ShowEntityToClient (m_presence, presence, m_scene))
+                    m_presence.ControllingClient.SendAvatarDataImmediate (presence);
+                lock (m_lastPresencesInViewLock)
+                    if (!lastPresencesDInView.ContainsKey (presence.UUID))
+                        AddPresenceToCurrentlyInView (presence);
+            }
         }
 
         protected void SendFullUpdateForPresence(IScenePresence presence)
         {
-            m_presence.ControllingClient.SendAvatarDataImmediate(presence);
-            //Send the animations too
-            presence.Animator.SendAnimPackToClient(m_presence.ControllingClient);
-            //Send the presence of this agent to us
-            IAvatarAppearanceModule module =
-                presence.RequestModuleInterface<IAvatarAppearanceModule>();
-            if (module != null)
-                module.SendAppearanceToAgent(m_presence);
+            if (presence != null) {
+                m_presence.ControllingClient.SendAvatarDataImmediate (presence);
+                //Send the animations too
+                presence.Animator.SendAnimPackToClient (m_presence.ControllingClient);
+                //Send the presence of this agent to us
+                IAvatarAppearanceModule module =
+                    presence.RequestModuleInterface<IAvatarAppearanceModule> ();
+                if (module != null)
+                    module.SendAppearanceToAgent(m_presence);
+            }
         }
 
-        private void AddPresenceToCurrentlyInView(IScenePresence presence)
+        void AddPresenceToCurrentlyInView(IScenePresence presence)
         {
             lastPresencesDInView.Add(presence.UUID, presence);
             //We need to send all attachments of this avatar as well
@@ -424,7 +433,7 @@ namespace Universe.Region
         ///     When the client moves enough to trigger this, make sure that we have sent
         ///     the client all of the objects that have just entered their FOV in their draw distance.
         /// </summary>
-        private void SignificantClientMovement()
+        void SignificantClientMovement()
         {
             if (m_culler == null)
                 return;
@@ -461,7 +470,7 @@ namespace Universe.Region
             }
         }
 
-        private class DoubleComparer : IComparer
+        class DoubleComparer : IComparer
         {
             #region IComparer Members
 
@@ -478,7 +487,7 @@ namespace Universe.Region
             }
         }
 
-        private void DoSignificantClientMovement(object o)
+        void DoSignificantClientMovement(object o)
         {
             //Just return all the entities, its quicker to do the culling check rather than the position check
             ISceneEntity[] entities = m_presence.Scene.Entities.GetEntities();
@@ -753,7 +762,7 @@ namespace Universe.Region
             m_inUse = false;
         }
 
-        private void SendInitialObjects()
+        void SendInitialObjects()
         {
             //If they are not in this region, we check to make sure that we allow seeing into neighbors
             if (!m_presence.IsChildAgent ||
@@ -826,7 +835,7 @@ namespace Universe.Region
             //m_AnimationsInPacketQueue.Remove(update.AvatarID);
         }
 
-        private void SendQueued(HashSet<ISceneEntity> entsqueue)
+        void SendQueued(HashSet<ISceneEntity> entsqueue)
         {
             //NO LOCKING REQUIRED HERE, THE PRIORITYQUEUE IS LOCAL
             //Enqueue them all
@@ -855,7 +864,7 @@ namespace Universe.Region
                                   : m_presence.CameraPosition;
         }
 
-        private int sortPriority(KeyValuePair<double, ISceneEntity> a, KeyValuePair<double, ISceneEntity> b)
+        int sortPriority(KeyValuePair<double, ISceneEntity> a, KeyValuePair<double, ISceneEntity> b)
         {
             return a.Key.CompareTo(b.Key);
         }

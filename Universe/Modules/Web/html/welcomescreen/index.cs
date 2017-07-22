@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -75,9 +77,12 @@ namespace Universe.Modules.Web
             vars.Add("en", translator.GetTranslatedString("en"));
             vars.Add("fr", translator.GetTranslatedString("fr"));
             vars.Add("de", translator.GetTranslatedString("de"));
+            vars.Add("ga", translator.GetTranslatedString("ga"));
             vars.Add("it", translator.GetTranslatedString("it"));
             vars.Add("es", translator.GetTranslatedString("es"));
             vars.Add("nl", translator.GetTranslatedString("nl"));
+            vars.Add("ru", translator.GetTranslatedString("ru"));
+            vars.Add("zh_CN", translator.GetTranslatedString("zh_CN"));
 
             return vars;
         }

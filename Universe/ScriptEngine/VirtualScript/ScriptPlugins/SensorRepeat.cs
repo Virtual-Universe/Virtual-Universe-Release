@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,35 +27,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Universe.ScriptEngine.VirtualScript.Plugins
 {
     public class SensorRepeatPlugin : IScriptPlugin
     {
-        private const int AGENT = 1;
-        private const int AGENT_BY_USERNAME = 0x10;
-        private const int ACTIVE = 2;
-        private const int PASSIVE = 4;
-        private const int SCRIPTED = 8;
-        private readonly Object SenseLock = new Object();
-        private readonly object SenseRepeatListLock = new object();
-        private List<SenseRepeatClass> SenseRepeaters = new List<SenseRepeatClass>();
-        public ScriptEngine m_ScriptEngine;
+        const int AGENT = 1;
+        const int AGENT_BY_USERNAME = 0x10;
+        const int ACTIVE = 2;
+        const int PASSIVE = 4;
+        const int SCRIPTED = 8;
+        readonly object SenseLock = new object();
+        readonly object SenseRepeatListLock = new object();
 
-        private double maximumRange = 96.0;
-        private int maximumToReturn = 16;
-        private bool usemaximumRange = true;
-        private bool usemaximumToReturn = true;
+        double maximumRange = 96.0;
+        int maximumToReturn = 16;
+        bool usemaximumRange = true;
+        bool usemaximumToReturn = true;
+
+        List<SenseRepeatClass> SenseRepeaters = new List<SenseRepeatClass> ();
+        public ScriptEngine m_ScriptEngine;
 
         #region IScriptPlugin Members
 
@@ -95,11 +98,10 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
         public bool Check()
         {
             // Nothing to do here?
-            if (SenseRepeaters.Count == 0)
-                return false;
+            lock (SenseRepeatListLock) {
+                if (SenseRepeaters.Count == 0)
+                    return false;
 
-            lock (SenseRepeatListLock)
-            {
                 // Go through all timers
                 DateTime UniversalTime = DateTime.Now.ToUniversalTime();
                 foreach (SenseRepeatClass ts in SenseRepeaters.Where(ts => ts.next.ToUniversalTime() < UniversalTime))
@@ -108,8 +110,9 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
                     // set next interval
                     ts.next = DateTime.Now.ToUniversalTime().AddSeconds(ts.interval);
                 }
+
+                return SenseRepeaters.Count > 0;
             } // lock
-            return SenseRepeaters.Count > 0;
         }
 
         public OSD GetSerializationData(UUID itemID, UUID primID)
@@ -243,7 +246,7 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
             m_ScriptEngine.MaintenanceThread.PokeThreads(ts.itemID);
         }
 
-        private void SensorSweep(SenseRepeatClass ts)
+        void SensorSweep(SenseRepeatClass ts)
         {
             if (ts.host == null)
             {
@@ -271,7 +274,7 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
                     // send a "no_sensor"
                     // Add it to queue
                     m_ScriptEngine.PostScriptEvent(ts.itemID, ts.objectID,
-                                                   new EventParams("no_sensor", new Object[0],
+                                                   new EventParams("no_sensor", new object[0],
                                                                    new DetectParams[0]), EventPriority.Suspended);
                 }
                 else
@@ -300,14 +303,14 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
                         // like the object being deleted or the avatar leaving to have caused some
                         // difficulty during the Populate above so fire a no_sensor event
                         m_ScriptEngine.PostScriptEvent(ts.itemID, ts.objectID,
-                                                       new EventParams("no_sensor", new Object[0],
+                                                       new EventParams("no_sensor", new object[0],
                                                                        new DetectParams[0]), EventPriority.Suspended);
                     }
                     else
                     {
                         m_ScriptEngine.PostScriptEvent(ts.itemID, ts.objectID,
                                                        new EventParams("sensor",
-                                                                       new Object[]
+                                                                       new object[]
                                                                            {new LSL_Types.LSLInteger(detected.Count)},
                                                                        detected.ToArray()), EventPriority.Suspended);
                     }
@@ -315,7 +318,7 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
             }
         }
 
-        private List<SensedEntity> doObjectSensor(SenseRepeatClass ts)
+        List<SensedEntity> doObjectSensor(SenseRepeatClass ts)
         {
             List<ISceneEntity> Entities;
             List<SensedEntity> sensedEntities = new List<SensedEntity>();
@@ -461,7 +464,7 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
             return sensedEntities;
         }
 
-        private List<SensedEntity> doAgentSensor(SenseRepeatClass ts)
+        List<SensedEntity> doAgentSensor(SenseRepeatClass ts)
         {
             List<SensedEntity> sensedEntities = new List<SensedEntity>();
 
@@ -577,7 +580,7 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
 
         #region Nested type: SenseRepeatClass
 
-        private class SenseRepeatClass
+        class SenseRepeatClass
         {
             public double arc;
             public ISceneChildEntity host;
@@ -599,7 +602,7 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
 
         #region Nested type: SensedEntity
 
-        private class SensedEntity : IComparable
+        class SensedEntity : IComparable
         {
             public readonly double distance;
             public readonly UUID itemID;

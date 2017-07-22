@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -49,14 +51,14 @@ namespace Universe.Physics.Meshing
     {
         #region IMeshingPlugin Members
 
-        public string GetName()
+        public string GetName ()
         {
             return "ZeroMesher";
         }
 
-        public IMesher GetMesher(IConfigSource config, IRegistryCore registry)
+        public IMesher GetMesher (IConfigSource config, IRegistryCore registry)
         {
-            return new ZeroMesher();
+            return new ZeroMesher ();
         }
 
         #endregion
@@ -66,7 +68,7 @@ namespace Universe.Physics.Meshing
     {
         #region IMesher Members
 
-        public IMesh CreateMesh(String primName, PrimitiveBaseShape primShape, Vector3 size, float lod, bool isPhysical, bool shouldCache)
+        public IMesh CreateMesh (string primName, PrimitiveBaseShape primShape, Vector3 size, float lod, bool isPhysical, bool shouldCache)
         {
             // Remove the reference to the encoded JPEG2000 data so it can be GCed
             primShape.SculptData = Utils.EmptyBytes;

@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System.Collections.Generic;
 using OpenMetaverse;
@@ -69,18 +70,22 @@ namespace Universe.Modules.Web
 
             IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
             GridPage rootPage = generics.GetGeneric<GridPage>(UUID.Zero, "WebPages", "Root");
+
             if (rootPage == null)
                 return null;            // major bummer !!
             
             rootPage.Children.Sort((a, b) => a.MenuPosition.CompareTo(b.MenuPosition));
             List<GridPage> allPages = new List<GridPage>(rootPage.Children);
+
             foreach (GridPage page in rootPage.Children)
                 allPages.AddRange(page.Children);
+
             allPages.RemoveAll((a) => !a.ShowInMenu);
 
             string MenuItem = requestParameters.ContainsKey("MenuItem")
                                   ? requestParameters["MenuItem"].ToString()
                                   : "";
+
             foreach (GridPage page in allPages)
             {
                 pages.Add(new Dictionary<string, object>
@@ -94,6 +99,7 @@ namespace Universe.Modules.Web
                                   }
                               });
             }
+
             vars.Add("PagesList", pages);
 
             #endregion
@@ -108,12 +114,13 @@ namespace Universe.Modules.Web
                            "</script>";
                 return null;
             }
+
             if (requestParameters.ContainsKey("AddItem"))
             {
-                //generics.AddGeneric(UUID.Zero, "WebPages", "Root", rootPage.ToOSD());
                 vars.Add("EdittingPageID", -2);
                 vars.Add("DisplayEdit", true);
             }
+
             if (requestParameters.ContainsKey("SelectItem"))
             {
                 GridPage page = rootPage.GetPageByLocation(MenuItem);
@@ -144,7 +151,9 @@ namespace Universe.Modules.Web
                                         {"PageSelected", ""}
                                     }
                             };
+
                 GridPage parent = rootPage.GetParent(page);
+
                 foreach (GridPage p in allPages)
                 {
                     pages.Add(new Dictionary<string, object>
@@ -158,6 +167,7 @@ namespace Universe.Modules.Web
                                       }
                                   });
                 }
+
                 vars.Add("ParentPagesList", pages);
             }
 
@@ -168,8 +178,10 @@ namespace Universe.Modules.Web
                 vars.Add("PageID", "");
                 vars.Add("PagePosition", "");
                 vars.Add("PageLocation", "");
+
                 if (!vars.ContainsKey("EdittingPageID"))
                     vars.Add("EdittingPageID", "");
+
                 vars.Add("RequiresLoginYes", "");
                 vars.Add("RequiresLoginNo", "");
                 vars.Add("RequiresLogoutYes", "");
@@ -187,6 +199,7 @@ namespace Universe.Modules.Web
                                         {"PageSelected", ""}
                                     }
                             };
+
                 foreach (GridPage p in allPages)
                 {
                     pages.Add(new Dictionary<string, object>
@@ -196,6 +209,7 @@ namespace Universe.Modules.Web
                                       {"PageSelected", ""}
                                   });
                 }
+
                 vars.Add("ParentPagesList", pages);
             }
 
@@ -215,6 +229,7 @@ namespace Universe.Modules.Web
                 int RequiredAdminLevel = int.Parse(requestParameters["RequiredAdminLevel"].ToString());
                 GridPage page = rootPage.GetPage(edittingPageID);
                 bool add = page == null;
+
                 if (page == null)
                     page = new GridPage {MenuID = PageLocation, ShowInMenu = true};
 

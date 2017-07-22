@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using OpenMetaverse;
@@ -50,7 +51,7 @@ namespace Universe.ClientStack
         bool m_decodeRequested;
         bool m_sentInfo;
         uint m_stopPacket;
-
+  
         public UUID AgentID;
         public IAssetService AssetService;
         public sbyte DiscardLevel;
@@ -63,7 +64,7 @@ namespace Universe.ClientStack
         public float Priority;
         public uint StartPacket;
         public UUID TextureID;
-
+        public AssetBase MissingImage;
         public void Dispose()
         {
             m_asset = null;
@@ -352,22 +353,24 @@ namespace Universe.ClientStack
             RunUpdate();
         }
 
-        void AssetDataCallback(UUID AssetID, AssetBase asset)
+        void AssetDataCallback (UUID AssetID, AssetBase asset)
         {
             HasAsset = true;
 
-            if (asset == null || asset.Data == null || asset.Type == (int) AssetType.Mesh)
-            {
-                m_asset = null;
-                IsDecoded = true;
-            }
-            else
-            {
+            //if (asset == null || asset.Data == null || asset.Type == (int) AssetType.Mesh)
+            if (asset == null || asset.Data == null) {
+                if (MissingImage != null) {
+                    m_asset = MissingImage.Data;
+                } else {
+                    m_asset = null;
+                    IsDecoded = true;
+                }
+            } else {
                 m_asset = asset.Data;
                 asset = null;
             }
 
-            RunUpdate();
+            RunUpdate ();
         }
 
         void AssetReceived(string id, object sender, AssetBase asset)

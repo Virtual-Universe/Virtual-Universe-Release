@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -74,6 +76,12 @@ namespace Universe.Framework.PresenceInfo
         ///     Is this client really in this region?
         /// </summary>
         bool IsChildAgent { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this presence is a npc.
+        /// </summary>
+        /// <value><c>true</c> if is npc; otherwise, <c>false</c>.</value>
+        bool IsNpcAgent { get; set; }
 
         /// <summary>
         ///     Where this client is looking

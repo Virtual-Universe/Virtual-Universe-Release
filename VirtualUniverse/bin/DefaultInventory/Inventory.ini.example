@@ -6,12 +6,7 @@
 
     WipeLibrariesOnNextLoad = True
 
-    ;;
-    ;;
-    ;; The rest of this config is for optional modules in the Optional-Modules repository
-    ;;
-    ;;
-
+    ;; The rest of this config is for optional modules in the Universe-Optional-Modules repository
 [InventoryXMLLoader]
     DefaultLibrary = inventory\Libraries.xml
     PreviouslyLoaded = true

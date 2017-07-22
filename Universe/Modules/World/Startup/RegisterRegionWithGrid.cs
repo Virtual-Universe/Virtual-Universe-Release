@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -109,12 +110,14 @@ namespace Universe.Modules.Startup
             //Parse the error and try to do something about it if at all possible
             if (error.Error == "Region location is reserved")
             {
+                var simbase = scene.RequestModuleInterface<ISimulationBase> ();
+
                 MainConsole.Instance.Error (
                     "[RegisterRegionWithGrid]: Registration of region with grid failed - The region location you specified is reserved. You must move your region.");
                 int X;
                 int Y;
-                int.TryParse (MainConsole.Instance.Prompt ("New Region Location X", "1000"), out X);
-                int.TryParse (MainConsole.Instance.Prompt ("New Region Location Y", "1000"), out Y);
+                int.TryParse (MainConsole.Instance.Prompt ("New Region Location X", simbase.MapCenterX.ToString()), out X);
+                int.TryParse (MainConsole.Instance.Prompt ("New Region Location Y", simbase.MapCenterY.ToString()), out Y);
 
                 scene.RegionInfo.RegionLocX = X * Constants.RegionSize;
                 scene.RegionInfo.RegionLocY = Y * Constants.RegionSize;

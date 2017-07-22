@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -35,7 +37,7 @@ namespace Universe.Framework.Utilities
         // some predefined folders
         public const string DEFAULT_CONFIG_DIR = "../Config";
         public const string DEFAULT_DATA_DIR = "../Data";
-        public const string DEFAULT_CRASH_DIR = "..Data/Crashes";
+        public const string DEFAULT_CRASH_DIR = "../Data/crashes";
 
         // all these are relative to the default data directory,
         // set either as above or via configuration
@@ -50,6 +52,8 @@ namespace Universe.Framework.Utilities
         public const string DEFAULT_USERHTML_DIR = "html";
         public const string DEFAULT_LOG_DIR = "logs";
 
+        public const int DEFAULT_REGIONSTART_X = 1000;
+        public const int DEFAULT_REGIONSTART_Y = 1000;
         public const int RegionSize = 256;
         public const int RegionHeight = 10000;
         public const byte TerrainPatchSize = 16;
@@ -60,7 +64,8 @@ namespace Universe.Framework.Utilities
 		public const int SystemUserCount = 5;
 
         // System library Avatar Account
-        public const string LibraryOwner = "11111111-1111-0000-0000-000100bba000";
+        public const string LibraryOwnerUUID = "11111111-1111-0000-0000-000100bba000";
+        public const string LibraryOwnerName = "Library Owner";
         public const string LibraryRootFolderID = "00000112-000f-0000-0000-000100bba000";
 
         // System Real Estate Avatar Account
@@ -69,7 +74,7 @@ namespace Universe.Framework.Utilities
 
         // System Governor Avatar Account
         public const string GovernorUUID = "3d6181b0-6a4b-97ef-18d8-722652995cf1";
-        public const string GovernorName = "Governor Universe";
+        public const string GovernorName = "Governor White";
 
         // System Estate
         public const string MainlandEstateName = "Universe Mainland";
@@ -79,7 +84,7 @@ namespace Universe.Framework.Utilities
 
         // System Real Estate Maintenance Group
 		public const string RealEstateGroupUUID = "dc7b21cd-3c89-fcaa-31c8-25f9ffd224cd";
-		public const string RealEstateGroupName = "Universe Maintenance";
+		public const string RealEstateGroupName = "Maintenance";
 
         // System Banker Avatar
         public const string BankerUUID = "f4261829-2796-4688-bfe2-085190cb639b";
@@ -100,13 +105,15 @@ namespace Universe.Framework.Utilities
         public const int USER_GOD_MAINTENANCE = 250;
 
         // user flags (account types)
-        public const int USER_FLAG_GUEST      = 0;          // Temporary: (Default) No payment info on account    
-        public const int USER_FLAG_RESIDENT   = 200;        // Resident: Payment info on account
-        public const int USER_FLAG_PAY        = 300;        // Testing: Payment info on account
-        public const int USER_FLAG_NOPAY      = 400;        // Testing: No Payment info on account
-        public const int USER_FLAG_MEMBER     = 600;        // Member Estate: Payment info on account
+        public const int USER_FLAG_CITIZEN = 0;             // Temporary: (Default) No payment info on account    
+        public const int USER_FLAG_PAY = 300;               // Testing: Payment info on account
+        public const int USER_FLAG_NOPAY = 400;             // Testing: No Payment info on account
+        public const int USER_FLAG_MEMBER = 600;            // Member Estate: Payment info on account
         public const int USER_FLAG_CONTRACTOR = 800;        // Contracted
-        public const int USER_FLAG_CHARTERMEMBER = 3840;    // Charter member
+        public const int USER_FLAG_MENTOR = 1000;           // Grid mentors
+        public const int USER_FLAG_STAFF = 1210;            // Grid staff
+        public const int USER_FLAG_ASSTDEVELOPER = 1420;    // Assistant grid developer
+        public const int USER_FLAG_COREDEVELOPER = 3840;    // Core grid developer
 
         public const int SCHEDULER_INTERVAL = 300;          // seconds between scheduler checks
 

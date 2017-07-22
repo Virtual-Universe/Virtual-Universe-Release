@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -56,7 +58,7 @@ namespace Universe.Modules.Archivers
         /// <value>
         ///     Record the number of asset replies required so we know when we've finished
         /// </value>
-        private readonly int m_repliesRequired;
+        readonly int m_repliesRequired;
 
         /// <value>
         ///     Asset service used to request the assets
@@ -108,25 +110,25 @@ namespace Universe.Modules.Archivers
 
         protected internal void Execute()
         {
-            m_requestState = RequestState.Running;
+            lock(this) {
+                m_requestState = RequestState.Running;
 
-            MainConsole.Instance.DebugFormat("[Archiver]: AssetsRequest executed looking for {0} assets",
-                                             m_repliesRequired);
+                MainConsole.Instance.DebugFormat ("[Archiver]: AssetsRequest executed looking for {0} assets",
+                                                 m_repliesRequired);
 
-            // We can stop here if there are no assets to fetch
-            if (m_repliesRequired == 0)
-            {
-                m_requestState = RequestState.Completed;
-                PerformAssetsRequestCallback(null);
-                return;
+                // We can stop here if there are no assets to fetch
+                if (m_repliesRequired == 0) {
+                    m_requestState = RequestState.Completed;
+                    PerformAssetsRequestCallback (null);
+                    return;
+                }
+
+                foreach (KeyValuePair<UUID, AssetType> kvp in m_uuids) {
+                    m_assetService.Get (kvp.Key.ToString (), kvp.Value, PreAssetRequestCallback);
+                }
+
+                m_requestCallbackTimer.Enabled = true;
             }
-
-            foreach (KeyValuePair<UUID, AssetType> kvp in m_uuids)
-            {
-                m_assetService.Get(kvp.Key.ToString(), kvp.Value, PreAssetRequestCallback);
-            }
-
-            m_requestCallbackTimer.Enabled = true;
         }
 
         protected void OnRequestCallbackTimeout(object source, ElapsedEventArgs args)
@@ -148,14 +150,10 @@ namespace Universe.Modules.Archivers
                 List<UUID> uuids = m_uuids.Keys.ToList();
 
                 foreach (UUID uuid in m_foundAssetUuids)
-                {
                     uuids.Remove(uuid);
-                }
 
                 foreach (UUID uuid in m_notFoundAssetUuids)
-                {
                     uuids.Remove(uuid);
-                }
 
                 MainConsole.Instance.ErrorFormat(
                     "[Archiver]: Asset service failed to return information about {0} requested assets", uuids.Count);
@@ -173,7 +171,7 @@ namespace Universe.Modules.Archivers
                     MainConsole.Instance.ErrorFormat(
                         "[Archiver]: (... {0} more not shown)", uuids.Count - MAX_UUID_DISPLAY_ON_TIMEOUT);
 
-                MainConsole.Instance.Error("[Archiver]: OAR save aborted.");
+                MainConsole.Instance.Error("[Archiver]: Asset save aborted.");
             }
             catch (Exception e)
             {

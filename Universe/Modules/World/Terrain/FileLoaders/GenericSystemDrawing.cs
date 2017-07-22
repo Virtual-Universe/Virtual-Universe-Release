@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Drawing;
@@ -78,7 +79,7 @@ namespace Universe.Modules.Terrain.FileLoaders
             int yoffset = h*(fileHeight - y);
 
             MainConsole.Instance.DebugFormat(
-                "[TERRAIN]: Loading tile {0},{1} (offset {2},{3}) from tile-map size of {4},{5}",
+                "[Terrain]: Loading tile {0},{1} (offset {2},{3}) from tile-map size of {4},{5}",
                 x, y, xoffset, yoffset, fileWidth, fileHeight);
 
             Rectangle tileRect = new Rectangle(xoffset, yoffset, w, h);
@@ -93,7 +94,7 @@ namespace Universe.Modules.Terrain.FileLoaders
                 // This error WILL appear if the number of Y tiles is too high because of how it works from the bottom up
                 // However, this still spits out ugly unreferenced object errors on the console
                 MainConsole.Instance.ErrorFormat(
-                    "[TERRAIN]: Couldn't load tile {0},{1} (from bitmap coordinates {2},{3}). Number of specified Y tiles may be too high: {4}",
+                    "[Terrain]: Couldn't load tile {0},{1} (from bitmap coordinates {2},{3}). Number of specified Y tiles may be too high: {4}",
                     x, y, xoffset, yoffset, e);
             }
             finally
@@ -118,8 +119,11 @@ namespace Universe.Modules.Terrain.FileLoaders
         public virtual void SaveFile(string filename, ITerrainChannel map)
         {
             Bitmap colours = CreateGrayscaleBitmapFromMap(map);
-
-            colours.Save(filename, ImageFormat.Png);
+            try {
+                colours.Save (filename, ImageFormat.Png);
+            } catch {
+            }
+            colours.Dispose ();
         }
 
         /// <summary>
@@ -130,8 +134,11 @@ namespace Universe.Modules.Terrain.FileLoaders
         public virtual void SaveStream(Stream stream, ITerrainChannel map)
         {
             Bitmap colours = CreateGrayscaleBitmapFromMap(map);
-
-            colours.Save(stream, ImageFormat.Png);
+            try {
+                colours.Save (stream, ImageFormat.Png);
+            } catch {
+            }
+            colours.Dispose ();
         }
 
         #endregion
@@ -149,6 +156,7 @@ namespace Universe.Modules.Terrain.FileLoaders
                     retval[x, y] = bitmap.GetPixel(x, bitmap.Height - y - 1).GetBrightness()*128;
             }
 
+            bitmap.Dispose ();  // not needed anymore
             return retval;
         }
 
@@ -226,6 +234,8 @@ namespace Universe.Modules.Terrain.FileLoaders
                         bmp.SetPixel(x, map.Height - y - 1, colours[colorindex]);
                 }
             }
+
+            gradientmapLd.Dispose ();
             return bmp;
         }
     }

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -35,6 +37,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using Universe.Framework.ConsoleFramework;
 #if FASTBMP
 using Universe.Framework.Utilities;
 #endif
@@ -61,7 +64,7 @@ namespace Universe.Physics.PrimMesher
             int bmH = bm.Height;
 
             if (bmW == 0 || bmH == 0)
-                throw new Exception ("SculptMap: bitmap has no data");
+                MainConsole.Instance.Error("[Sculptmap]: Bitmap has no data");
 
             int numLodPixels = lod * 2 * lod * 2; // (32 * 2)^2  = 64^2 pixels for default sculpt map image
 
@@ -82,11 +85,10 @@ namespace Universe.Physics.PrimMesher
             try
             {
                 if (needsScaling)
-                    bm = ScaleImage (bm, width, height,
-                        InterpolationMode.NearestNeighbor);
+                    bm = ScaleImage (bm, width, height, InterpolationMode.NearestNeighbor);
             } catch (Exception e)
             {
-                throw new Exception ("Exception in ScaleImage(): e: " + e);
+                MainConsole.Instance.Error ("[Sculptmap]: Exception in ScaleImage(): e: " + e);
             }
 
             if (width * height > lod * lod)
@@ -139,12 +141,13 @@ namespace Universe.Physics.PrimMesher
                 }
             } catch (Exception e)
             {
-                throw new Exception ("Caught exception processing byte arrays in SculptMap(): e: " + e);
+                MainConsole.Instance.Error("[SculptMap]: Caught exception processing byte arrays in SculptMap(): e: " + e);
             }
 #if FASTBMP
             //All done, unlock
             unsafeBMP.UnlockBitmap ();
 #endif
+            bm.Dispose ();
             width++;
             height++;
         }
@@ -180,14 +183,17 @@ namespace Universe.Physics.PrimMesher
             return rows;
         }
 
-        Bitmap ScaleImage (Bitmap srcImage, int destWidth, int destHeight,
-                           InterpolationMode interpMode)
+        Bitmap ScaleImage (Bitmap srcImage, int destWidth, int destHeight, InterpolationMode interpMode)
         {
+            // just in case of furfies  :)
+            if (destWidth == 0 || destHeight == 0)
+                return srcImage;
+            
             Bitmap scaledImage = new Bitmap (destWidth, destHeight, PixelFormat.Format24bppRgb);
 
             Color c;
-            float xscale = srcImage.Width / destWidth;
-            float yscale = srcImage.Height / destHeight;
+            float xscale = srcImage.Width / (float)destWidth;
+            float yscale = srcImage.Height / (float) destHeight;
 
             float sy = 0.5f;
             for (int y = 0; y < destHeight; y++)
@@ -199,7 +205,7 @@ namespace Universe.Physics.PrimMesher
                     {
                         c = srcImage.GetPixel ((int)(sx), (int)(sy));
                         scaledImage.SetPixel (x, y, Color.FromArgb (c.R, c.G, c.B));
-                    } catch (IndexOutOfRangeException)
+                    } catch // not sure why this one specifically?? //(IndexOutOfRangeException)
                     {
                     }
 

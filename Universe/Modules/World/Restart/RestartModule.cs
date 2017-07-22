@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -51,7 +53,7 @@ namespace Universe.Modules.Restart
         protected bool m_Notice;
         protected DateTime m_RestartBegin;
         protected IScene m_scene;
-       
+
         string m_storeDirectory = "";
 
         #region INonSharedRegionModule Members
@@ -59,8 +61,7 @@ namespace Universe.Modules.Restart
         public void Initialize (IConfigSource config)
         {
             IConfig rs_config = config.Configs ["FileBasedSimulationData"];
-            if (rs_config != null)
-            {
+            if (rs_config != null) {
                 m_storeDirectory = PathHelpers.ComputeFullPath (rs_config.GetString ("StoreBackupDirectory", m_storeDirectory));
 
                 AddConsoleCommands ();
@@ -69,12 +70,11 @@ namespace Universe.Modules.Restart
 
         public void AddRegion (IScene scene)
         {
-            if (m_storeDirectory == "")
-            {
+            if (m_storeDirectory == "") {
                 var simBase = scene.RequestModuleInterface<ISimulationBase> ();
-                m_storeDirectory = Path.Combine(simBase.DefaultDataPath, "Region");
+                m_storeDirectory = Path.Combine (simBase.DefaultDataPath, "Region");
             }
-            
+
             m_scene = scene;
             scene.RegisterModuleInterface<IRestartModule> (this);
         }
@@ -98,14 +98,12 @@ namespace Universe.Modules.Restart
         {
         }
 
-        public string Name
-        {
+        public string Name {
             get { return "RestartModule"; }
         }
 
-        public Type ReplaceableInterface
-        {
-            get { return typeof(IRestartModule); }
+        public Type ReplaceableInterface {
+            get { return typeof (IRestartModule); }
         }
 
 
@@ -118,7 +116,7 @@ namespace Universe.Modules.Restart
         /// </summary>
         /// <param name="scene">Not used</param>
         /// <param name="cmd">Not used</param>
-        void HandleHelp (IScene scene, string[] cmd)
+        void HandleHelp (IScene scene, string [] cmd)
         {
             MainConsole.Instance.Info (
                 "restart all regions  [<time (in seconds)> [<message>]]\n" +
@@ -139,8 +137,7 @@ namespace Universe.Modules.Restart
         /// </summary>
         void AddConsoleCommands ()
         {
-            if (MainConsole.Instance != null)
-            {
+            if (MainConsole.Instance != null) {
                 MainConsole.Instance.Commands.AddCommand (
                     "restart all regions",
                     "restart all regions [<time (in seconds)> [message]]",
@@ -168,30 +165,21 @@ namespace Universe.Modules.Restart
             }
         }
 
-        public TimeSpan TimeUntilRestart
-        {
+        public TimeSpan TimeUntilRestart {
             get { return DateTime.Now - m_RestartBegin; }
         }
 
-        public void ScheduleRestart (UUID initiator, string message, int[] alerts, bool notice)
+        public void ScheduleRestart (UUID initiator, string message, int [] alerts, bool notice)
         {
-            if (alerts.Length == 0)
-            {
+            if (alerts.Length == 0) {
                 AbortRestart ("[Restart]: Region restart aborted");
                 return;
             }
 
-            if (m_CountdownTimer != null)
-            {
+            if (m_CountdownTimer != null) {
                 MainConsole.Instance.Warn ("[Restart]: Resetting the restart timer for new settings.");
                 m_CountdownTimer.Stop ();
                 m_CountdownTimer = null;
-            }
-
-            if (alerts == null)
-            {
-                RestartScene ();
-                return;
             }
 
             m_Message = message;
@@ -201,8 +189,7 @@ namespace Universe.Modules.Restart
             m_Alerts.Sort ();
             m_Alerts.Reverse ();
 
-            if (m_Alerts [0] == 0)
-            {
+            if (m_Alerts [0] == 0) {
                 RestartScene ();
                 return;
             }
@@ -214,11 +201,10 @@ namespace Universe.Modules.Restart
 
         public void AbortRestart (string message)
         {
-            if (m_CountdownTimer != null)
-            {
+            if (m_CountdownTimer != null) {
                 m_CountdownTimer.Stop ();
                 m_CountdownTimer = null;
-                if (m_DialogModule != null && message != String.Empty)
+                if (m_DialogModule != null && message != string.Empty)
                     m_DialogModule.SendGeneralAlert (message);
 
                 MainConsole.Instance.Warn ("[Restart]: Region restart aborted");
@@ -238,7 +224,7 @@ namespace Universe.Modules.Restart
         /// <summary>
         /// Serializes the scene.
         /// </summary>
-        public void SerializeScene()
+        public void SerializeScene ()
         {
             MainConsole.Instance.InfoFormat ("[Restart]: Saving current users on {0} ready for restart", m_scene.RegionInfo.RegionName);
             SerializeUsers (m_scene);
@@ -248,17 +234,14 @@ namespace Universe.Modules.Restart
 
         public int DoOneNotice ()
         {
-            if (m_Alerts.Count == 0 || m_Alerts [0] == 0)
-            {
+            if (m_Alerts.Count == 0 || m_Alerts [0] == 0) {
                 RestartScene ();
                 return 0;
             }
 
             int nextAlert = 0;
-            while (m_Alerts.Count > 1)
-            {
-                if (m_Alerts [1] == m_Alerts [0])
-                {
+            while (m_Alerts.Count > 1) {
+                if (m_Alerts [1] == m_Alerts [0]) {
                     m_Alerts.RemoveAt (0);
                     continue;
                 }
@@ -271,29 +254,26 @@ namespace Universe.Modules.Restart
             m_Alerts.RemoveAt (0);
 
             int minutes = currentAlert / 60;
-            string currentAlertString = String.Empty;
-            if (minutes > 0)
-            {
+            string currentAlertString = string.Empty;
+            if (minutes > 0) {
                 if (minutes == 1)
                     currentAlertString += "1 minute";
                 else
-                    currentAlertString += String.Format ("{0} minutes", minutes);
+                    currentAlertString += string.Format ("{0} minutes", minutes);
                 if ((currentAlert % 60) != 0)
                     currentAlertString += " and ";
             }
-            if ((currentAlert % 60) != 0)
-            {
+            if ((currentAlert % 60) != 0) {
                 int seconds = currentAlert % 60;
                 if (seconds == 1)
                     currentAlertString += "1 second";
                 else
-                    currentAlertString += String.Format ("{0} seconds", seconds);
+                    currentAlertString += string.Format ("{0} seconds", seconds);
             }
 
-            string msg = String.Format (m_Message, currentAlertString);
+            string msg = string.Format (m_Message, currentAlertString);
 
-            if (m_DialogModule != null && msg != String.Empty)
-            {
+            if (m_DialogModule != null && msg != string.Empty) {
                 if (m_Notice)
                     m_DialogModule.SendGeneralAlert (msg);
                 else
@@ -342,11 +322,10 @@ namespace Universe.Modules.Restart
             List<IScenePresence> sceneAgents = scene.GetScenePresences ();
             if (sceneAgents.Count == 0)
                 return;
-            
+
             var regionUsers = 0;
             OSDMap userMap = new OSDMap ();
-            foreach (IScenePresence presence in sceneAgents)
-            {
+            foreach (IScenePresence presence in sceneAgents) {
                 OSDMap user = new OSDMap ();
                 OSDMap remoteIP = new OSDMap ();
 
@@ -380,8 +359,7 @@ namespace Universe.Modules.Restart
 
             var regionUsers = 0;
             OSDMap sceneAgents = (OSDMap)OSDParser.DeserializeJson (File.ReadAllText (readFile));
-            foreach (OSD o in sceneAgents.Values)
-            {
+            foreach (OSD o in sceneAgents.Values) {
                 AgentCircuitData data = new AgentCircuitData ();
                 OSDMap user = (OSDMap)o;
 
@@ -417,7 +395,7 @@ namespace Universe.Modules.Restart
         /// </summary>
         /// <param name="scene">Scene.</param>
         /// <param name="args">Arguments.</param>
-        void HandleRegionRestart (IScene scene, string[] args)
+        void HandleRegionRestart (IScene scene, string [] args)
         {
             bool allRegions = false;
             int seconds = 0;
@@ -427,8 +405,7 @@ namespace Universe.Modules.Restart
                 scnName = scene.RegionInfo.RegionName;
 
             // check if this for all scenes
-            if ((args.Length > 1) && (args [1].ToLower () == "all"))
-            {
+            if ((args.Length > 1) && (args [1].ToLower () == "all")) {
                 allRegions = true;
                 var newargs = new List<string> (args);
                 newargs.RemoveAt (1);
@@ -436,22 +413,18 @@ namespace Universe.Modules.Restart
                 scnName = "all regions";
             }
 
-            if (args.Length < 3)
-            {
-               
+            if (args.Length < 3) {
+
                 if (MainConsole.Instance.Prompt ("[Restart]: Do you wish to restart " + scnName +
-                    " immediately? (yes/no)", "no") != "yes")
-                {
+                    " immediately? (yes/no)", "no") != "yes") {
                     MainConsole.Instance.Info ("usage: region restart <time> [message]");
                     return;
                 }
             }
 
             // do we have a time?   
-            if (args.Length > 2)
-            {
-                if (!int.TryParse (args [2], out seconds))
-                {
+            if (args.Length > 2) {
+                if (!int.TryParse (args [2], out seconds)) {
                     MainConsole.Instance.Error ("[Restart]: Unable to determine restart delay!");
                     return;
                 }
@@ -459,8 +432,7 @@ namespace Universe.Modules.Restart
 
             // build message interval list
             List<int> times = new List<int> ();
-            while (seconds > 0)
-            {
+            while (seconds > 0) {
                 times.Add (seconds);
                 if (seconds > 300)
                     seconds -= 120;
@@ -475,43 +447,37 @@ namespace Universe.Modules.Restart
             if (args.Length > 3)
                 message = Util.CombineParams (args, 4);   // assume everything else is the message
 
-            if (!allRegions)
-            {
+            if (!allRegions) {
                 // we have a specified region
                 IRestartModule restartModule = scene.RequestModuleInterface<IRestartModule> ();
-                if (restartModule == null)
-                {
+                if (restartModule == null) {
                     MainConsole.Instance.Error ("[Restart]: Unable to locate restart module for " + scnName);
                     return;
                 }
                 restartModule.ScheduleRestart (UUID.Zero, scnName + message, times.ToArray (), true);
-            } else
-            {
+            } else {
                 int offset = 0;
                 // check for immediate restart
                 if ((times.Count == 1) && (times [0] == 0))
                     times [0] = 2;                              // delay initial restart by 2 seconds
 
-                foreach (IScene scn in MainConsole.Instance.ConsoleScenes)
-                {
-                    for (int i = 0; i < times.Count; i++)
-                    {
+                foreach (IScene scn in MainConsole.Instance.ConsoleScenes) {
+                    for (int i = 0; i < times.Count; i++) {
                         times [i] = times [i] + 5;               // stagger each alert/restart by 5 seconds    
-                    }   
- 
+                    }
+
                     scnName = scn.RegionInfo.RegionName;
 
                     IRestartModule sceneRestart = scn.RequestModuleInterface<IRestartModule> ();
                     if (sceneRestart == null)
                         MainConsole.Instance.Error ("[Restart]: Unable to locate restart module for " + scnName);
-                    else
-                    {
+                    else {
                         sceneRestart.ScheduleRestart (UUID.Zero, scnName + message, times.ToArray (), true);
                         offset++;
                     }
                 }
             }
-          
+
         }
 
         /// <summary>
@@ -519,11 +485,10 @@ namespace Universe.Modules.Restart
         /// </summary>
         /// <param name="scene">Scene.</param>
         /// <param name="args">Arguments.</param>
-        void HandleRegionRestartAbort (IScene scene, string[] args)
+        void HandleRegionRestartAbort (IScene scene, string [] args)
         {
             IRestartModule restartModule = scene.RequestModuleInterface<IRestartModule> ();
-            if (restartModule == null)
-            {
+            if (restartModule == null) {
                 MainConsole.Instance.Error ("[Restart]: Unable to locate restart module for this scene");
                 return;
             }
@@ -531,7 +496,7 @@ namespace Universe.Modules.Restart
             string msg = "Restart aborted";
             if (args.Length > 3)
                 msg = Util.CombineParams (args, 4);   // assume everything else is the message
-                    
+
             // are we aborting a scheduled restart?
             if (m_Alerts != null)
                 AbortRestart (msg);

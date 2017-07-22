@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -141,11 +143,11 @@ namespace Universe.Physics.PrimMesher
                     p2 = p4 - numXElements;
                     p1 = p3 - numXElements;
                     Coord c = new Coord (xBegin + x * xStep, yBegin + y * yStep, zMap [y, x]);
-                    this.coords.Add (c);
+                    coords.Add (c);
                     if (viewerMode)
                     {
-                        this.normals.Add (new Coord ());
-                        this.uvs.Add (new UVCoord (uStep * x, 1.0f - vStep * y));
+                        normals.Add (new Coord ());
+                        uvs.Add (new UVCoord (uStep * x, 1.0f - vStep * y));
                     }
 
                     if (y > 0 && x > 0)
@@ -163,8 +165,8 @@ namespace Universe.Physics.PrimMesher
                             f2 = new Face (p1, p2, p4);
                         }
 
-                        this.faces.Add (f1);
-                        this.faces.Add (f2);
+                        faces.Add (f1);
+                        faces.Add (f2);
                     }
                 }
             }
@@ -479,11 +481,11 @@ namespace Universe.Physics.PrimMesher
         {
             // compute vertex normals by summing all the surface normals of all the triangles sharing
             // each vertex and then normalizing
-            int numFaces = this.faces.Count;
+            int numFaces = faces.Count;
             for (int i = 0; i < numFaces; i++)
             {
                 Face face = faces [i];
-                Coord surfaceNormal = face.SurfaceNormal (this.coords);
+                Coord surfaceNormal = face.SurfaceNormal (coords);
                 normals [face.n1] += surfaceNormal;
                 normals [face.n2] += surfaceNormal;
                 normals [face.n3] += surfaceNormal;
@@ -549,7 +551,7 @@ namespace Universe.Physics.PrimMesher
 
             if (viewerFaces != null)
             {
-                int numViewerFaces = this.viewerFaces.Count;
+                int numViewerFaces = viewerFaces.Count;
 
                 for (i = 0; i < numViewerFaces; i++)
                 {
@@ -619,20 +621,21 @@ namespace Universe.Physics.PrimMesher
             }
         }
 
-        public void DumpRaw (String path, String name, String title)
+        public void DumpRaw (string path, string name, string title)
         {
             if (path == null)
                 return;
-            String fileName = name + "_" + title + ".raw";
-            String completePath = System.IO.Path.Combine (path, fileName);
+            string fileName = name + "_" + title + ".raw";
+            string completePath = System.IO.Path.Combine (path, fileName);
+
             StreamWriter sw = new StreamWriter (completePath);
-
-            for (int i = 0; i < faces.Count; i++)
-            {
-                string s = coords [faces [i].v1] + " " + coords [faces [i].v2] + " " + coords [faces [i].v3];
-                sw.WriteLine (s);
+            try {
+                for (int i = 0; i < faces.Count; i++) {
+                    string s = coords [faces [i].v1] + " " + coords [faces [i].v2] + " " + coords [faces [i].v3];
+                    sw.WriteLine (s);
+                }
+            } catch {
             }
-
             sw.Close ();
         }
     }

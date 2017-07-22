@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -27,15 +29,15 @@
 
 using System;
 using System.Drawing;
-using Universe.Framework.SceneInfo;
 using OpenMetaverse;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    internal class SOPObjectMaterial : MarshalByRefObject, IObjectMaterial
+    class SOPObjectMaterial : MarshalByRefObject, IObjectMaterial
     {
-        private readonly int m_face;
-        private readonly ISceneChildEntity m_parent;
+        readonly int m_face;
+        readonly ISceneChildEntity m_parent;
 
         public SOPObjectMaterial(int m_face, ISceneChildEntity m_parent)
         {
@@ -132,7 +134,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 
         #endregion
 
-        private Primitive.TextureEntryFace GetTexface()
+        Primitive.TextureEntryFace GetTexface()
         {
             Primitive.TextureEntry tex = m_parent.Shape.Textures;
             return tex.GetFace((uint) m_face);

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,10 +27,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.SceneInfo;
-using OpenMetaverse;
 using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.Framework.Modules
 {
@@ -101,7 +103,7 @@ namespace Universe.Framework.Modules
         #endregion
 
         #region helpers
-
+        bool IsNpcAgent (UUID bot);
         UUID GetOwner (UUID botID);
         Vector3 GetPosition (UUID botID, UUID userAttempting);
         Quaternion GetRotation (UUID botID, UUID userAttempting);

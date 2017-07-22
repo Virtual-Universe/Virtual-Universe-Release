@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -335,7 +337,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
                 catch (AccessViolationException)
                 {
-                    MainConsole.Instance.Warn("[PHYSICS]: Unable to collide test a space");
+                    MainConsole.Instance.Warn("[ODE Physics]: Unable to collide test a space");
                     return;
                 }
                 //Colliding a space or a geom with a space or a geom. so drill down
@@ -361,11 +363,11 @@ namespace Universe.Physics.OpenDynamicsEngine
             catch (SEHException)
             {
                 MainConsole.Instance.Error(
-                    "[PHYSICS]: The Operating system shut down ODE because of corrupt memory.  This could be a result of really irregular terrain.  If this repeats continuously, restart using Basic Physics and terrain fill your terrain.  Restarting the sim.");
+                    "[ODE Physics]: The Operating system shut down ODE because of corrupt memory.  This could be a result of really irregular terrain.  If this repeats continuously, restart using Basic Physics and terrain fill your terrain.  Restarting the sim.");
             }
             catch (Exception e)
             {
-                MainConsole.Instance.WarnFormat("[PHYSICS]: Unable to collide test an object: {0}", e);
+                MainConsole.Instance.WarnFormat("[ODE Physics]: Unable to collide test an object: {0}", e);
                 return;
             }
 

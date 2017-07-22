@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -31,54 +33,57 @@ using Universe.Framework.Utilities;
 
 namespace Universe.DataManager.Migration.Migrators.Estate
 {
-	public class EstateMigrator_0 : Migrator
-	{
-		public EstateMigrator_0 ()
-		{
-			Version = new Version (0, 0, 0);
-			MigrationName = "Estate";
+    public class EstateMigrator_0 : Migrator
+    {
+        public EstateMigrator_0()
+        {
+            Version = new Version(0, 0, 0);
+            MigrationName = "Estate";
 
-			Schema = new List<SchemaDefinition> ();
+            Schema = new List<SchemaDefinition>();
 
-			AddSchema ("estate_regions", ColDefs (
-				ColDef ("RegionID", ColumnTypes.String36),
-				ColDef ("EstateID", ColumnTypes.Integer11)
-			), IndexDefs (
-				IndexDef (new string[1] { "RegionID" }, IndexType.Primary),
-				IndexDef (new string[1] { "EstateID" }, IndexType.Index)
-			));
+            // Change summary:
+            //   Change ID type fields to type UUID
+            AddSchema("estate_regions", ColDefs(
+                ColDef("RegionID", ColumnTypes.UUID),
+                ColDef("EstateID", ColumnTypes.Integer11)
+            ), IndexDefs(
+                IndexDef(new string[1] {"RegionID"}, IndexType.Primary),
+                IndexDef(new string[1] {"EstateID"}, IndexType.Index)
+            ));
 
-			AddSchema ("estate_settings", ColDefs (
-				ColDef ("EstateID", ColumnTypes.Integer11),
-				ColDef ("EstateName", ColumnTypes.String100),
-				ColDef ("EstateOwner", ColumnTypes.String36),
-				ColDef ("ParentEstateID", ColumnTypes.Integer11),
-				ColDef ("Settings", ColumnTypes.Text)
-			), IndexDefs (
-				IndexDef (new string[1] { "EstateID" }, IndexType.Primary),
-				IndexDef (new string[1] { "EstateOwner" }, IndexType.Index),
-				IndexDef (new string[2] { "EstateName", "EstateOwner" }, IndexType.Index)
-			));
-		}
 
-		protected override void DoCreateDefaults (IDataConnector genericData)
-		{
-			EnsureAllTablesInSchemaExist (genericData);
-		}
+            AddSchema("estate_settings", ColDefs(
+                ColDef("EstateID", ColumnTypes.Integer11),
+                ColDef("EstateName", ColumnTypes.String100),
+                ColDef("EstateOwner", ColumnTypes.UUID),
+                ColDef("ParentEstateID", ColumnTypes.Integer11),
+                ColDef("Settings", ColumnTypes.Text)
+            ), IndexDefs(
+                IndexDef(new string[1] {"EstateID"}, IndexType.Primary),
+                IndexDef(new string[1] {"EstateOwner"}, IndexType.Index),
+                IndexDef(new string[2] {"EstateName", "EstateOwner"}, IndexType.Index)
+            ));
+        }
 
-		protected override bool DoValidate (IDataConnector genericData)
-		{
-			return TestThatAllTablesValidate (genericData);
-		}
+        protected override void DoCreateDefaults(IDataConnector genericData)
+        {
+            EnsureAllTablesInSchemaExist(genericData);
+        }
 
-		protected override void DoMigrate (IDataConnector genericData)
-		{
-			DoCreateDefaults (genericData);
-		}
+        protected override bool DoValidate(IDataConnector genericData)
+        {
+            return TestThatAllTablesValidate(genericData);
+        }
 
-		protected override void DoPrepareRestorePoint (IDataConnector genericData)
-		{
-			CopyAllTablesToTempVersions (genericData);
-		}
-	}
+        protected override void DoMigrate(IDataConnector genericData)
+        {
+            DoCreateDefaults(genericData);
+        }
+
+        protected override void DoPrepareRestorePoint(IDataConnector genericData)
+        {
+            CopyAllTablesToTempVersions(genericData);
+        }
+    }
 }

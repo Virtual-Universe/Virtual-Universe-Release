@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -26,20 +28,19 @@
  */
 
 using System.Collections.Generic;
-
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
 
 namespace Universe.Services.DataService
 {
     public class LocalRegionConnector : ConnectorBase, IRegionConnector
     {
-        private IGenericData GD;
+        IGenericData GD;
 
         #region IRegionConnector Members
 
@@ -77,9 +78,10 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public void AddTelehub(Telehub telehub, ulong regionhandle)
         {
-            object remoteValue = DoRemote(telehub, regionhandle);
-            if (remoteValue != null || m_doRemoteOnly)
+            if (m_doRemoteOnly) {
+                DoRemote (telehub, regionhandle);
                 return;
+            }
 
             //Look for a telehub first.
             if (FindTelehub(new UUID(telehub.RegionID), 0) != null)
@@ -130,9 +132,10 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public void RemoveTelehub(UUID regionID, ulong regionHandle)
         {
-            object remoteValue = DoRemote(regionID, regionHandle);
-            if (remoteValue != null || m_doRemoteOnly)
+            if (m_doRemoteOnly) {
+                DoRemote (regionID, regionHandle);
                 return;
+            }
 
             //Look for a telehub first.
             // Why? ~ SignpostMarv
@@ -153,9 +156,10 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public Telehub FindTelehub(UUID regionID, ulong regionHandle)
         {
-            object remoteValue = DoRemote(regionID, regionHandle);
-            if (remoteValue != null || m_doRemoteOnly)
-                return (Telehub) remoteValue;
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemote (regionID, regionHandle);
+                return remoteValue != null ? (Telehub)remoteValue : null;
+            }
 
             QueryFilter filter = new QueryFilter();
             filter.andFilters["RegionID"] = regionID;

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -142,7 +144,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 _position.Y = _parent_scene.Region.RegionSizeY*0.5f;
                 _position.Z = _parent_scene.GetTerrainHeightAtXY(_position.X, _position.Y) + 10f;
 
-                MainConsole.Instance.Warn("[PHYSICS]: Got NaN Position on Character Create");
+                MainConsole.Instance.Warn("[ODE Physics]: Got NaN Position on Character Create");
             }
 
 
@@ -155,7 +157,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         {
             if (!(Shell == IntPtr.Zero && Body == IntPtr.Zero))
             {
-                MainConsole.Instance.Debug("[PHYSICS]: re-creating the following avatar ODE data, even though it already exists - "
+                MainConsole.Instance.Debug("[ODE Physics]: re-creating the following avatar ODE data, even though it already exists - "
                                           + (Shell != IntPtr.Zero ? "Shell " : "")
                                           + (Body != IntPtr.Zero ? "Body " : ""));
             }
@@ -298,7 +300,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
                 else
                 {
-                    MainConsole.Instance.Warn("[PHYSICS]: Got a NaN Position from Scene on a Character");
+                    MainConsole.Instance.Warn("[ODE Physics]: Got a NaN Position from Scene on a Character");
                 }
             }
         }
@@ -326,7 +328,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                     {
                         //It is the same, do not rebuild
                         MainConsole.Instance.Info(
-                            "[Physics]: Not rebuilding the avatar capsule, as it is the same size as the previous capsule.");
+                            "[ODE Physics]: Not rebuilding the avatar capsule, as it is the same size as the previous capsule.");
                         return;
                     }
                     _lastSetSize = value;
@@ -339,7 +341,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
                 else
                 {
-                    MainConsole.Instance.Warn("[PHYSICS]: Got a NaN Size from Scene on a Character");
+                    MainConsole.Instance.Warn("[ODE Physics]: Got a NaN Size from Scene on a Character");
                 }
             }
         }
@@ -377,7 +379,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                     m_targetVelocity = value;
                 else
                 {
-                    MainConsole.Instance.Warn("[PHYSICS]: Got a NaN velocity from Scene in a Character");
+                    MainConsole.Instance.Warn("[ODE Physics]: Got a NaN velocity from Scene in a Character");
                 }
             }
         }
@@ -750,7 +752,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
             else
             {
-                MainConsole.Instance.Warn("[PHYSICS]: Got a NaN force applied to a Character");
+                MainConsole.Instance.Warn("[ODE Physics]: Got a NaN force applied to a Character");
             }
             //m_lastUpdateSent = false;
         }

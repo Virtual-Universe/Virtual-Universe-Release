@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -54,6 +56,11 @@ namespace Universe.Framework.ClientInterfaces
         public int PassPrice;
         public bool Privacy;
         public int SalePrice;
+        // 25062016 Added for LibOMV update 0.9.4.5
+        public bool SeeAVs;
+        public bool AnyAVSounds;
+        public bool GroupAVSounds;
+        // End
         public UUID SnapshotID;
         public Vector3 UserLocation;
         public Vector3 UserLookAt;

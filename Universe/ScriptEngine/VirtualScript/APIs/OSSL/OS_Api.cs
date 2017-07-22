@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -1631,7 +1633,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             Hashtable jsondata = new Hashtable(); // the hashtable to be returned
             try
             {
-                // iterate through the serialised stream of tokens and store at the right depth in the hashtable
+                // iterate through the serialized stream of tokens and store at the right depth in the hashtable
                 // the top level hashtable may contain more nested hashtables within it each containing an objects representation
                 int i = 0;
                 for (i = 0; i < JSON.Length; i++)
@@ -2172,13 +2174,14 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
             if (!NotecardCache.IsCached(assetID))
             {
-                AssetBase a = World.AssetService.Get(assetID.ToString());
+                AssetBase asset = World.AssetService.Get(assetID.ToString());
 
-                if (a == null)
+                if (asset == null)
                     return UUID.Zero;
 
-                string data = Encoding.UTF8.GetString(a.Data);
+                string data = Encoding.UTF8.GetString(asset.Data);
                 NotecardCache.Cache(assetID, data);
+                asset.Dispose ();
             };
 
             return assetID;
@@ -3289,7 +3292,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcCreate", m_host, "OSSL", m_itemID)) 
                 return "";
 
-            return NpcCreate(firstname, lastname, position, notecard, false, false);
+            return NpcCreate(firstname, lastname, position, notecard, true, false);
         }
 
         public LSL_Key osNpcCreate(string firstname, string lastname, LSL_Types.Vector3 position, string notecard, int options)
@@ -3385,6 +3388,22 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
                 manager.RemoveAvatar(npcId, World, m_host.OwnerID);
             }
+        }
+
+        public LSL_Integer osIsNpc(LSL_Key npc)
+        {
+            if (!ScriptProtection.CheckThreatLevel (ThreatLevel.None, "osIsNpc", m_host, "OSSL", m_itemID))
+                return ScriptBaseClass.FALSE;
+
+            IBotManager manager = World.RequestModuleInterface<IBotManager> ();
+            if (manager != null) {
+                UUID npcId;
+                if (UUID.TryParse(npc.m_string, out npcId))
+                    if (manager.IsNpcAgent(npcId))
+                        return ScriptBaseClass.TRUE;
+            }
+
+            return ScriptBaseClass.FALSE;
         }
 
         /// <summary>

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -27,7 +29,6 @@
 
 // Uncomment to make asset Get requests for existing 
 // #define WAIT_ON_INPROGRESS_REQUESTS
-
 
 using System;
 using System.Collections.Generic;
@@ -121,7 +122,7 @@ namespace Universe.Services
         TimeSpan m_MemoryExpiration = TimeSpan.Zero;
         TimeSpan m_FileExpiration = TimeSpan.Zero;
         TimeSpan m_FileExpirationCleanupTimer = TimeSpan.Zero;
-        readonly object m_fileCacheLock = new Object();
+        readonly object m_fileCacheLock = new object();
 
         static int m_CacheDirectoryTiers = 1;
         static int m_CacheDirectoryTierLen = 3;
@@ -158,7 +159,7 @@ namespace Universe.Services
 
             if (moduleConfig != null)
             {
-                string name = moduleConfig.GetString("AssetCaching", String.Empty);
+                string name = moduleConfig.GetString("AssetCaching", string.Empty);
 
                 if (name == Name)
                 {
@@ -167,8 +168,8 @@ namespace Universe.Services
                     IConfig assetConfig = config.Configs["AssetCache"];
                     if (assetConfig == null)
                     {
-                        //MainConsole.Instance.Warn("[Flotsam asset cache]: AssetCache missing from Universe.ini, using defaults.");
-                        //MainConsole.Instance.InfoFormat("[Flotsam asset cache]: Cache Directory", m_CacheDirectory);
+                        //MainConsole.Instance.Warn("[Flotsam Asset Cache]]: AssetCache missing from Universe.ini, using defaults.");
+                        //MainConsole.Instance.InfoFormat("[Flotsam Asset Cache]]: Cache Directory", m_CacheDirectory);
                         return;
                     }
 
@@ -179,7 +180,7 @@ namespace Universe.Services
                         m_CacheDirectory = Path.Combine (defpath, Constants.DEFAULT_ASSETCACHE_DIR);
                         m_CacheDirectory = Path.Combine (m_CacheDirectory, "flotsam");
                     }
-                    MainConsole.Instance.InfoFormat("[Flotsam asset cache]: Cache Directory '{0}'", m_CacheDirectory);
+                    MainConsole.Instance.InfoFormat("[Flotsam Asset Cache]]: Cache Directory '{0}'", m_CacheDirectory);
 
                     m_MemoryCacheEnabled = assetConfig.GetBoolean("MemoryCacheEnabled", false);
                     m_MemoryExpiration =
@@ -430,7 +431,6 @@ namespace Universe.Services
             return Get(id, out found);
         }
 
-        volatile object _lock = new object();
         public AssetBase Get(string id, out bool found)
         {
             m_assetRequests[id].Amt++;
@@ -440,7 +440,12 @@ namespace Universe.Services
             found = false;
 
             bool forceMemCache = m_assetRequests[id].Amt > _forceMemoryCacheAmount;
-            if ((m_MemoryCacheEnabled || forceMemCache) && m_MemoryCache.TryGetValue(id, out asset))
+            bool gotValue = false;
+            try {
+                gotValue = m_MemoryCache.TryGetValue (id, out asset);
+            } catch {
+            }
+            if (gotValue && (m_MemoryCacheEnabled || forceMemCache))
             {
                 found = true;
                 m_MemoryHits++;
@@ -487,11 +492,12 @@ namespace Universe.Services
 #else
                 // Track how often we have the problem that an asset is requested while
                 // it is still being downloaded by a previous request.
-                lock(_lock) 
-                {
-                    if (m_CurrentlyWriting.Contains (filename))
-                        m_RequestsForInprogress++;
-                }
+                bool inProgress;
+                lock(m_CurrentlyWriting) 
+                    inProgress = m_CurrentlyWriting.Contains (filename);
+                if (inProgress)
+                    m_RequestsForInprogress++;
+
 #endif
             }
 
@@ -499,20 +505,20 @@ namespace Universe.Services
             {
                 m_HitRateFile = (double) m_DiskHits/m_Requests*100.0;
 
-                MainConsole.Instance.InfoFormat("[Flotsam asset cache]: Cache Get :: {0} :: {1}", id,
+                MainConsole.Instance.InfoFormat("[Flotsam Asset Cache]]: Cache Get :: {0} :: {1}", id,
                                                 asset == null ? "Miss" : "Hit");
-                MainConsole.Instance.InfoFormat("[Flotsam asset cache]: File Hit Rate {0}% for {1} requests",
+                MainConsole.Instance.InfoFormat("[Flotsam Asset Cache]]: File Hit Rate {0}% for {1} requests",
                                                 m_HitRateFile.ToString("0.00"), m_Requests);
 
                 if (m_MemoryCacheEnabled)
                 {
                     m_HitRateMemory = (double) m_MemoryHits/m_Requests*100.0;
-                    MainConsole.Instance.InfoFormat("[Flotsam asset cache]: Memory Hit Rate {0}% for {1} requests",
+                    MainConsole.Instance.InfoFormat("[Flotsam Asset Cache]]: Memory Hit Rate {0}% for {1} requests",
                                                     m_HitRateMemory.ToString("0.00"), m_Requests);
                 }
 
                 MainConsole.Instance.InfoFormat(
-                    "[Flotsam asset cache]: {0} unnecessary requests due to requests for assets that are currently downloading.",
+                    "[Flotsam Asset Cache]]: {0} unnecessary requests due to requests for assets that are currently downloading.",
                     m_RequestsForInprogress);
             }
             if (_assetMonitor != null)
@@ -577,7 +583,7 @@ namespace Universe.Services
             catch
             {
             }
-            UpdateMemoryCache(id, asset, asset == null ? true : forceMemCache);
+            UpdateMemoryCache(id, asset, asset == null || forceMemCache);
 
             m_DiskHits++;
             return asset;
@@ -591,7 +597,7 @@ namespace Universe.Services
             }
 
             Stream s = File.Open(tempname, FileMode.OpenOrCreate);
-            ProtoBuf.Serializer.Serialize<AssetBase>(s, asset);
+            ProtoBuf.Serializer.Serialize (s, asset);
             s.Close();
             //File.WriteAllText(tempname, OpenMetaverse.StructuredData.OSDParser.SerializeJsonString(asset.ToOSD()));
 
@@ -611,7 +617,7 @@ namespace Universe.Services
         public void Expire(string id)
         {
             if (m_logLevel >= 2)
-                MainConsole.Instance.DebugFormat("[Flotsam asset cache]: Expiring Asset {0}.", id);
+                MainConsole.Instance.DebugFormat("[Flotsam Asset Cache]]: Expiring Asset {0}.", id);
 
             try
             {
@@ -634,7 +640,7 @@ namespace Universe.Services
         public void Clear()
         {
             if (m_logLevel >= 2)
-                MainConsole.Instance.Debug("[Flotsam asset cache]: Clearing Cache.");
+                MainConsole.Instance.Debug("[Flotsam Asset Cache]]: Clearing Cache.");
 
             lock (m_fileCacheLock)
             {
@@ -659,7 +665,7 @@ namespace Universe.Services
         void CleanupExpiredFiles(object source, ElapsedEventArgs e)
         {
             if (m_logLevel >= 2)
-                MainConsole.Instance.DebugFormat("[Flotsam asset cache]: Checking for expired files older then {0}.",
+                MainConsole.Instance.DebugFormat("[Flotsam Asset Cache]]: Checking for expired files older then {0}.",
                                                  m_FileExpiration.ToString());
 
             // Purge all files last accessed prior to this point
@@ -710,7 +716,7 @@ namespace Universe.Services
             else if (dirSize >= m_CacheWarnAt)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[Flotsam asset cache]: Cache folder exceeded CacheWarnAt limit {0} {1}.  Suggest increasing tiers, tier length, or reducing cache expiration",
+                    "[Flotsam Asset Cache]]: Cache folder exceeded CacheWarnAt limit {0} {1}.  Suggest increasing tiers, tier length, or reducing cache expiration",
                     dir, dirSize);
             }
         }
@@ -762,7 +768,7 @@ namespace Universe.Services
                     }
 
                     if (m_logLevel >= 2)
-                        MainConsole.Instance.DebugFormat("[Flotsam asset cache]: Cache Stored :: {0}", asset.ID);
+                        MainConsole.Instance.DebugFormat("[Flotsam Asset Cache]]: Cache Stored :: {0}", asset.ID);
                 }
                 catch (Exception e)
                 {
@@ -865,7 +871,7 @@ namespace Universe.Services
             foreach (string t in text)
             {
                 if (t.Trim() != "")
-                    MainConsole.Instance.ErrorFormat("[Flotsam asset cache]: {0} ", t);
+                    MainConsole.Instance.ErrorFormat("[Flotsam Asset Cache]]: {0} ", t);
             }
         }
 
@@ -886,7 +892,7 @@ namespace Universe.Services
         /// <param name="RegionID"></param>
         void StampRegionStatusFile(UUID RegionID)
         {
-            string RegionCacheStatusFile = Path.Combine(m_CacheDirectory, "RegionStatus_" + RegionID.ToString() + ".fac");
+            string RegionCacheStatusFile = Path.Combine(m_CacheDirectory, "RegionStatus_" + RegionID + ".fac");
             lock (m_fileCacheLock)
             {
                 if (!Directory.Exists(m_CacheDirectory))
@@ -949,11 +955,12 @@ namespace Universe.Services
                     	
                             if (cachedAsset == null && assets [assetID] != AssetType.Unknown)
                             {
-                                MainConsole.Instance.DebugFormat ("[Flotsam asset cache]: Could not find asset {0}, type {1} when pre-caching all scene assets",
+                                MainConsole.Instance.DebugFormat ("[Flotsam Asset Cache]]: Could not find asset {0}, type {1} when pre-caching all scene assets",
                                     assetID, assets [assetID]);
                             }
                             // we don't actually need what we retrieved
-                            cachedAsset.Dispose ();
+                            if (cachedAsset != null)
+                                cachedAsset.Dispose ();
                         }
                     }
                     uniqueUuids.Add(assetID);
@@ -1006,20 +1013,20 @@ namespace Universe.Services
                 switch (cmd)
                 {
                     case "status":
-                        MainConsole.Instance.InfoFormat("[Flotsam asset cache] Memory Cache : {0} assets",
+                        MainConsole.Instance.InfoFormat("[Flotsam Asset Cache]] Memory Cache : {0} assets",
                                                         m_MemoryCache.Count);
 
                         int fileCount = GetFileCacheCount(m_CacheDirectory);
-                        MainConsole.Instance.InfoFormat("[Flotsam asset cache] File Cache : {0} assets", fileCount);
+                        MainConsole.Instance.InfoFormat("[Flotsam Asset Cache]] File Cache : {0} assets", fileCount);
 
                         foreach (string s in Directory.GetFiles(m_CacheDirectory, "*.fac"))
                         {
                             MainConsole.Instance.Info(
-                                "[Flotsam asset cache] Deep Scans were performed on the following regions:");
+                                "[Flotsam Asset Cache]] Deep Scans were performed on the following regions:");
 
-                            string RegionID = s.Remove(0, s.IndexOf("_")).Replace(".fac", "");
+                            string RegionID = s.Remove(0, s.IndexOf ("_", StringComparison.Ordinal)).Replace(".fac", "");
                             DateTime RegionDeepScanTMStamp = File.GetLastWriteTime(s);
-                            MainConsole.Instance.InfoFormat("[Flotsam asset cache] Region: {0}, {1}", RegionID,
+                            MainConsole.Instance.InfoFormat("[Flotsam Asset Cache]] Region: {0}, {1}", RegionID,
                                                             RegionDeepScanTMStamp.ToString("MM/dd/yyyy hh:mm:ss"));
                         }
 
@@ -1028,7 +1035,7 @@ namespace Universe.Services
                     case "clear":
                         if (cmdparams.Length < 3)
                         {
-                            MainConsole.Instance.Warn("[Flotsam asset cache] Please specify memory and/or file cache.");
+                            MainConsole.Instance.Warn("[Flotsam Asset Cache]] Please specify memory and/or file cache.");
                             break;
                         }
                         foreach (string s in cmdparams)
@@ -1036,25 +1043,25 @@ namespace Universe.Services
                             if (s.ToLower() == "memory")
                             {
                                 m_MemoryCache.Clear();
-                                MainConsole.Instance.Info("[Flotsam asset cache] Memory cache cleared.");
+                                MainConsole.Instance.Info("[Flotsam Asset Cache]] Memory cache cleared.");
                             }
                             else if (s.ToLower() == "file")
                             {
                                 ClearFileCache();
-                                MainConsole.Instance.Info("[Flotsam asset cache] File cache cleared.");
+                                MainConsole.Instance.Info("[Flotsam Asset Cache]] File cache cleared.");
                             }
                         }
                         break;
 
 
                     case "assets":
-                        MainConsole.Instance.Info("[Flotsam asset cache] Caching all assets, in all scenes.");
+                        MainConsole.Instance.Info("[Flotsam Asset Cache]] Caching all assets, in all scenes.");
 
                         Util.FireAndForget(delegate
                                                {
                                                    int assetsCached = CacheScenes();
                                                    MainConsole.Instance.InfoFormat(
-                                                       "[Flotsam asset cache] Completed Scene Caching, {0} assets found.",
+                                                       "[Flotsam Asset Cache]] Completed Scene Caching, {0} assets found.",
                                                        assetsCached);
                                                });
 
@@ -1066,7 +1073,7 @@ namespace Universe.Services
                         if (cmdparams.Length < 3)
                         {
                             MainConsole.Instance.InfoFormat(
-                                "[Flotsam asset cache] Invalid parameters for Expire, please specify a valid date & time",
+                                "[Flotsam Asset Cache]] Invalid parameters for Expire, please specify a valid date & time",
                                 cmd);
                             break;
                         }
@@ -1080,7 +1087,7 @@ namespace Universe.Services
 
                         if (!DateTime.TryParse(s_expirationDate, out expirationDate))
                         {
-                            MainConsole.Instance.InfoFormat("[Flotsam asset cache] {0} is not a valid date & time", cmd);
+                            MainConsole.Instance.InfoFormat("[Flotsam Asset Cache]] {0} is not a valid date & time", cmd);
                             break;
                         }
 
@@ -1088,21 +1095,21 @@ namespace Universe.Services
 
                         break;
                     default:
-                        MainConsole.Instance.InfoFormat("[Flotsam asset cache] Unknown command {0}", cmd);
+                        MainConsole.Instance.InfoFormat("[Flotsam Asset Cache]] Unknown command {0}", cmd);
                         break;
                 }
             }
             else if (cmdparams.Length == 1)
             {
-                MainConsole.Instance.InfoFormat("[Flotsam asset cache] flotsamcache status - Display cache status");
+                MainConsole.Instance.InfoFormat("[Flotsam Asset Cache]] flotsamcache status - Display cache status");
                 MainConsole.Instance.InfoFormat(
-                    "[Flotsam asset cache] flotsamcache clearmem - Remove all assets cached in memory");
+                    "[Flotsam Asset Cache]] flotsamcache clearmem - Remove all assets cached in memory");
                 MainConsole.Instance.InfoFormat(
-                    "[Flotsam asset cache] flotsamcache clearfile - Remove all assets cached on disk");
+                    "[Flotsam Asset Cache]] flotsamcache clearfile - Remove all assets cached on disk");
                 MainConsole.Instance.InfoFormat(
-                    "[Flotsam asset cache] flotsamcache cachescenes - Attempt a deep cache of all assets in all scenes");
+                    "[Flotsam Asset Cache]] flotsamcache cachescenes - Attempt a deep cache of all assets in all scenes");
                 MainConsole.Instance.InfoFormat(
-                    "[Flotsam asset cache] flotsamcache <datetime> - Purge assets older then the specified date & time");
+                    "[Flotsam Asset Cache]] flotsamcache <datetime> - Purge assets older then the specified date & time");
             }
         }
 

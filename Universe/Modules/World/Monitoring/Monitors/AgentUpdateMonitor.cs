@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,7 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
@@ -33,55 +34,53 @@ namespace Universe.Modules.Monitoring.Monitors
 {
     public class AgentUpdateMonitor : IAgentUpdateMonitor
     {
-        private int agentTime;
-        private int agentUpdates;
+        int agentTime;
+        int agentUpdates;
 
-        public AgentUpdateMonitor(IScene scene)
+        public AgentUpdateMonitor (IScene scene)
         {
         }
 
         #region Implementation of IMonitor
 
-        public double GetValue()
+        public double GetValue ()
         {
             return agentUpdates;
         }
 
-        public string GetName()
+        public string GetName ()
         {
             return "Agent Update Count";
         }
 
-        public string GetInterfaceName()
+        public string GetInterfaceName ()
         {
             return "IAgentUpdateMonitor";
         }
 
-        public string GetFriendlyValue()
+        public string GetFriendlyValue ()
         {
-            return (int) GetValue() + " updates/sec";
+            return (int)GetValue () + " updates/sec";
         }
 
         #endregion
 
         #region IAgentUpdateMonitor Members
 
-        public int AgentFrameTime
-        {
+        public int AgentFrameTime {
             get { return agentTime; }
         }
 
-        public int AgentUpdates
-        {
+        public int AgentUpdates {
             get { return agentUpdates; }
         }
 
-        public void AddAgentUpdates(int value)
+        public void AddAgentUpdates (int value)
         {
             agentUpdates += value;
         }
 
-        public void AddAgentTime(int value)
+        public void AddAgentTime (int value)
         {
             agentTime += value;
         }
@@ -90,7 +89,7 @@ namespace Universe.Modules.Monitoring.Monitors
 
         #region IMonitor Members
 
-        public void ResetStats()
+        public void ResetStats ()
         {
             agentUpdates = 0;
             agentTime = 0;

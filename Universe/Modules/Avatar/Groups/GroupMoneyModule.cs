@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -41,13 +43,11 @@ namespace Universe.Modules.Avatar.Groups
     {
         bool m_enabled;
 
-        public string Name
-        {
+        public string Name {
             get { return "GroupMoneyModule"; }
         }
 
-        public Type ReplaceableInterface
-        {
+        public Type ReplaceableInterface {
             get { return null; }
         }
 
@@ -105,20 +105,18 @@ namespace Universe.Modules.Avatar.Groups
                                                  int intervalDays)
         {
             IGroupsModule groupsModule = client.Scene.RequestModuleInterface<IGroupsModule> ();
-            if (groupsModule != null && groupsModule.GroupPermissionCheck (agentID, groupID, GroupPowers.Accountable))
-            {
+            if (groupsModule != null && groupsModule.GroupPermissionCheck (agentID, groupID, GroupPowers.Accountable)) {
                 IMoneyModule moneyModule = client.Scene.RequestModuleInterface<IMoneyModule> ();
-                if (moneyModule != null)
-                {
-                     List<GroupAccountHistory> history = moneyModule.GetGroupTransactions (groupID, agentID, currentInterval,
-                                                            intervalDays);
+                if (moneyModule != null) {
+                    List<GroupAccountHistory> history = moneyModule.GetGroupTransactions (groupID, agentID, currentInterval,
+                                                           intervalDays);
 
                     //We don't want payments, we only want stipends which we sent to users
                     history = (
                         from h in history
                         where h.Stipend
                         select h).ToList ();
-                    
+
                     GroupBalance groupBalance = moneyModule.GetGroupBalance (groupID);
                     client.SendGroupAccountingDetails (
                         client,
@@ -133,7 +131,7 @@ namespace Universe.Modules.Avatar.Groups
                 } else
                     client.SendGroupAccountingDetails (client, groupID, transactionID, sessionID, 0, currentInterval,
                         intervalDays,
-                        "Never", new GroupAccountHistory[0]);
+                        "Never", new GroupAccountHistory [0]);
             }
         }
 
@@ -152,11 +150,9 @@ namespace Universe.Modules.Avatar.Groups
                                                       int intervalDays)
         {
             IGroupsModule groupsModule = client.Scene.RequestModuleInterface<IGroupsModule> ();
-            if (groupsModule != null && groupsModule.GroupPermissionCheck (agentID, groupID, GroupPowers.Accountable))
-            {
+            if (groupsModule != null && groupsModule.GroupPermissionCheck (agentID, groupID, GroupPowers.Accountable)) {
                 IMoneyModule moneyModule = client.Scene.RequestModuleInterface<IMoneyModule> ();
-                if (moneyModule != null)
-                {
+                if (moneyModule != null) {
                     List<GroupAccountHistory> history = moneyModule.GetGroupTransactions (groupID, agentID, currentInterval,
                                                             intervalDays);
 
@@ -165,7 +161,7 @@ namespace Universe.Modules.Avatar.Groups
                         from h in history
                         where h.Payment
                         select h).ToList ();
-                    
+
                     GroupBalance balance = moneyModule.GetGroupBalance (groupID);
                     client.SendGroupTransactionsSummaryDetails (
                         client,
@@ -181,7 +177,7 @@ namespace Universe.Modules.Avatar.Groups
                     client.SendGroupTransactionsSummaryDetails (
                         client, groupID, transactionID, sessionID,
                         currentInterval, intervalDays,
-                        "Never", new GroupAccountHistory[0]
+                        "Never", new GroupAccountHistory [0]
                     );
             }
         }
@@ -190,18 +186,16 @@ namespace Universe.Modules.Avatar.Groups
                                                  int currentInterval, int intervalDays)
         {
             IGroupsModule groupsModule = client.Scene.RequestModuleInterface<IGroupsModule> ();
-            if (groupsModule != null && groupsModule.GroupPermissionCheck (agentID, groupID, GroupPowers.Accountable))
-            {
+            if (groupsModule != null && groupsModule.GroupPermissionCheck (agentID, groupID, GroupPowers.Accountable)) {
                 IMoneyModule moneyModule = client.Scene.RequestModuleInterface<IMoneyModule> ();
-                if (moneyModule != null)
-                {
+                if (moneyModule != null) {
 
                     GroupBalance groupBalance = moneyModule.GetGroupBalance (groupID);
                     client.SendGroupAccountingSummary (
                         client,
                         groupID,
-                        requestID, 
-                        groupBalance.Balance, 
+                        requestID,
+                        groupBalance.Balance,
                         groupBalance.TotalTierDebit,
                         groupBalance.TotalTierCredits,
                         Util.BuildYMDDateString (groupBalance.StartingDate.AddDays (-currentInterval * intervalDays)),

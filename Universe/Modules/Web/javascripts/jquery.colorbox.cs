@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -26,7 +28,6 @@
  */
 
 using System.Collections.Generic;
-using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
@@ -39,7 +40,7 @@ namespace Universe.Modules.Web
             {
                 return new[]
                            {
-                               "html/javascripts/jquery.colorbox.js"
+                               "html/js/jquery.colorbox.js"
                            };
             }
         }

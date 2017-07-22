@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -26,9 +28,9 @@
  */
 
 using System.Collections.Generic;
-using Universe.Framework.Modules;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
+using Universe.Framework.Modules;
 
 namespace Universe.Framework.Services
 {
@@ -50,7 +52,8 @@ namespace Universe.Framework.Services
         public string RegionName;
         public string ReporterName;
         public UUID ScreenshotID;
-
+        public string SystemType;
+        public string Priority;
         public AbuseReport()
         {
             AbuseDetails = "";
@@ -69,6 +72,8 @@ namespace Universe.Framework.Services
             RegionName = "";
             ReporterName = "";
             ScreenshotID = UUID.Zero;
+            SystemType = "Abuse";
+            Priority = "Medium";
         }
 
         public override void FromOSD(OSDMap DicCol)
@@ -89,6 +94,8 @@ namespace Universe.Framework.Services
             RegionName = DicCol["RegionName"].AsString();
             ReporterName = DicCol["ReporterName"].AsString();
             ScreenshotID = DicCol["ScreenshotID"].AsUUID();
+            SystemType = "Abuse";
+            Priority = "Medium";
         }
 
         public override OSDMap ToOSD()
@@ -110,6 +117,8 @@ namespace Universe.Framework.Services
             NewDicCol["RegionName"] = RegionName;
             NewDicCol["ReporterName"] = ReporterName;
             NewDicCol["ScreenshotID"] = ScreenshotID;
+            NewDicCol["SystemType"] = "Abuse";
+            NewDicCol["Priority"] = "Medium";
             return NewDicCol;
         }
     }

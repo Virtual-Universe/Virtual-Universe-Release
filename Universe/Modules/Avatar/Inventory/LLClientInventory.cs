@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections;
@@ -667,11 +668,14 @@ namespace Universe.Modules.Inventory
                     return;
                 }
                 AssetBase asset = new AssetBase {ID = olditemID, Type = type, Name = name, Description = description};
-
-                CreateNewInventoryItem(
-                    remoteClient, remoteClient.AgentId.ToString(), "", folderID, name, 0, callbackID, asset, invType,
-                    (uint) PermissionMask.All, (uint) PermissionMask.All, (uint) PermissionMask.All,
-                    (uint) PermissionMask.All, (uint) PermissionMask.All, Util.UnixTimeSinceEpoch());
+                try {
+                    CreateNewInventoryItem (
+                        remoteClient, remoteClient.AgentId.ToString (), "", folderID, name, 0, callbackID, asset, invType,
+                        (uint)PermissionMask.All, (uint)PermissionMask.All, (uint)PermissionMask.All,
+                        (uint)PermissionMask.All, (uint)PermissionMask.All, Util.UnixTimeSinceEpoch ());
+                } catch {
+                }
+                asset.Dispose ();
             }
             else
             {
@@ -1137,7 +1141,7 @@ namespace Universe.Modules.Inventory
                         {
                             part.ParentEntity.AddInventoryItem(remoteClient, primLocalID, item, copyID);
                             MainConsole.Instance.InfoFormat(
-                                "[Prim inventory]: Update with item {0} requested of prim {1} for {2}",
+                                "[Prim Inventory]: Update with item {0} requested of prim {1} for {2}",
                                 item.Name, primLocalID, remoteClient.Name);
                             part.GetProperties(remoteClient);
                             if (!m_scene.Permissions.BypassPermissions())
@@ -1152,7 +1156,7 @@ namespace Universe.Modules.Inventory
                         else
                         {
                             MainConsole.Instance.ErrorFormat(
-                                "[Prim inventory]: Could not find inventory item {0} to update for {1}!",
+                                "[Prim Inventory]: Could not find inventory item {0} to update for {1}!",
                                 itemID, remoteClient.Name);
                         }
                     }
@@ -1198,7 +1202,7 @@ namespace Universe.Modules.Inventory
             else
             {
                 MainConsole.Instance.WarnFormat(
-                    "[Prim inventory]: Update with item {0} requested of prim {1} for {2} but this prim does not exist",
+                    "[Prim Inventory]: Update with item {0} requested of prim {1} for {2} but this prim does not exist",
                     itemID, primLocalID, remoteClient.Name);
             }
         }
@@ -1239,7 +1243,7 @@ namespace Universe.Modules.Inventory
                     else
                     {
                         MainConsole.Instance.ErrorFormat(
-                            "[Prim inventory]: Could not rez script {0} into prim local ID {1} for user {2}"
+                            "[Prim Inventory]: Could not rez script {0} into prim local ID {1} for user {2}"
                             + " because the prim could not be found in the region!",
                             item.Name, localID, remoteClient.Name);
                     }
@@ -1247,7 +1251,7 @@ namespace Universe.Modules.Inventory
                 else
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Prim inventory]: Could not find script inventory item {0} to rez for {1}!",
+                        "[Prim Inventory]: Could not find script inventory item {0} to rez for {1}!",
                         itemID, remoteClient.Name);
                 }
             }
@@ -1320,7 +1324,7 @@ namespace Universe.Modules.Inventory
             if (null == taskItem)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Prim inventory]: Tried to retrieve item ID {0} from prim {1}, {2} for creating an avatar"
+                    "[Prim Inventory]: Tried to retrieve item ID {0} from prim {1}, {2} for creating an avatar"
                     + " inventory item from a prim's inventory item "
                     + " but the required item does not exist in the prim's inventory",
                     itemId, part.Name, part.UUID);
@@ -1437,7 +1441,7 @@ namespace Universe.Modules.Inventory
             if (srcTaskItem == null)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Prim inventory]: Could not find part {0} to insert script item {1} from {2} {3} in {4}",
+                    "[Prim Inventory]: Could not find part {0} to insert script item {1} from {2} {3} in {4}",
                     destId, srcId, srcPart.Name, srcPart.UUID, Name);
                 return;
             }
@@ -1447,7 +1451,7 @@ namespace Universe.Modules.Inventory
             if (destPart == null)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Prim inventory]: Could not find script for ID {0}",
+                    "[Prim Inventory]: Could not find script for ID {0}",
                     destId);
                 return;
             }
@@ -1469,7 +1473,7 @@ namespace Universe.Modules.Inventory
             if (destPart.ScriptAccessPin == 0 || destPart.ScriptAccessPin != pin)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[Prim inventory]: Script in object {0} : {1}, attempted to load script {2} : {3} into object {4} : {5} with invalid pin {6}",
+                    "[Prim Inventory]: Script in object {0} : {1}, attempted to load script {2} : {3} into object {4} : {5} with invalid pin {6}",
                     srcPart.Name, srcId, srcTaskItem.Name, srcTaskItem.ItemID, destPart.Name, destId, pin);
                 // the LSL Wiki says we are supposed to shout on the DEBUG_CHANNEL -
                 //   "Object: Task Object trying to illegally load script onto task Other_Object!"
@@ -1560,7 +1564,7 @@ namespace Universe.Modules.Inventory
             if (srcTaskItem == null)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Prim inventory]: Tried to retrieve item ID {0} from prim {1}, {2} for moving"
+                    "[Prim Inventory]: Tried to retrieve item ID {0} from prim {1}, {2} for moving"
                     + " but the item does not exist in this inventory",
                     itemId, part.Name, part.UUID);
 
@@ -1571,7 +1575,7 @@ namespace Universe.Modules.Inventory
 
             if (destPart == null)
             {
-                MainConsole.Instance.ErrorFormat("[Prim inventory]: Could not find prim for ID {0}", destId);
+                MainConsole.Instance.ErrorFormat("[Prim Inventory]: Could not find prim for ID {0}", destId);
                 return;
             }
 
@@ -1699,25 +1703,26 @@ namespace Universe.Modules.Inventory
 
             Util.FireAndForget ((o) => {
                 InventoryFolderBase rootFolder = m_scene.InventoryService.GetRootFolder (destID);
-                InventoryFolderBase newFolder = new InventoryFolderBase (newFolderID, name, destID,
-                                                                        (short)FolderType.None, rootFolder.ID,
-                                                                        rootFolder.Version);
-                m_scene.InventoryService.AddFolder (newFolder);
+                if (rootFolder != null) {
+                    InventoryFolderBase newFolder = new InventoryFolderBase (newFolderID, name, destID,
+                                                                    (short)FolderType.None, rootFolder.ID,
+                                                                    rootFolder.Version);
+                    m_scene.InventoryService.AddFolder (newFolder);
 
-                foreach (UUID itemID in items) {
-                    InventoryItemBase agentItem = CreateAgentInventoryItemFromTask (destID, host,
-                                                                                   itemID);
+                    foreach (UUID itemID in items) {
+                        InventoryItemBase agentItem = CreateAgentInventoryItemFromTask (destID, host, itemID);
 
-                    if (agentItem != null) {
-                        agentItem.Folder = newFolderID;
-                        m_scene.InventoryService.AddItem (agentItem);
+                        if (agentItem != null) {
+                            agentItem.Folder = newFolderID;
+                            m_scene.InventoryService.AddItem (agentItem);
+                        }
                     }
-                }
 
-                IScenePresence avatar;
-                if (m_scene.TryGetScenePresence (destID, out avatar)) {
-                    SendInventoryUpdate (avatar.ControllingClient, rootFolder, true, false);
-                    SendInventoryUpdate (avatar.ControllingClient, newFolder, false, true);
+                    IScenePresence avatar;
+                    if (m_scene.TryGetScenePresence (destID, out avatar)) {
+                        SendInventoryUpdate (avatar.ControllingClient, rootFolder, true, false);
+                        SendInventoryUpdate (avatar.ControllingClient, newFolder, false, true);
+                    }
                 }
             });
 
@@ -2055,7 +2060,7 @@ namespace Universe.Modules.Inventory
                 if (null == part || null == part.ParentEntity)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Prim inventory]: " +
+                        "[Prim Inventory]: " +
                         "Prim inventory update requested for item ID {0} in prim ID {1} but this prim does not exist",
                         itemId, primId);
 
@@ -2070,7 +2075,7 @@ namespace Universe.Modules.Inventory
                 if (null == item)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Prim inventory]: Tried to retrieve item ID {0} from prim {1}, {2} for caps script update "
+                        "[Prim Inventory]: Tried to retrieve item ID {0} from prim {1}, {2} for caps script update "
                         + " but the item does not exist in this inventory",
                         itemId, part.Name, part.UUID);
 

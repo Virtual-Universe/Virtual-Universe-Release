@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -206,9 +208,8 @@ namespace Universe.Framework.Services
         uint RecentlyOnline(uint secondsAgo, bool stillOnline);
         uint OnlineUsers (uint secondsAgo);
 
-        List<UserInfo> RecentlyOnline(uint secondsAgo, bool stillOnline, Dictionary<string, bool> sort, uint start,
-                                      uint count);
-        List<UserInfo> CurrentlyOnline(uint secondsAgo, Dictionary<string, bool> sort, uint start, uint count);
+        List<UserInfo> RecentlyOnline(uint secondsAgo, bool stillOnline, Dictionary<string, bool> sort);
+        List<UserInfo> CurrentlyOnline(uint secondsAgo, Dictionary<string, bool> sort);
 
         List<UserInfo> GetByCurrentRegion(string regionID);
     }

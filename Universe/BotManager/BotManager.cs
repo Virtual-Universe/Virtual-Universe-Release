@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,7 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -40,7 +41,6 @@ using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
 using Universe.ScriptEngine.VirtualScript.Runtime;
-
 
 namespace Universe.BotManager
 {
@@ -150,6 +150,9 @@ namespace Universe.BotManager
             IScenePresence SP = scene.GetScenePresence(m_character.AgentId);
             if (SP == null)
                 return UUID.Zero; //Failed!
+
+            // set this as a NPC character
+            SP.IsNpcAgent = true;
 
             IAvatarAppearanceModule appearance = SP.RequestModuleInterface<IAvatarAppearanceModule>();
             appearance.Appearance = avatarApp;
@@ -632,6 +635,17 @@ namespace Universe.BotManager
         #endregion
 
         #region helpers
+
+        /// <summary>
+        /// Check if the provided UUID is a bot (npc).
+        /// </summary>
+        /// <returns><c>true</c>, if bot (npc), <c>false</c> otherwise.</returns>
+        /// <param name="botID">Bot identifier.</param>
+        public bool IsNpcAgent (UUID botID)
+        {
+            Bot bot;
+            return m_bots.TryGetValue(botID, out bot);
+        }
 
         /// <summary>
         /// Gets the owner.

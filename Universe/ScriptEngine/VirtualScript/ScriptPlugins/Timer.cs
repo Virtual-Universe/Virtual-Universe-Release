@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -28,16 +30,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Universe.Framework.SceneInfo;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.Plugins
 {
     public class TimerPlugin : IScriptPlugin
     {
-        private readonly object TimerListLock = new object();
-        private readonly Dictionary<string, TimerClass> Timers = new Dictionary<string, TimerClass>();
+        readonly object TimerListLock = new object();
+        readonly Dictionary<string, TimerClass> Timers = new Dictionary<string, TimerClass>();
         public ScriptEngine m_ScriptEngine;
 
         #region IScriptPlugin Members
@@ -84,7 +86,7 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
                 {
                     // Add it to queue
                     m_ScriptEngine.PostScriptEvent(ts.itemID, ts.ID,
-                                                   new EventParams("timer", new Object[0],
+                                                   new EventParams("timer", new object [0],
                                                                    new DetectParams[0]), EventPriority.Continued);
                     // set next interval
 
@@ -134,9 +136,9 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
 
         #endregion
 
-        private static string MakeTimerKey(UUID ID, UUID itemID)
+        static string MakeTimerKey(UUID ID, UUID itemID)
         {
-            return ID.ToString() + itemID.ToString();
+            return ID.ToString() + itemID;
         }
 
         public void SetTimerEvent(UUID m_ID, UUID m_itemID, double sec)
@@ -170,7 +172,7 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
 
         #region Nested type: TimerClass
 
-        private class TimerClass
+        class TimerClass
         {
             public UUID ID;
             public long interval;

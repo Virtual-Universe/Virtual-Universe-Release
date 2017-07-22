@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System.Collections.Generic;
 using Nini.Config;
@@ -132,7 +133,8 @@ namespace Universe.Services.DataService
                 AssignedTo = Reports [12],
                 Active = int.Parse (Reports [13]) == 1,
                 Checked = int.Parse (Reports [14]) == 1,
-                Notes = Reports [15]
+                Notes = Reports [15],
+                SystemType = "Abuse"
             };
         }
 
@@ -212,7 +214,7 @@ namespace Universe.Services.DataService
             InsertValues.Add(report.Active ? 1 : 0);
             InsertValues.Add(report.Checked ? 1 : 0);
             InsertValues.Add(report.Notes);
-
+            InsertValues.Add(report.SystemType);
             GD.Insert(m_abuseReportsTable, InsertValues.ToArray());
         }
 

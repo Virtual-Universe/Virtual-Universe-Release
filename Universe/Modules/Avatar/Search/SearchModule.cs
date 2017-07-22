@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -503,12 +505,12 @@ namespace Universe.Modules.Search
                 if (DirectoryService == null)
                     return;
 
-                //Find the maturity level
-                int maturity = itemtype == (uint)GridItemType.PgEvent
-                                   ? (int)DirectoryManager.EventFlags.PG
-                                   : (itemtype == (uint)GridItemType.MatureEvent)
-                                         ? (int)DirectoryManager.EventFlags.Mature
-                                         : (int)DirectoryManager.EventFlags.Adult;
+                int maturity =
+                    itemtype == (uint)GridItemType.PgEvent
+                                                  ? Util.ConvertEventMaturityToDBMaturity (DirectoryManager.EventFlags.PG)
+                                                  : (itemtype == (uint)GridItemType.MatureEvent)
+                                                  ? Util.ConvertEventMaturityToDBMaturity (DirectoryManager.EventFlags.Mature)
+                                                  : Util.ConvertEventMaturityToDBMaturity (DirectoryManager.EventFlags.Adult);
 
                 //Gets all the events occurring in the given region by maturity level
                 List<DirEventsReplyData> Eventdata = DirectoryService.FindAllEventsInRegion (GR.RegionName, maturity);
@@ -555,19 +557,19 @@ namespace Universe.Modules.Search
                 {
                     //Get the region so we have its position
                     GridRegion region = m_Scene.GridService.GetRegionByName (remoteClient.AllScopeIDs, classified.SimName);
+                    if (region != null) {
+                        mapitem = new mapItemReply {
+                            x = (uint)(region.RegionLocX + classified.GlobalPos.X + (remoteClient.Scene.RegionInfo.RegionSizeX / 2)),
+                            y = (uint)(region.RegionLocY + classified.GlobalPos.Y + (remoteClient.Scene.RegionInfo.RegionSizeY / 2)),
+                            id = classified.CreatorUUID,
+                            name = classified.Name,
+                            Extra = 0,
+                            Extra2 = 0
+                        };
 
-                    mapitem = new mapItemReply {
-                        x = (uint) (region.RegionLocX + classified.GlobalPos.X + (remoteClient.Scene.RegionInfo.RegionSizeX / 2)),
-                        y = (uint) (region.RegionLocY + classified.GlobalPos.Y + (remoteClient.Scene.RegionInfo.RegionSizeY / 2)),
-                        id = classified.CreatorUUID,
-                        name = classified.Name,
-                        Extra = 0,
-                        Extra2 = 0
-                    };
-
-                    //Use global position plus half the sim so that all classifieds are not in the bottom corner
-
-                    mapitems.Add (mapitem);
+                        //Use global position plus half the sim so that all classifieds are not in the bottom corner
+                        mapitems.Add (mapitem);
+                    }
                 }
                 //Send the events, if we have any
                 if (mapitems.Count != 0)

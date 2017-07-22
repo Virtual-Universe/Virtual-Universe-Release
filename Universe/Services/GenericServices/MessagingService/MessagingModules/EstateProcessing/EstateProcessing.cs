@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -49,21 +51,21 @@ namespace Universe.Services
 
         #region IService Members
 
-        public void Initialize(IConfigSource config, IRegistryCore registry)
+        public void Initialize (IConfigSource config, IRegistryCore registry)
         {
             m_registry = registry;
         }
 
-        public void Start(IConfigSource config, IRegistryCore registry)
+        public void Start (IConfigSource config, IRegistryCore registry)
         {
-            registry.RequestModuleInterface<ISimulationBase>().EventManager.RegisterEventHandler("EstateUpdated",
+            registry.RequestModuleInterface<ISimulationBase> ().EventManager.RegisterEventHandler ("EstateUpdated",
                                                                                                  OnGenericEvent);
         }
 
-        public void FinishedStartup()
+        public void FinishedStartup ()
         {
             //Also look for incoming messages to display
-            m_registry.RequestModuleInterface<ISyncMessageRecievedService>().OnMessageReceived += OnMessageReceived;
+            m_registry.RequestModuleInterface<ISyncMessageRecievedService> ().OnMessageReceived += OnMessageReceived;
         }
 
         #endregion
@@ -74,31 +76,26 @@ namespace Universe.Services
         /// <param name="FunctionName"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        protected object OnGenericEvent(string FunctionName, object parameters)
+        protected object OnGenericEvent (string FunctionName, object parameters)
         {
-            if (FunctionName == "EstateUpdated")
-            {
+            if (FunctionName == "EstateUpdated") {
                 EstateSettings es = (EstateSettings)parameters;
-                IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>();
-                ISyncMessagePosterService asyncPoster = m_registry.RequestModuleInterface<ISyncMessagePosterService>();
-                IGridService gridService = m_registry.RequestModuleInterface<IGridService>();
+                IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
+                ISyncMessagePosterService asyncPoster = m_registry.RequestModuleInterface<ISyncMessagePosterService> ();
+                IGridService gridService = m_registry.RequestModuleInterface<IGridService> ();
 
-                if (estateConnector != null && gridService != null && asyncPoster != null)
-                {
-                    List<UUID> regions = estateConnector.GetRegions((int)es.EstateID);
-                    if (regions != null)
-                    {
-                        foreach (UUID region in regions)
-                        {
+                if (estateConnector != null && gridService != null && asyncPoster != null) {
+                    List<UUID> regions = estateConnector.GetRegions ((int)es.EstateID);
+                    if (regions != null) {
+                        foreach (UUID region in regions) {
                             //Send the message to update all regions that are in this estate, as a setting changed
-                            GridRegion r = gridService.GetRegionByUUID(null, region);
+                            GridRegion r = gridService.GetRegionByUUID (null, region);
                             if (r != null)
-                                asyncPoster.Post(r.ServerURI, SyncMessageHelper.UpdateEstateInfo(es.EstateID, region));
+                                asyncPoster.Post (r.ServerURI, SyncMessageHelper.UpdateEstateInfo (es.EstateID, region));
                         }
                     }
                 }
             }
-
             return null;
         }
 
@@ -107,36 +104,29 @@ namespace Universe.Services
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected OSDMap OnMessageReceived(OSDMap message)
+        protected OSDMap OnMessageReceived (OSDMap message)
         {
             //We need to check and see if this is an AgentStatusChange
-            if (message.ContainsKey("Method") && message["Method"] == "EstateUpdated")
-            {
-                OSDMap innerMessage = (OSDMap)message["Message"];
+            if (message.ContainsKey ("Method") && message ["Method"] == "EstateUpdated") {
+                OSDMap innerMessage = (OSDMap)message ["Message"];
                 //We got a message, deal with it
-                uint estateID = innerMessage["EstateID"].AsUInteger();
-                UUID regionID = innerMessage["RegionID"].AsUUID();
-                ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager>();
-                IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>();
+                uint estateID = innerMessage ["EstateID"].AsUInteger ();
+                UUID regionID = innerMessage ["RegionID"].AsUUID ();
+                ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager> ();
+                IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
 
-                if (manager != null && estateConnector != null)
-                {
-                    foreach (IScene scene in manager.Scenes)
-                    {
-                        if (scene.RegionInfo.EstateSettings.EstateID == estateID)
-                        {
+                if (manager != null && estateConnector != null) {
+                    foreach (IScene scene in manager.Scenes) {
+                        if (scene.RegionInfo.EstateSettings.EstateID == estateID) {
                             EstateSettings es = null;
-
-                            if ((es = estateConnector.GetEstateSettings(regionID)) != null && es.EstateID != 0)
-                            {
+                            if ((es = estateConnector.GetRegionEstateSettings (regionID)) != null && es.EstateID != 0) {
                                 scene.RegionInfo.EstateSettings = es;
-                                MainConsole.Instance.Debug("[Estate Processor]: Updated estate information.");
+                                MainConsole.Instance.Debug ("[EstateProcessor]: Updated estate information.");
                             }
                         }
                     }
                 }
             }
-
             return null;
         }
     }

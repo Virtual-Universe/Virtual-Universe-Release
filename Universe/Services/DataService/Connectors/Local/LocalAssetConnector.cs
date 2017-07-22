@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,19 +27,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System.Collections.Generic;
+using Nini.Config;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using System.Collections.Generic;
 
 namespace Universe.Services.DataService
 {
     public class LocalAssetConnector : ConnectorBase, IAssetConnector
     {
-        private IGenericData GD;
+        IGenericData GD;
 
         #region IAssetConnector Members
 
@@ -69,9 +70,11 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public void UpdateLSLData(string token, string key, string value)
         {
-            object remoteValue = DoRemote(token, key, value);
-            if (remoteValue != null || m_doRemoteOnly)
+            if (m_doRemoteOnly) {
+                DoRemote (token, key, value);
                 return;
+            }
+
             if (FindLSLData(token, key).Count == 0)
             {
                 GD.Insert("lslgenericdata", new[] {token, key, value});
@@ -91,9 +94,10 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public List<string> FindLSLData(string token, string key)
         {
-            object remoteValue = DoRemote(token, key);
-            if (remoteValue != null || m_doRemoteOnly)
-                return (List<string>) remoteValue;
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemote (token, key);
+                return remoteValue != null ? (List<string>)remoteValue : new List<string> ();
+            }
 
             QueryFilter filter = new QueryFilter();
             filter.andFilters["Token"] = token;

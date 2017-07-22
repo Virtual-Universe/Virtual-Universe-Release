@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -121,6 +123,12 @@ namespace Universe.RedisServices.AssetService
                     "get asset <ID>",
                     "Gets info about asset from database", 
                     HandleGetAsset, false, true);
+                
+                MainConsole.Instance.Commands.AddCommand (
+                   "migrate sql assets",
+                   "migrate sql assets <enable|disable>",
+                   "Enable or disable migration of SQL assets",
+                   HandleMigrateSQLAssets, false, true);
             }
             MainConsole.Instance.Info("[Redis asset service]: Redis asset service enabled");
         }
@@ -162,16 +170,20 @@ namespace Universe.RedisServices.AssetService
             {
                 bool found;
                 AssetBase cachedAsset = cache.Get(id, out found);
-                if (found && (cachedAsset == null || cachedAsset.Data.Length != 0))
-                    return cachedAsset;
+                if (found) {
+                    if (cachedAsset != null && cachedAsset.Data != null)
+                        return cachedAsset;
+                }
             }
 
-            object remoteValue = DoRemoteByURL("AssetServerURI", id, showWarnings);
-            if (remoteValue != null || m_doRemoteOnly)
-            {
-                if (doDatabaseCaching && cache != null)
-                    cache.Cache(id, (AssetBase) remoteValue);
-                return (AssetBase) remoteValue;
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemoteByURL("AssetServerURI", id, showWarnings);
+                if (remoteValue != null) {
+                    if (doDatabaseCaching && cache != null)
+                        cache.Cache (id, (AssetBase)remoteValue);
+                    return (AssetBase)remoteValue;
+                }
+                return null;
             }
 
             AssetBase asset = RedisGetAsset(id);
@@ -193,8 +205,14 @@ namespace Universe.RedisServices.AssetService
             return null;
         }
 
+        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+        public virtual byte [] GetData (string id)
+        {
+            return GetData (id, true);
+        }
+
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public virtual byte[] GetData(string id)
+        public virtual byte[] GetData(string id, bool showWarnings)
         {
             IImprovedAssetCache cache = m_registry.RequestModuleInterface<IImprovedAssetCache>();
             if (doDatabaseCaching && cache != null)
@@ -205,36 +223,49 @@ namespace Universe.RedisServices.AssetService
                     return cachedAsset;
             }
 
-            object remoteValue = DoRemoteByURL("AssetServerURI", id);
-            if (remoteValue != null || m_doRemoteOnly)
-            {
-                byte[] data = (byte[]) remoteValue;
-                if (doDatabaseCaching && cache != null && data != null)
-                    cache.CacheData(id, data);
-                return data;
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemoteByURL ("AssetServerURI", id, showWarnings);
+                if (remoteValue != null) {
+                    byte [] data = (byte [])remoteValue;
+                    if (doDatabaseCaching && cache != null && data != null)
+                        cache.CacheData (id, data);
+                    return data;
+                }
+                return null;
             }
 
-            AssetBase asset = RedisGetAsset(id);
+            AssetBase asset = RedisGetAsset(id, showWarnings);
             if (doDatabaseCaching && cache != null)
                 cache.Cache(id, asset);
-            
-            return asset == null ? null : asset.Data;
+
+            if (asset == null)
+                return null;
+
+            var assetData = new byte [asset.Data.Length];
+            asset.Data.CopyTo (assetData, 0);
+            asset.Dispose ();
+            return assetData;
 
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public virtual bool GetExists(string id)
         {
-            object remoteValue = DoRemoteByURL("AssetServerURI", id);
-            if (remoteValue != null || m_doRemoteOnly)
-                return remoteValue == null ? false : (bool) remoteValue;
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemoteByURL ("AssetServerURI", id);
+                return remoteValue != null ? (bool)remoteValue : false;
+            }
 
             return RedisExistsAsset(id);
         }
 
-        public virtual void Get(String id, Object sender, AssetRetrieved handler)
+        public virtual void Get(string id, object sender, AssetRetrieved handler)
         {
-            Util.FireAndForget((o) => { handler(id, sender, Get(id)); });
+            var asset = Get (id);
+            if (asset != null) {
+                Util.FireAndForget ((o) => { handler (id, sender, asset); });
+                // asset.Dispose ();
+            }
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
@@ -243,9 +274,8 @@ namespace Universe.RedisServices.AssetService
             if (asset == null)
                 return UUID.Zero;
 
-            object remoteValue = DoRemoteByURL("AssetServerURI", asset);
-            if (remoteValue != null || m_doRemoteOnly)
-            {
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemoteByURL("AssetServerURI", asset);
                 if (remoteValue == null)
                     return UUID.Zero;
                 asset.ID = (UUID) remoteValue;
@@ -266,16 +296,20 @@ namespace Universe.RedisServices.AssetService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public virtual UUID UpdateContent(UUID id, byte[] data)
         {
-            object remoteValue = DoRemoteByURL("AssetServerURI", id, data);
-            if (remoteValue != null || m_doRemoteOnly)
-                return remoteValue == null ? UUID.Zero : (UUID) remoteValue;
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemoteByURL ("AssetServerURI", id, data);
+                return remoteValue != null ? (UUID)remoteValue : UUID.Zero;
+            }
 
             AssetBase asset = RedisGetAsset(id.ToString());
             if (asset == null)
                 return UUID.Zero;
             UUID newID = asset.ID = UUID.Random();
             asset.Data = data;
+
             bool success = RedisSetAsset(asset);
+            asset.Dispose ();
+
             if (!success)
                 return UUID.Zero; //We weren't able to update the asset
             return newID;
@@ -284,9 +318,10 @@ namespace Universe.RedisServices.AssetService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public virtual bool Delete(UUID id)
         {
-            object remoteValue = DoRemoteByURL("AssetServerURI", id);
-            if (remoteValue != null || m_doRemoteOnly)
-                return remoteValue == null ? false : (bool) remoteValue;
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemoteByURL ("AssetServerURI", id);
+                return remoteValue != null ? (bool)remoteValue : false;
+            }
 
             RedisDeleteAsset(id.ToString());
             return true;
@@ -354,7 +389,12 @@ namespace Universe.RedisServices.AssetService
             return false;
         }
 
-        public AssetBase RedisGetAsset(string id)
+        public AssetBase RedisGetAsset (string id)
+        {
+            return RedisGetAsset(id, true);
+        }
+
+        public AssetBase RedisGetAsset(string id, bool showWarnings)
         {
             AssetBase asset = null;
 
@@ -363,26 +403,30 @@ namespace Universe.RedisServices.AssetService
 #endif
             try
             {
-                RedisEnsureConnection((conn) =>
-                                          {
-                                              byte[] data = conn.Get(id);
-                                              if (data == null)
-                                                  return null;
+                RedisEnsureConnection((conn) => {
+                    byte[] data = conn.Get(id);
+                    if (data == null) {
+                        return null;
+                    }
 
-                                              MemoryStream memStream = new MemoryStream(data);
-                                              asset = ProtoBuf.Serializer.Deserialize<AssetBase>(memStream);
-                                              if (asset.Type == -1)
-                                                  asset.Type = 0;
-                                              memStream.Close();
-                                              byte[] assetdata = conn.Get(DATA_PREFIX + asset.HashCode);
-                                              if (assetdata == null || asset.HashCode == "")
-                                                  return null;
-                                              asset.Data = assetdata;
-                                              return null;
-                                          });
+                    MemoryStream memStream = new MemoryStream(data);
+                    asset = ProtoBuf.Serializer.Deserialize<AssetBase>(memStream);
+                    if (asset.Type == -1)
+                        asset.Type = 0;
+                    memStream.Close();
+                    byte[] assetdata = conn.Get(DATA_PREFIX + asset.HashCode);
+                    if (assetdata == null || asset.HashCode == "")
+                        return null;
+                    asset.Data = assetdata;
+                    return null;
+                });
 
-                if (asset == null)
-                    return CheckForConversion(id);
+                if (asset == null) {
+                    if (showWarnings)
+                        MainConsole.Instance.Warn ("Redis asset service]: Failed to retrieve asset " + id);
+
+                    return CheckForConversion (id);
+                }
             }
             finally
             {
@@ -434,7 +478,7 @@ namespace Universe.RedisServices.AssetService
             byte[] data = asset.Data;
             string hash = asset.HashCode;
             asset.Data = new byte[0];
-            ProtoBuf.Serializer.Serialize<AssetBase>(memStream, asset);
+            ProtoBuf.Serializer.Serialize (memStream, asset);
             asset.Data = data;
 
             try
@@ -529,7 +573,7 @@ namespace Universe.RedisServices.AssetService
                 Array.Copy(asset.Data, off, line, 0, len);
 
                 string text = BitConverter.ToString(line);
-                MainConsole.Instance.Info(String.Format("{0:x4}: {1}", off, text));
+                MainConsole.Instance.Info(string.Format("{0:x4}: {1}", off, text));
             }
         }
 
@@ -607,6 +651,41 @@ namespace Universe.RedisServices.AssetService
                 creatorName,
                 asset.CreationDate.ToShortDateString()
             );      
+        }
+
+        /// <summary>
+        /// Handles enable/disable of the migrate SQL setting.
+        /// </summary>
+        /// <param name="scene">Scene.</param>
+        /// <param name="args">Arguments.</param>
+        void HandleMigrateSQLAssets (IScene scene, string [] args)
+        {
+
+            bool migrate = m_migrateSQL;
+
+            if (args.Length < 4) {
+                MainConsole.Instance.InfoFormat ("Migration pf SQL assets is currently {0}",
+                                                 m_migrateSQL ? "enabled" : "disabled");
+                var prompt = MainConsole.Instance.Prompt (
+                    "Do you wish to " + (m_migrateSQL ? "disable" : "enable") + " migration of SQL assets? (yes/no)", "no");
+                if (prompt.ToLower ().StartsWith ("y", StringComparison.Ordinal))
+                    migrate = !migrate;
+                else
+                    return;
+            } else {
+                var setting = args [3];
+                if (setting.ToLower ().StartsWith ("e", StringComparison.Ordinal))
+                    migrate = true;
+                if (setting.ToLower ().StartsWith ("d", StringComparison.Ordinal))
+                    migrate = false;
+            }
+
+            if (migrate == m_migrateSQL)
+                return;
+
+            m_migrateSQL = migrate;
+            MainConsole.Instance.InfoFormat ("Migration of SQL assets has been {0}",
+                                                 m_migrateSQL ? "enabled" : "disabled");
         }
 
         #endregion

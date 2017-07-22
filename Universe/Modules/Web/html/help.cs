@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -32,45 +34,48 @@ namespace Universe.Modules.Web
 {
     public class HelpdMain : IWebInterfacePage
     {
-        public string[] FilePath
-        {
-            get
-            {
-                return new[]
+        public string [] FilePath {
+            get {
+                return new []
                            {
                                "html/help.html"
                            };
             }
         }
 
-        public bool RequiresAuthentication
-        {
+        public bool RequiresAuthentication {
             get { return false; }
         }
 
-        public bool RequiresAdminAuthentication
-        {
+        public bool RequiresAdminAuthentication {
             get { return false; }
         }
 
-        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+        public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
                                                ITranslator translator, out string response)
         {
             response = null;
-            var vars = new Dictionary<string, object>();
-            vars.Add("HelpText", translator.GetTranslatedString("HelpText"));
-            vars.Add("HelpViewersConfigText", translator.GetTranslatedString("HelpViewersConfigText"));
-            vars.Add("AngstromViewer", translator.GetTranslatedString("AngstromViewer"));
-            vars.Add("AstraViewer", translator.GetTranslatedString("AstraViewer"));
-            vars.Add("FirestormViewer", translator.GetTranslatedString("FirestormViewer"));
-            vars.Add("KokuaViewer", translator.GetTranslatedString("KokuaViewer"));
-            vars.Add("SingularityViewer", translator.GetTranslatedString("SingularityViewer"));
-            vars.Add("VoodooViewer", translator.GetTranslatedString("VoodooViewer"));
+            var vars = new Dictionary<string, object> ();
+            var clientloginuri = webInterface.LoginURL.Replace ("http", "secondlife");
+
+            vars.Add ("Login", translator.GetTranslatedString ("Login"));
+            vars.Add ("ClientLoginURI", clientloginuri);
+            vars.Add ("HelpText", translator.GetTranslatedString ("HelpText"));
+            vars.Add ("HelpViewersConfigText", translator.GetTranslatedString ("HelpViewersConfigText"));
+            vars.Add ("Alchemy", "Alchemy");
+            vars.Add ("Firestorm", "Firestorm");
+            vars.Add ("Kokua", "Kokua");
+            vars.Add ("Singularity", "Singularity");
+            vars.Add ("Lumiya", "Lumiya (Android)");
+            vars.Add ("PocketMetaverse", "Pocket Metaverse (iPhone/iPad)");
+            vars.Add ("Radegast", "Radegast");
+            vars.Add ("MobileGridClient", "MobileGridClient (Android)");
+            vars.Add ("MoreInfo", translator.GetTranslatedString ("MoreInfo"));
             return vars;
         }
 
-        public bool AttemptFindPage(string filename, ref OSHttpResponse httpResponse, out string text)
+        public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
         {
             text = "";
             return false;

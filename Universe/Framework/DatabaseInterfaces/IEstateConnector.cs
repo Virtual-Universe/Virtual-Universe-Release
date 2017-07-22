@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,10 +27,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
-using OpenMetaverse;
-using System.Collections.Generic;
 
 namespace Universe.Framework.DatabaseInterfaces
 {
@@ -44,14 +46,14 @@ namespace Universe.Framework.DatabaseInterfaces
         /// </summary>
         /// <param name="regionID"></param>
         /// <returns></returns>
-        EstateSettings GetEstateSettings(UUID regionID);
+        EstateSettings GetRegionEstateSettings(UUID regionID);
 
         /// <summary>
         ///     Loads the estate data for the specified estateID
         /// </summary>
         /// <param name="estateID"></param>
         /// <returns></returns>
-        EstateSettings GetEstateSettings(int estateID);
+        EstateSettings GetEstateIDSettings(int estateID);
 
         /// <summary>
         ///     Loads the estate data for the specified estate name (local only)
@@ -107,7 +109,14 @@ namespace Universe.Framework.DatabaseInterfaces
         ///     Gets all available estates
         /// </summary>
         /// <returns>List of estates</returns>
-        List<string> GetEstates();
+        List<string> GetEstateNames();
+
+        /// <summary>
+        ///     Gets all user estates
+        /// </summary>
+        /// <param name="ownerID"></param>
+        /// <returns>List of estates</returns>
+        List<string> GetEstateNames (UUID ownerId);
 
         /// <summary>
         ///     Gets the estates that have the given owner
@@ -129,7 +138,7 @@ namespace Universe.Framework.DatabaseInterfaces
         /// </summary>
         /// <param name="regionID"></param>
         /// <returns></returns>
-        int GetEstateID(UUID regionID);
+        int GetRegionEstateID(UUID regionID);
 
         /// <summary>
         ///     Add a new region to the estate, authenticates with the password

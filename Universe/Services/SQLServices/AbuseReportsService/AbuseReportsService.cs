@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,46 +27,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System.Collections.Generic;
+using Nini.Config;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using System.Collections.Generic;
 
 namespace Universe.Services
 {
     public class AbuseReportsService : ConnectorBase, IAbuseReports, IService
     {
-        public string Name
-        {
-            get { return GetType().Name; }
+        public string Name {
+            get { return GetType ().Name; }
         }
 
         #region IAbuseReports Members
 
-        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public void AddAbuseReport(AbuseReport abuse_report)
+        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+        public void AddAbuseReport (AbuseReport abuse_report)
         {
-            object remoteValue = DoRemote(abuse_report);
-            if (remoteValue != null || m_doRemoteOnly)
+            if (m_doRemoteOnly) {
+                DoRemote (abuse_report);
                 return;
+            }
 
-            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector>();
+            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
             if (conn != null)
-                conn.AddAbuseReport(abuse_report);
+                conn.AddAbuseReport (abuse_report);
         }
 
         //[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
-        public AbuseReport GetAbuseReport(int Number, string Password)
+        public AbuseReport GetAbuseReport (int Number, string Password)
         {
             /*object remoteValue = DoRemote(Number, Password);
             if (remoteValue != null || m_doRemoteOnly)
                 return (AbuseReport)remoteValue;*/
 
-            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector>();
-            return (conn != null) ? conn.GetAbuseReport(Number, Password) : null;
+            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
+            return (conn != null) ? conn.GetAbuseReport (Number, Password) : null;
         }
 
         /// <summary>
@@ -73,59 +74,60 @@ namespace Universe.Services
         /// </summary>
         /// <param name="Number"></param>
         /// <returns></returns>
-        public AbuseReport GetAbuseReport(int Number)
+        public AbuseReport GetAbuseReport (int Number)
         {
-            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector>();
-            return (conn != null) ? conn.GetAbuseReport(Number) : null;
+            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
+            return (conn != null) ? conn.GetAbuseReport (Number) : null;
         }
 
         //[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
-        public void UpdateAbuseReport(AbuseReport report, string Password)
+        public void UpdateAbuseReport (AbuseReport report, string Password)
         {
             /*object remoteValue = DoRemote(report, Password);
             if (remoteValue != null || m_doRemoteOnly)
                 return;*/
 
-            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector>();
+            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
             if (conn != null)
-                conn.UpdateAbuseReport(report, Password);
+                conn.UpdateAbuseReport (report, Password);
         }
 
-        public List<AbuseReport> GetAbuseReports(int start, int count, bool active)
+        public List<AbuseReport> GetAbuseReports (int start, int count, bool active)
         {
-            object remoteValue = DoRemote(start, count, active);
-            if (remoteValue != null || m_doRemoteOnly)
-                return (List<AbuseReport>) remoteValue;
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemote (start, count, active);
+                return remoteValue != null ? (List<AbuseReport>)remoteValue : null;
+            }
 
-            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector>();
+            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
             if (conn != null)
-                return conn.GetAbuseReports(start, count, active);
-            else
-                return null;
+                return conn.GetAbuseReports (start, count, active);
+
+            return null;
         }
 
-        public void UpdateAbuseReport(AbuseReport report)
+        public void UpdateAbuseReport (AbuseReport report)
         {
-            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector>();
+            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
             if (conn != null)
-                conn.UpdateAbuseReport(report);
+                conn.UpdateAbuseReport (report);
         }
 
         #endregion
 
         #region IService Members
 
-        public void Initialize(IConfigSource config, IRegistryCore registry)
+        public void Initialize (IConfigSource config, IRegistryCore registry)
         {
-            registry.RegisterModuleInterface<IAbuseReports>(this);
-            Init(registry, Name);
+            registry.RegisterModuleInterface<IAbuseReports> (this);
+            Init (registry, Name);
         }
 
-        public void Start(IConfigSource config, IRegistryCore registry)
+        public void Start (IConfigSource config, IRegistryCore registry)
         {
         }
 
-        public void FinishedStartup()
+        public void FinishedStartup ()
         {
         }
 

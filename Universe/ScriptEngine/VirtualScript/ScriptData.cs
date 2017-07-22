@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,16 +27,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ClientInterfaces;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.PresenceInfo;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.SceneInfo.Entities;
-using Universe.Framework.Utilities;
-using Universe.ScriptEngine.VirtualScript.Runtime;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
+#undef SHOWDEBUG        // show debug messages
+
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -44,6 +38,16 @@ using System.Linq;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Lifetime;
 using System.Threading;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using Universe.Framework.ClientInterfaces;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.PresenceInfo;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.SceneInfo.Entities;
+using Universe.Framework.Utilities;
+using Universe.ScriptEngine.VirtualScript.Runtime;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
@@ -106,11 +110,11 @@ namespace Universe.ScriptEngine.VirtualScript
 
         #region Declares
 
-        private Dictionary<string, long> NextEventDelay;
-        private static string[] funcsToDrop = new string[9]
-        { "timer", "collision", "control", "land_collision", "touch", 
-        "moving_start", "moving_end", "not_at_target", "not_at_rot_target" };
-            
+        Dictionary<string, long> NextEventDelay;
+        static string[] funcsToDrop = {
+            "timer", "collision", "control", "land_collision", "touch",
+            "moving_start", "moving_end", "not_at_target", "not_at_rot_target" };
+
         //This is the UUID of the actual script.
         readonly ScriptEngine m_ScriptEngine;
         public Dictionary<string, IScriptApi> Apis;
@@ -241,7 +245,7 @@ namespace Universe.ScriptEngine.VirtualScript
                 m_ScriptEngine.RemoveScriptFromPlugins(Part.UUID, ItemID);
 
                 //Release the script and destroy it
-                ILease lease = (ILease) RemotingServices.GetLifetimeService(Script as MarshalByRefObject);
+                ILease lease = (ILease)RemotingServices.GetLifetimeService(Script as MarshalByRefObject);
                 if (lease != null)
                     lease.Unregister(Script.Sponsor);
 
@@ -249,7 +253,7 @@ namespace Universe.ScriptEngine.VirtualScript
                 Script = null;
             }
 
-            if (InventoryItem != null && Part != null)
+            if (InventoryItem != null)
                 MainConsole.Instance.Debug("[" + m_ScriptEngine.ScriptEngineName + "]: Closed Script " +
                                            InventoryItem.Name + " in " +
                                            Part.Name);
@@ -296,21 +300,24 @@ namespace Universe.ScriptEngine.VirtualScript
 
         public void ResetEvents()
         {
-            RemoveCollisionEvents = false;
-            RemoveTouchEvents = false;
-            RemoveLandCollisionEvents = false;
-            TouchInQueue = false;
-            LandCollisionInQueue = false;
-            SensorInQueue = false;
-            NoSensorInQueue = false;
-            TimerInQueue = false;
-            AtTargetInQueue = false;
-            NotAtTargetInQueue = false;
-            AtRotTargetInQueue = false;
-            NotAtRotTargetInQueue = false;
-            ChangedInQueue.Clear();
-            LastControlLevel = 0;
-            ControlEventsInQueue = 0;
+            lock (ScriptEventLock)
+            {
+                RemoveCollisionEvents = false;
+                RemoveTouchEvents = false;
+                RemoveLandCollisionEvents = false;
+                TouchInQueue = false;
+                LandCollisionInQueue = false;
+                SensorInQueue = false;
+                NoSensorInQueue = false;
+                TimerInQueue = false;
+                AtTargetInQueue = false;
+                NotAtTargetInQueue = false;
+                AtRotTargetInQueue = false;
+                NotAtRotTargetInQueue = false;
+                ChangedInQueue.Clear();
+                LastControlLevel = 0;
+                ControlEventsInQueue = 0;
+            }
         }
 
         /// <summary>
@@ -350,7 +357,7 @@ namespace Universe.ScriptEngine.VirtualScript
             m_ScriptEngine.StateSave.SaveStateTo(this, true);
             m_ScriptEngine.MaintenanceThread.SetEventSchSetIgnoreNew(this, false); // accept new events
             m_ScriptEngine.AddToScriptQueue(this, "state_entry", new DetectParams[0], EventPriority.FirstStart,
-                                            new object[] {});
+                                            new object[] { });
 
             MainConsole.Instance.Debug("[" + m_ScriptEngine.ScriptEngineName + "]: Reset Script " + ItemID);
         }
@@ -370,7 +377,7 @@ namespace Universe.ScriptEngine.VirtualScript
                 //Fire state_exist after we switch over all the removing of events so that it gets the new versionID
                 m_ScriptEngine.MaintenanceThread.AddEventSchQueue(this, "state_exit",
                                                                   new DetectParams[0], EventPriority.FirstStart,
-                                                                  new object[0] {});
+                                                                  new object[0] { });
 
                 State = state;
 
@@ -386,7 +393,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
                 m_ScriptEngine.MaintenanceThread.AddEventSchQueue(this, "state_entry",
                                                                   new DetectParams[0], EventPriority.FirstStart,
-                                                                  new object[0] {});
+                                                                  new object[0] { });
                 //Save a state save after a state change, its a large change in the script's function
                 m_ScriptEngine.StateSave.SaveStateTo(this, true);
             }
@@ -484,7 +491,7 @@ namespace Universe.ScriptEngine.VirtualScript
             {
                 if (PostOnRez)
                     m_ScriptEngine.AddToScriptQueue(this, "on_rez", new DetectParams[0], EventPriority.FirstStart,
-                                                    new object[] {new LSL_Types.LSLInteger(StartParam)});
+                                                    new object[] { new LSL_Types.LSLInteger(StartParam) });
 
                 if (stateSource == StateSource.AttachedRez)
                     m_ScriptEngine.AddToScriptQueue(this, "attach", new DetectParams[0], EventPriority.FirstStart,
@@ -493,13 +500,13 @@ namespace Universe.ScriptEngine.VirtualScript
                 else if (stateSource == StateSource.RegionStart)
                     // CHANGED_REGION_START
                     m_ScriptEngine.AddToScriptQueue(this, "changed", new DetectParams[0], EventPriority.FirstStart,
-                                                    new Object[]
+                                                    new object[]
                                                         {new LSL_Types.LSLInteger((int) Changed.REGION_RESTART)});
                 else if (stateSource == StateSource.PrimCrossing)
                     // CHANGED_REGION
                     // note: CHANGED_TELEPORT should occur on any teleport of an attachment within a region too and is taken care of elsewhere
                     m_ScriptEngine.AddToScriptQueue(this, "changed", new DetectParams[0], EventPriority.FirstStart,
-                                                    new Object[] {new LSL_Types.LSLInteger((int) Changed.REGION)});
+                                                    new object[] { new LSL_Types.LSLInteger((int)Changed.REGION) });
                 // note: StateSource.NewRez doesn't do anything (PostOnRez controls on_rez)
             }
             else
@@ -509,7 +516,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
                 if (PostOnRez)
                     m_ScriptEngine.AddToScriptQueue(this, "on_rez", new DetectParams[0], EventPriority.FirstStart,
-                                                    new object[] {new LSL_Types.LSLInteger(StartParam)});
+                                                    new object[] { new LSL_Types.LSLInteger(StartParam) });
 
                 if (stateSource == StateSource.AttachedRez)
                     m_ScriptEngine.AddToScriptQueue(this, "attach", new DetectParams[0], EventPriority.FirstStart,
@@ -601,7 +608,7 @@ namespace Universe.ScriptEngine.VirtualScript
                 if (Source.Contains("#IncludeHTML "))
                 {
                     string URL = "";
-                    int line = Source.IndexOf("#IncludeHTML ");
+                    int line = Source.IndexOf("#IncludeHTML ", StringComparison.Ordinal);
                     URL = Source.Remove(0, line);
                     URL = URL.Replace("#IncludeHTML ", "");
                     URL = URL.Split('\n')[0];
@@ -615,7 +622,7 @@ namespace Universe.ScriptEngine.VirtualScript
                 if (Source.Contains("#IncludeHTML "))
                 {
                     string URL = "";
-                    int line = Source.IndexOf("#IncludeHTML ");
+                    int line = Source.IndexOf("#IncludeHTML ", StringComparison.Ordinal);
                     URL = Source.Remove(0, line);
                     URL = URL.Replace("#IncludeHTML ", "");
                     URL = URL.Split('\n')[0];
@@ -719,15 +726,18 @@ namespace Universe.ScriptEngine.VirtualScript
                 }
             }
 
-            bool useDebug = false;
-            if (useDebug)
+#if SHOWDEBUG
                 MainConsole.Instance.Debug("[" + m_ScriptEngine.ScriptEngineName + "]: Stage 1 compile: " +
                                            (DateTime.Now.ToUniversalTime() - StartTime).TotalSeconds);
+#endif
 
             //Create the app domain if needed.
             try
             {
                 Script = m_ScriptEngine.AppDomainManager.LoadScript(AssemblyName, "Script.ScriptClass", out AppDomain);
+                if (Script == null)
+                    return false;
+
                 m_ScriptEngine.Compiler.FinishCompile(this, Script);
                 //Add now so that we don't add it too early and give it the possibility to fail
                 ScriptEngine.ScriptProtection.AddPreviouslyCompiled(Source, this);
@@ -755,11 +765,12 @@ namespace Universe.ScriptEngine.VirtualScript
 
             //If its a reupload, an avatar is waiting for the script errors
             if (reupload)
-                m_ScriptEngine.ScriptErrorReporter.AddError(ItemID, new ArrayList(new[] {"SUCCESSFULL"}));
+                m_ScriptEngine.ScriptErrorReporter.AddError(ItemID, new ArrayList(new[] { "SUCCESSFULL" }));
 
-            if (useDebug)
+#if SHOWDEBUG
                 MainConsole.Instance.Debug("[" + m_ScriptEngine.ScriptEngineName + "]: Stage 2 compile: " +
                                            (DateTime.Now.ToUniversalTime() - StartTime).TotalSeconds);
+#endif
 
             SetApis();
 
@@ -770,14 +781,14 @@ namespace Universe.ScriptEngine.VirtualScript
                 // don't restore the assembly name, the one we have is right (if re-compiled or not)
                 m_ScriptEngine.StateSave.Deserialize(this, LastStateSave);
                 AssemblyName = assy;
-                if (string.IsNullOrEmpty(this.State) && DefaultState != this.State)
-                    //Sometimes, "" is a valid state for other script languages
+                if (string.IsNullOrEmpty(State) && DefaultState != State)
+                //Sometimes, "" is a valid state for other script languages
                 {
                     MainConsole.Instance.Warn("Resetting broken script save state\n" +
-                        "                :  "+InventoryItem.Name+":"+this.Part.Name + " @ " +Part.AbsolutePosition +
+                        "                :  " + InventoryItem.Name + ":" + Part.Name + " @ " + Part.AbsolutePosition +
                     "\n                     in region " + Part.ParentEntity.Scene.RegionInfo.RegionName);
 
-                    this.State = DefaultState;
+                    State = DefaultState;
                     m_ScriptEngine.StateSave.DeleteFrom(Part, LastStateSave.ItemID);
                     m_ScriptEngine.StateSave.SaveStateTo(this, true);
                 }
@@ -852,18 +863,18 @@ namespace Universe.ScriptEngine.VirtualScript
             }
             switch (itm.functionName)
             {
-                    //Times pulled from http://wiki.secondlife.com/wiki/LSL_Delay
+                //Times pulled from http://wiki.secondlife.com/wiki/LSL_Delay
                 case "touch": //Limits for 0.1 seconds
                 case "touch_start":
                 case "touch_end":
                     if (NowTicks < NextEventDelay[itm.functionName])
                         return CheckAddEventToQueue(itm);
-                    NextEventDelay[itm.functionName] = NowTicks + (long) (TouchEventDelayTicks*TicksPerMillisecond);
+                    NextEventDelay[itm.functionName] = NowTicks + (long)(TouchEventDelayTicks * TicksPerMillisecond);
                     break;
                 case "timer": //Settable timer limiter
                     if (NowTicks < NextEventDelay[itm.functionName])
                         return CheckAddEventToQueue(itm);
-                    NextEventDelay[itm.functionName] = NowTicks + (long) (TimerEventDelayTicks*TicksPerMillisecond);
+                    NextEventDelay[itm.functionName] = NowTicks + (long)(TimerEventDelayTicks * TicksPerMillisecond);
                     break;
                 case "collision":
                 case "collision_start":
@@ -873,19 +884,19 @@ namespace Universe.ScriptEngine.VirtualScript
                 case "land_collision_end":
                     if (NowTicks < NextEventDelay[itm.functionName])
                         return CheckAddEventToQueue(itm);
-                    NextEventDelay[itm.functionName] = NowTicks + (long) (CollisionEventDelayTicks*TicksPerMillisecond);
+                    NextEventDelay[itm.functionName] = NowTicks + (long)(CollisionEventDelayTicks * TicksPerMillisecond);
                     break;
                 case "control":
                     if (NowTicks < NextEventDelay[itm.functionName])
                         return CheckAddEventToQueue(itm);
-                    NextEventDelay[itm.functionName] = NowTicks + (long) (0.05f*TicksPerMillisecond);
+                    NextEventDelay[itm.functionName] = NowTicks + (long)(0.05f * TicksPerMillisecond);
                     break;
                 default: //Default is 0.05 seconds for event limiting
                     if (!NextEventDelay.ContainsKey(itm.functionName))
                         break; //If it doesn't exist, we don't limit it
                     if (NowTicks < NextEventDelay[itm.functionName])
                         return CheckAddEventToQueue(itm);
-                    NextEventDelay[itm.functionName] = NowTicks + (long) (DefaultEventDelayTicks*TicksPerMillisecond);
+                    NextEventDelay[itm.functionName] = NowTicks + (long)(DefaultEventDelayTicks * TicksPerMillisecond);
                     break;
             }
             //Add the event to the stats

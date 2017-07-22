@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -413,16 +415,27 @@ namespace Universe.Framework.SceneInfo
 
         public void SetFromFlags(ulong regionFlags)
         {
-            ResetHomeOnTeleport = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.ResetHomeOnTeleport) ==
-                                   (ulong) OpenMetaverse.RegionFlags.ResetHomeOnTeleport);
-            BlockDwell = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.BlockDwell) ==
-                          (ulong) OpenMetaverse.RegionFlags.BlockDwell);
-            AllowLandmark = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.AllowLandmark) ==
-                             (ulong) OpenMetaverse.RegionFlags.AllowLandmark);
-            AllowParcelChanges = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.AllowParcelChanges) ==
-                                  (ulong) OpenMetaverse.RegionFlags.AllowParcelChanges);
-            AllowSetHome = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.AllowSetHome) ==
-                            (ulong) OpenMetaverse.RegionFlags.AllowSetHome);
+            // Jan 2017 - greythane - This is called only from the GodUpdateRegionInfoUpdate() but there is a bit of
+            // confusion as to what the diferent viewers actually send
+
+            // these are set via god mode
+            ResetHomeOnTeleport = ((regionFlags & (ulong) RegionFlags.ResetHomeOnTeleport) ==
+                                   (ulong) RegionFlags.ResetHomeOnTeleport);
+
+            // this is labeled 'Block Traffic Tracking' on the god tools
+            BlockDwell = ((regionFlags & (ulong) RegionFlags.BlockDwell) ==
+                          (ulong) RegionFlags.BlockDwell);
+
+
+            // these are standard estate settings so leave them alone
+/*            AllowLandmark = ((regionFlags & (ulong) RegionFlags.AllowLandmark) ==
+                             (ulong) RegionFlags.AllowLandmark);
+            AllowParcelChanges = ((regionFlags & (ulong) RegionFlags.AllowParcelChanges) ==
+                                  (ulong) RegionFlags.AllowParcelChanges);
+
+            AllowSetHome = ((regionFlags & (ulong) RegionFlags.AllowSetHome) ==
+                            (ulong) RegionFlags.AllowSetHome);
+*/
         }
     }
 }

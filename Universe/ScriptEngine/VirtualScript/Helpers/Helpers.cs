@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -27,10 +29,10 @@
 
 using System;
 using System.Runtime.Serialization;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
-using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
@@ -117,13 +119,14 @@ namespace Universe.ScriptEngine.VirtualScript
         public LSL_Types.Quaternion Rotation;
         public int Type;
         public LSL_Types.Vector3 Velocity;
-        private LSL_Types.Vector3 touchBinormal;
-        private int touchFace;
-        private LSL_Types.Vector3 touchNormal;
-        private LSL_Types.Vector3 touchPos;
 
-        private LSL_Types.Vector3 touchST;
-        private LSL_Types.Vector3 touchUV;
+        LSL_Types.Vector3 touchBinormal;
+        int touchFace;
+        LSL_Types.Vector3 touchNormal;
+        LSL_Types.Vector3 touchPos;
+
+        LSL_Types.Vector3 touchST;
+        LSL_Types.Vector3 touchUV;
 
         public DetectParams()
         {
@@ -131,7 +134,7 @@ namespace Universe.ScriptEngine.VirtualScript
             OffsetPos = new LSL_Types.Vector3();
             LinkNum = 0;
             Group = UUID.Zero;
-            Name = String.Empty;
+            Name = string.Empty;
             Owner = UUID.Zero;
             Position = new LSL_Types.Vector3();
             Rotation = new LSL_Types.Quaternion();
@@ -199,7 +202,7 @@ namespace Universe.ScriptEngine.VirtualScript
             }
         }
 
-        private void initializeSurfaceTouch()
+        void initializeSurfaceTouch()
         {
             touchST = new LSL_Types.Vector3(-1.0, -1.0, 0.0);
             touchNormal = new LSL_Types.Vector3();
@@ -283,9 +286,9 @@ namespace Universe.ScriptEngine.VirtualScript
     {
         public DetectParams[] DetectParams;
         public string EventName;
-        public Object[] Params;
+        public object[] Params;
 
-        public EventParams(string eventName, Object[] eventParams, DetectParams[] detectParams)
+        public EventParams(string eventName, object[] eventParams, DetectParams[] detectParams)
         {
             EventName = eventName;
             Params = eventParams;

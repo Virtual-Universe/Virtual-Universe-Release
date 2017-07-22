@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -27,13 +29,12 @@
 
 using System;
 using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
-using Nini.Config;
-using OpenMetaverse;
-
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Modules.Entities.EntityCount
@@ -42,13 +43,13 @@ namespace Universe.Modules.Entities.EntityCount
     {
         #region Declares
 
-        private readonly Dictionary<UUID, bool> m_lastAddedPhysicalStatus = new Dictionary<UUID, bool>();
+        readonly Dictionary<UUID, bool> m_lastAddedPhysicalStatus = new Dictionary<UUID, bool>();
+        readonly object m_objectsLock = new object();
 
-        private readonly object m_objectsLock = new object();
-        private int m_activeObjects;
-        private int m_childAgents;
-        private int m_objects;
-        private int m_rootAgents;
+        int m_activeObjects;
+        int m_childAgents;
+        int m_objects;
+        int m_rootAgents;
 
         #endregion
 
@@ -66,12 +67,20 @@ namespace Universe.Modules.Entities.EntityCount
 
         public int Objects
         {
-            get { return m_objects; }
+            get {
+                lock (m_objectsLock) {
+                    return m_objects;
+                }
+            }
         }
 
         public int ActiveObjects
         {
-            get { return m_activeObjects; }
+            get {
+                lock (m_objectsLock) {
+                    return m_activeObjects;
+                }
+            }
         }
 
         #endregion
@@ -127,6 +136,10 @@ namespace Universe.Modules.Entities.EntityCount
 
         protected void OnMakeChildAgent(IScenePresence presence, GridRegion destination)
         {
+            // Do not count bots
+            if (presence.IsNpcAgent)
+                return;
+
             //Switch child agent to root agent
             m_rootAgents--;
             m_childAgents++;
@@ -134,18 +147,30 @@ namespace Universe.Modules.Entities.EntityCount
 
         protected void OnMakeRootAgent(IScenePresence presence)
         {
+            // Do not count bots
+            if (presence.IsNpcAgent)
+                return;
+
             m_rootAgents++;
             m_childAgents--;
         }
 
         protected void OnNewPresence(IScenePresence presence)
         {
+            // Do not count bots
+            if (presence.IsNpcAgent)
+                return;
+
             // Why don't we check for root agents? We don't because it will be added in MakeRootAgent and removed from here
             m_childAgents++;
         }
 
-        private void OnRemovePresence(IScenePresence presence)
+        void OnRemovePresence(IScenePresence presence)
         {
+            // Do not count bots
+            if (presence.IsNpcAgent)
+                return;
+
             if (presence.IsChildAgent)
                 m_childAgents--;
             else

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,9 +27,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Modules;
 using OpenMetaverse;
-
+using Universe.Framework.Modules;
 
 namespace Universe.Modules.Terrain.FloodBrushes
 {
@@ -35,35 +36,31 @@ namespace Universe.Modules.Terrain.FloodBrushes
     {
         #region ITerrainFloodEffect Members
 
-        public void FloodEffect(ITerrainChannel map, UUID userID, float north,
+        public void FloodEffect (ITerrainChannel map, UUID userID, float north,
                                 float west, float south, float east, float strength)
         {
             float sum = 0;
             float steps = 0;
 
             int x, y;
-            for (x = (int) west; x < (int) east; x++)
-            {
-                for (y = (int) south; y < (int) north; y++)
-                {
-                    if (!map.Scene.Permissions.CanTerraformLand(userID, new Vector3(x, y, 0)))
+            for (x = (int)west; x < (int)east; x++) {
+                for (y = (int)south; y < (int)north; y++) {
+                    if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
                         continue;
-                    sum += map[x, y];
+                    sum += map [x, y];
                     steps += 1;
                 }
             }
 
-            float avg = sum/steps;
+            float avg = sum / steps;
 
-            float str = 0.1f*strength; // == 0.2 in the default client
+            float str = 0.1f * strength; // == 0.2 in the default client
 
-            for (x = (int) west; x < (int) east; x++)
-            {
-                for (y = (int) south; y < (int) north; y++)
-                {
-                    if (!map.Scene.Permissions.CanTerraformLand(userID, new Vector3(x, y, 0)))
+            for (x = (int)west; x < (int)east; x++) {
+                for (y = (int)south; y < (int)north; y++) {
+                    if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
                         continue;
-                    map[x, y] = (map[x, y]*(1 - str)) + (avg*str);
+                    map [x, y] = (map [x, y] * (1 - str)) + (avg * str);
                 }
             }
         }

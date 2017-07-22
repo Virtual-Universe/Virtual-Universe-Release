@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -74,8 +76,9 @@ namespace Universe.Framework.Services
         // authentication/authorization.
         //
         bool SetPassword(UUID principalID, string authType, string passwd);
-        bool SetPasswordHashed(UUID UUID, string authType, string passwd);
+        bool SetPasswordHashed(UUID UUID, string authType, string passHash);
         bool SetPlainPassword(UUID principalID, string authType, string passwd);
+        bool SetSaltedPassword (UUID principalID, string authType, string passHash, string saltHash);
 
         /// <summary>
         ///     Check whether the given principalID has a password set

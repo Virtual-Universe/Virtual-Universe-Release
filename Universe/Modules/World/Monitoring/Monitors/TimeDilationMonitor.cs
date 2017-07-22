@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,57 +27,56 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-    internal class TimeDilationMonitor : ITimeDilationMonitor
+    class TimeDilationMonitor : ITimeDilationMonitor
     {
-        private readonly AveragingClass m_average = new AveragingClass(5);
-        private readonly IScene m_scene;
+        readonly AveragingClass m_average = new AveragingClass (5);
+        readonly IScene m_scene;
 
-        public TimeDilationMonitor(IScene scene)
+        public TimeDilationMonitor (IScene scene)
         {
             m_scene = scene;
         }
 
         #region Implementation of IMonitor
 
-        public double GetValue()
+        public double GetValue ()
         {
             return m_scene.TimeDilation;
         }
 
-        public string GetName()
+        public string GetName ()
         {
             return "Time Dilation";
         }
 
-        public string GetInterfaceName()
+        public string GetInterfaceName ()
         {
             return "ITimeDilationMonitor";
         }
 
-        public string GetFriendlyValue()
+        public string GetFriendlyValue ()
         {
-            return (100*GetValue()) + "%";
+            return (100 * GetValue ()) + "%";
         }
 
-        public void SetPhysicsFPS(float value)
+        public void SetPhysicsFPS (float value)
         {
-            m_average.Add(value);
+            m_average.Add (value);
             //Now fix time dilation
-            m_scene.TimeDilation = m_average.GetAverage()/m_scene.BaseSimPhysFPS;
+            m_scene.TimeDilation = m_average.GetAverage () / m_scene.BaseSimPhysFPS;
             if (m_scene.TimeDilation < 0.1) //Limit so that the client (and physics engine) don't go crazy
                 m_scene.TimeDilation = 0.1f;
             else if (m_scene.TimeDilation > 1.0) //No going over!
                 m_scene.TimeDilation = 1.0f;
         }
 
-        public void ResetStats()
+        public void ResetStats ()
         {
         }
 

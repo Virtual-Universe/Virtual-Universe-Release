@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -32,14 +34,14 @@ namespace Universe.Modules.Web
 {
     public interface IWebInterfacePage
     {
-        string[] FilePath { get; }
+        string [] FilePath { get; }
         bool RequiresAuthentication { get; }
         bool RequiresAdminAuthentication { get; }
 
-        Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest request,
+        Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest request,
                                         OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
                                         ITranslator translation, out string response);
 
-        bool AttemptFindPage(string filename, ref OSHttpResponse httpResponse, out string text);
+        bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text);
     }
 }

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -37,7 +39,7 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers;
 
-namespace Universe.Modules.Currency.BaseCurrency
+namespace Universe.Modules.Currency
 {
     /* This module provides the necessary economy functionality for the viewer
        but with all values being $0
@@ -88,7 +90,8 @@ namespace Universe.Modules.Currency.BaseCurrency
             return true;
         }
 
-        public bool Transfer(UUID toID, UUID fromID, UUID toObjectID, string toObjectName, UUID fromObjectID, string fromObjectName, int amount, string description,
+        public bool Transfer(UUID toID, UUID fromID, UUID toObjectID, string toObjectName, UUID fromObjectID,
+                             string fromObjectName, int amount, string description,
                              TransactionType type)
         {
             if ((type == TransactionType.PayObject) && (OnObjectPaid != null))
@@ -211,10 +214,10 @@ namespace Universe.Modules.Currency.BaseCurrency
         /// <param name="client"></param>
         /// <param name="agentID"></param>
         /// <param name="SessionID"></param>
-        /// <param name="TransactionID"></param>
-        protected void SendMoneyBalance(IClientAPI client, UUID agentID, UUID SessionID, UUID TransactionID)
+        /// <param name="transactionID"></param>
+        protected void SendMoneyBalance(IClientAPI client, UUID agentID, UUID SessionID, UUID transactionID)
         {
-            client.SendMoneyBalance(TransactionID, true, new byte[0], 0);
+            client.SendMoneyBalance(transactionID, true, new byte[0], 0);
         }
 
         #region Buy Currency and Land
@@ -232,7 +235,7 @@ namespace Universe.Modules.Currency.BaseCurrency
                 UUID.TryParse((string) requestData["agentId"], out agentId);
                 try
                 {
-                    amount = (Int32) requestData["currencyBuy"];
+                    amount = (int) requestData["currencyBuy"];
                 }
                 catch (InvalidCastException)
                 {
@@ -282,7 +285,6 @@ namespace Universe.Modules.Currency.BaseCurrency
                     }
                 }
             }*/
-
             XmlRpcResponse returnval = new XmlRpcResponse();
             Hashtable returnresp = new Hashtable {{"success", true}};
             returnval.Value = returnresp;
@@ -401,7 +403,7 @@ namespace Universe.Modules.Currency.BaseCurrency
 
         public GroupBalance GetGroupBalance(UUID groupID)
         {
-            return new GroupBalance() {StartingDate = DateTime.Now.AddDays(-4)};
+            return new GroupBalance {StartingDate = DateTime.Now.AddDays(-4)};
         }
 
         public bool GroupCurrencyTransfer(UUID groupID, UUID fromID, bool payUser, string toObjectName, UUID fromObjectID,

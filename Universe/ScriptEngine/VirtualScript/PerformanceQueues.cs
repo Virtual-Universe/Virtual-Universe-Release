@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -34,13 +36,13 @@ namespace Universe.ScriptEngine.VirtualScript
 
     public class StartPerformanceQueue
     {
-        private readonly Queue ContinuedQueue = new Queue(10000);
-        private readonly Queue FirstStartQueue = new Queue(10000);
-        private readonly Queue SuspendedQueue = new Queue(100); //Smaller, we don't get this very often
-        private int ContinuedQueueCount;
+        readonly Queue ContinuedQueue = new Queue(10000);
+        readonly Queue FirstStartQueue = new Queue(10000);
+        readonly Queue SuspendedQueue = new Queue(100);     //Smaller, we don't get this very often
+        int ContinuedQueueCount;
 
-        private int FirstStartQueueCount;
-        private int SuspendedQueueCount;
+        int FirstStartQueueCount;
+        int SuspendedQueueCount;
 
         public bool GetNext(out object Item)
         {
@@ -77,12 +79,9 @@ namespace Universe.ScriptEngine.VirtualScript
 
         public void Clear()
         {
-            lock (ContinuedQueue)
-            {
-                lock (SuspendedQueue)
-                {
-                    lock (FirstStartQueue)
-                    {
+            lock (ContinuedQueue) {
+                lock (SuspendedQueue) {
+                    lock (FirstStartQueue) {
                         ContinuedQueue.Clear();
                         SuspendedQueue.Clear();
                         FirstStartQueue.Clear();
@@ -94,7 +93,16 @@ namespace Universe.ScriptEngine.VirtualScript
 
         public int Count()
         {
-            return ContinuedQueueCount + SuspendedQueueCount + FirstStartQueueCount;
+            int queCount = 0;
+
+            lock (ContinuedQueue) {
+                lock (SuspendedQueue) {
+                    lock (FirstStartQueue)
+                        queCount = ContinuedQueueCount + SuspendedQueueCount + FirstStartQueueCount;
+                }
+            }
+
+            return queCount;
         }
 
         public void Add(object item, LoadPriority priority)

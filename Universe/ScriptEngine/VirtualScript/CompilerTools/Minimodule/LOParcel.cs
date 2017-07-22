@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -31,10 +33,10 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    internal class LOParcel : MarshalByRefObject, IParcel
+    class LOParcel : MarshalByRefObject, IParcel
     {
-        private readonly int m_parcelID;
-        private readonly IScene m_scene;
+        readonly int m_parcelID;
+        readonly IScene m_scene;
 
         public LOParcel(IScene m_scene, int m_parcelID)
         {
@@ -64,7 +66,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 
         #endregion
 
-        private ILandObject GetLO()
+        ILandObject GetLO()
         {
             IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
             if (parcelManagement != null)

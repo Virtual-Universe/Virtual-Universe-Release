@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,14 +27,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
 
 namespace Universe.Framework.DatabaseInterfaces
 {
@@ -188,6 +190,13 @@ namespace Universe.Framework.DatabaseInterfaces
         /// <returns></returns>
         List<DirClassifiedReplyData> FindClassifieds(string queryText, string category, uint queryFlags, int StartQuery,
                                                      UUID scopeID);
+        /// <summary>
+        /// Gets a lost of all classifieds.
+        /// </summary>
+        /// <returns>The classifieds.</returns>
+        /// <param name="category">Category.</param>
+        /// <param name="classifiedFlags">Classified maturity flags.</param>
+        List<Classified> GetAllClassifieds (int category, uint classifiedFlags);
 
         /// <summary>
         ///     Gets all classifieds in the given region
@@ -196,6 +205,11 @@ namespace Universe.Framework.DatabaseInterfaces
         /// <returns></returns>
         List<Classified> GetClassifiedsInRegion(string regionName);
 
+        /// <summary>
+        /// Gets the classified by identifier.
+        /// </summary>
+        /// <returns>The classified by identifier.</returns>
+        /// <param name="id">Identifier.</param>
         Classified GetClassifiedByID(UUID id);
 
         #endregion
@@ -211,6 +225,34 @@ namespace Universe.Framework.DatabaseInterfaces
         /// <param name="scopeID"></param>
         /// <returns></returns>
         List<DirEventsReplyData> FindEvents(string queryText, uint flags, int StartQuery, UUID scopeID);
+
+        /// <summary>
+        /// Gets all events.
+        /// </summary>
+        /// <returns>The all events.</returns>
+        /// <param name="queryHours">Query hours.</param>
+        /// <param name="category">Category.</param>
+        /// <param name="maturityLevel">Maturity level.</param>
+        List<EventData> GetAllEvents (int queryHours, int category, int maturityLevel);
+
+        /// <summary>
+        /// Gets the user events.
+        /// </summary>
+        /// <returns>The user events.</returns>
+        /// <param name="userId">User identifier.</param>
+        /// <param name="queryHours">Query hours.</param>
+        /// <param name="category">Category.</param>
+        /// <param name="maturityLevel">Maturity level.</param>
+        List<EventData> GetUserEvents (string userId, int queryHours, int category, int maturityLevel);
+
+        /// <summary>
+        /// Gets all events.
+        /// </summary>
+        /// <returns>The all events.</returns>
+        /// <param name="userId">Creator ID.(Ignored if null)</param>
+        /// <param name="queryHours">Next nn hours.</param>
+        /// <param name="maturityLevel">Event flags.</param>
+        List<EventData> GetEventsList (string userId, int queryHours, int categoriy, int maturityLevel);
 
         /// <summary>
         ///     Retrieves all events in the given region by their maturity level
@@ -247,6 +289,22 @@ namespace Universe.Framework.DatabaseInterfaces
         EventData CreateEvent(UUID creator, UUID region, UUID parcel, DateTime date, uint cover,
                               DirectoryManager.EventFlags maturity, uint flags, uint duration, Vector3 localPos,
                               string name, string description, string category);
+
+        /// <summary>
+        /// Updates or adds an event.
+        /// </summary>
+        /// <returns><c>true</c>, if add event was updated, <c>false</c> otherwise.</returns>
+        /// <param name="eventData">Event data.</param>
+        /// <param name="regionId">Region identifier.</param>
+        /// <param name="parcelId">Parcel identifier.</param>
+        bool UpdateAddEvent (EventData eventData);
+
+        /// <summary>
+        /// Deletes an event.
+        /// </summary>
+        /// <returns><c>true</c>, if event was deleted, <c>false</c> otherwise.</returns>
+        /// <param name="eventId">Event identifier.</param>
+        bool DeleteEvent (string eventId);
 
         /// <summary>
         ///     Gets a list of events with optional filters

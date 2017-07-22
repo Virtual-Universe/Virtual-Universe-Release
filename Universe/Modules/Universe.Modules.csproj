@@ -1,7 +1,7 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
 	<PropertyGroup>
 	  <ProjectType>Local</ProjectType>
-	  <ProductVersion>12.0.31101</ProductVersion>
+	  <ProductVersion>9.0.30729</ProductVersion>
 	  <SchemaVersion>2.0</SchemaVersion>
 	  <ProjectGuid>{21AB8EAA-0000-0000-0000-000000000000}</ProjectGuid>
 	  <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -103,11 +103,6 @@
 	  <PlatformTarget>x86</PlatformTarget>
 	</PropertyGroup>
 	<ItemGroup>
-	  <Reference Include="CSJ2K" >
-		  <Name>CSJ2K</Name>
-		<HintPath>..\..\VirtualUniverse\bin\CSJ2K.dll</HintPath>
-		<Private>False</Private>
-	  </Reference>
 	  <Reference Include="GlynnTucker.Cache" >
 		  <Name>GlynnTucker.Cache</Name>
 		<HintPath>..\..\VirtualUniverse\bin\GlynnTucker.Cache.dll</HintPath>
@@ -116,21 +111,6 @@
 	  <Reference Include="Nini" >
 		  <Name>Nini</Name>
 		<HintPath>..\..\VirtualUniverse\bin\Nini.dll</HintPath>
-		<Private>False</Private>
-	  </Reference>
-	  <Reference Include="OpenMetaverse" >
-		  <Name>OpenMetaverse</Name>
-		<HintPath>..\..\VirtualUniverse\bin\OpenMetaverse.dll</HintPath>
-		<Private>False</Private>
-	  </Reference>
-	  <Reference Include="OpenMetaverse.StructuredData" >
-		  <Name>OpenMetaverse.StructuredData</Name>
-		<HintPath>..\..\VirtualUniverse\bin\OpenMetaverse.StructuredData.dll</HintPath>
-		<Private>False</Private>
-	  </Reference>
-	  <Reference Include="OpenMetaverseTypes" >
-		  <Name>OpenMetaverseTypes</Name>
-		<HintPath>..\..\VirtualUniverse\bin\OpenMetaverseTypes.dll</HintPath>
 		<Private>False</Private>
 	  </Reference>
 	  <Reference Include="protobuf-net.dll" >
@@ -183,6 +163,30 @@
 	  </Reference>
 	</ItemGroup>
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Virtual-LibOMV\CSJ2K\CSJ2K.csproj">
+		<Name>CSJ2K</Name>
+		<Project>{C276743B-0000-0000-0000-000000000000}</Project>
+		<Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+		<Private>False</Private>
+	  </ProjectReference>
+	  <ProjectReference Include="..\..\Virtual-LibOMV\OpenMetaverse\OpenMetaverse.csproj">
+		<Name>OpenMetaverse</Name>
+		<Project>{8B693884-0000-0000-0000-000000000000}</Project>
+		<Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+		<Private>False</Private>
+	  </ProjectReference>
+	  <ProjectReference Include="..\..\Virtual-LibOMV\OpenMetaverse.StructuredData\OpenMetaverse.StructuredData.csproj">
+		<Name>OpenMetaverse.StructuredData</Name>
+		<Project>{C2C78869-0000-0000-0000-000000000000}</Project>
+		<Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+		<Private>False</Private>
+	  </ProjectReference>
+	  <ProjectReference Include="..\..\Virtual-LibOMV\OpenMetaverseTypes\OpenMetaverseTypes.csproj">
+		<Name>OpenMetaverseTypes</Name>
+		<Project>{6C8DAE41-0000-0000-0000-000000000000}</Project>
+		<Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+		<Private>False</Private>
+	  </ProjectReference>
 	  <ProjectReference Include="..\DataManager\Universe.DataManager.csproj">
 		<Name>Universe.DataManager</Name>
 		<Project>{E87F42E0-0000-0000-0000-000000000000}</Project>
@@ -449,6 +453,9 @@
 	  <Compile Include="Web\IWebInterfacePage.cs">
 		<SubType>Code</SubType>
 	  </Compile>
+	  <Compile Include="Web\webhelpers.cs">
+		<SubType>Code</SubType>
+	  </Compile>
 	  <Compile Include="Web\WebHttpTextureService.cs">
 		<SubType>Code</SubType>
 	  </Compile>
@@ -500,6 +507,9 @@
 	  <Compile Include="Web\html\region_info.cs">
 		<SubType>Code</SubType>
 	  </Compile>
+	  <Compile Include="Web\html\region_list.cs">
+		<SubType>Code</SubType>
+	  </Compile>
 	  <Compile Include="Web\html\region_search.cs">
 		<SubType>Code</SubType>
 	  </Compile>
@@ -512,16 +522,13 @@
 	  <Compile Include="Web\html\slmapapi.cs">
 		<SubType>Code</SubType>
 	  </Compile>
+	  <Compile Include="Web\html\user_partnership.cs">
+		<SubType>Code</SubType>
+	  </Compile>
 	  <Compile Include="Web\html\user_profile.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Web\html\user_purchases.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Web\html\user_search.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Web\html\user_transactions.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Web\html\world.cs">
@@ -545,6 +552,12 @@
 	  <Compile Include="Web\html\admin\edit_user.cs">
 		<SubType>Code</SubType>
 	  </Compile>
+	  <Compile Include="Web\html\admin\estate_edit.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Web\html\admin\estate_manager.cs">
+		<SubType>Code</SubType>
+	  </Compile>
 	  <Compile Include="Web\html\admin\factory_reset.cs">
 		<SubType>Code</SubType>
 	  </Compile>
@@ -558,6 +571,9 @@
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Web\html\admin\purchases.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Web\html\admin\region_edit.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Web\html\admin\region_manager.cs">
@@ -578,7 +594,7 @@
 	  <Compile Include="Web\html\admin\welcomescreen_manager.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Web\html\classifieds\index.cs">
+	  <Compile Include="Web\html\classifieds\classifieds.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Web\html\css\index.cs">
@@ -587,7 +603,7 @@
 	  <Compile Include="Web\html\events\add_event.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Web\html\events\index.cs">
+	  <Compile Include="Web\html\events\events.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Web\html\javascripts\jquery.jclock.cs">
@@ -600,6 +616,30 @@
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Web\html\regionprofile\parcels.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Web\html\user\edit_event.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Web\html\user\estate_edit.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Web\html\user\estate_manager.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Web\html\user\events.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Web\html\user\region_edit.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Web\html\user\region_manager.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Web\html\user\user_purchases.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Web\html\user\user_transactions.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Web\html\webprofile\groups.cs">
@@ -650,13 +690,25 @@
 	  <Compile Include="Web\Translators\GermanTranslation.cs">
 		<SubType>Code</SubType>
 	  </Compile>
+	  <Compile Include="Web\Translators\IrishTranslation.cs">
+		<SubType>Code</SubType>
+	  </Compile>
 	  <Compile Include="Web\Translators\ItalianTranslation.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Web\Translators\RussianTranslation.cs">
 		<SubType>Code</SubType>
 	  </Compile>
+	  <Compile Include="Web\Translators\Serialization.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Web\Translators\SkeletonTranslation.cs">
+		<SubType>Code</SubType>
+	  </Compile>
 	  <Compile Include="Web\Translators\SpanishTranslation.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="WebUiPHP\WebUiPHP.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\ActivitiyDetectors\ActivityDetector.cs">
@@ -675,12 +727,6 @@
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\BannedViewersModule\PresenceInfo.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\BannedViewersModule\PresenceInfoMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\BannedViewersModule\PresenceInfoMigrator_3.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\DefaultInventoryIARLoader\DefaultInventoryIARLoader.cs">
@@ -716,10 +762,10 @@
 	  <Compile Include="World\Estate\EstateTerrainXferHandler.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="World\Estate\SystemEstateService.cs">
+	  <Compile Include="World\GlobalEnvironment\CloudModule.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="World\GlobalEnvironment\CloudModule.cs">
+	  <Compile Include="World\GlobalEnvironment\EnvironmentSettingsModule.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\GlobalEnvironment\SunModule.cs">
@@ -979,9 +1025,6 @@
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\VisitorLogger\VisitorLogger.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\WindLightSettings\EnvironmentSettingsModule.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\WorldMap\MapImageModule.cs">

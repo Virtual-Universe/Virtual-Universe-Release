@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System.Collections.Generic;
 using OpenMetaverse;
@@ -64,12 +65,14 @@ namespace Universe.Modules.Web
             var vars = new Dictionary<string, object>();
             IGenericsConnector connector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
             GridNewsItem news;
+
             if (requestParameters.ContainsKey("Submit"))
             {
                 string title = requestParameters["NewsTitle"].ToString();
                 string text = requestParameters["NewsText"].ToString();
                 string id = requestParameters["NewsID"].ToString();
                 news = connector.GetGeneric<GridNewsItem>(UUID.Zero, "WebGridNews", id);
+
                 if (news != null)
                 {
                     connector.RemoveGeneric (UUID.Zero, "WebGridNews", id);
@@ -80,11 +83,12 @@ namespace Universe.Modules.Web
                     "setTimeout(function() {window.location.href = \"index.html?page=news_manager\";}, 0);" +
                     "</script>";
                 }
+
                 return null;
             }
 
-
             news = connector.GetGeneric<GridNewsItem>(UUID.Zero, "WebGridNews", httpRequest.Query["newsid"].ToString());
+
             if (news != null)
             {
                 vars.Add ("NewsTitle", news.Title);
@@ -96,6 +100,7 @@ namespace Universe.Modules.Web
                 vars.Add ("EditNewsText", translator.GetTranslatedString ("EditNewsText"));
                 vars.Add ("Submit", translator.GetTranslatedString ("Submit"));
             }
+
             return vars;
         }
 

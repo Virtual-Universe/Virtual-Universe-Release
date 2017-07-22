@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -29,8 +31,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Universe.Framework.Utilities;
 using OpenMetaverse;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Utilities;
 
 namespace Universe.ScriptEngine.VirtualScript.Runtime
 {
@@ -84,12 +87,12 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
         protected static Dictionary<string, scriptEvents> m_eventFlagsMap = new Dictionary<string, scriptEvents>();
 
         // Cache functions by keeping a reference to them in a dictionary
-        private readonly Dictionary<string, scriptEvents> m_stateEvents = new Dictionary<string, scriptEvents>();
+        readonly Dictionary<string, scriptEvents> m_stateEvents = new Dictionary<string, scriptEvents>();
 
-        private bool InTimeSlice;
+        bool InTimeSlice;
 
-        private Int32 MaxTimeSlice = 60; // script timeslice execution time in ms , hardwired for now
-        private int TimeSliceEnd;
+        int MaxTimeSlice = 60; // script timeslice execution time in ms , hardwired for now
+        int TimeSliceEnd;
 
         /// <summary>
         ///     Contains the script to execute functions in.
@@ -97,7 +100,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
         protected IScript m_Script;
 
         protected Dictionary<Guid, IEnumerator> m_enumerators = new Dictionary<Guid, IEnumerator>();
-        private Type m_scriptType;
+        Type m_scriptType;
 
 
         public Executor(IScript script)
@@ -119,8 +122,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
             // Fill in the events for this state, cache the results in the map
             foreach (KeyValuePair<string, scriptEvents> kvp in m_eventFlagsMap)
             {
-                try
-                {
+                try {
                     MethodInfo ev = null;
                     string evname = state == "" ? "" : state + "_event_";
                     evname += kvp.Key;
@@ -131,15 +133,19 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
                         //MainConsole.Instance.Debug("Found handler for " + kvp.Key);
                         eventFlags |= kvp.Value;
                 }
-                catch (Exception)
-                {
-                    //MainConsole.Instance.Debug("Exeption in GetMethod:\n"+e.ToString());
+                catch (Exception e) {
+                    MainConsole.Instance.Debug("Exception in GetMethod for state: " + state +"\n"+e);
                 }
             }
 
             // Save the flags we just computed and return the result
-            if (eventFlags != 0)
-                m_stateEvents.Add(state, eventFlags);
+            if (eventFlags != 0) {
+                try {
+                    m_stateEvents.Add (state, eventFlags);
+                } catch (Exception e) {
+                    MainConsole.Instance.Debug("Exception adding state event for state: " + state + "\n"+e);
+                }
+            }
 
             //MainConsole.Instance.Debug("Returning {0:x}", eventFlags);
             return eventFlags;
@@ -303,7 +309,8 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
         public void ResetStateEventFlags()
         {
             m_stateEvents.Clear();
-            m_enumerators.Clear();
+            lock (m_enumerators)
+                m_enumerators.Clear();
             m_scriptType = null;
         }
     }

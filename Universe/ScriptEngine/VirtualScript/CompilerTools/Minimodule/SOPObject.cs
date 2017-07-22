@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -27,20 +29,20 @@
 
 using System;
 using System.Security;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    internal class SOPObject : MarshalByRefObject, IObject, IObjectPhysics, IObjectShape, IObjectSound
+    class SOPObject : MarshalByRefObject, IObject, IObjectPhysics, IObjectShape, IObjectSound
     {
-        private readonly uint m_localID;
-        private readonly IScene m_rootScene;
-        private readonly ISecurityCredential m_security;
+        readonly uint m_localID;
+        readonly IScene m_rootScene;
+        readonly ISecurityCredential m_security;
 
         [Obsolete("Replace with 'credential' constructor [security]")]
         public SOPObject(IScene rootScene, uint localID)
@@ -358,7 +360,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 
             foreach (string button in buttons)
             {
-                if (button == String.Empty)
+                if (button == string.Empty)
                 {
                     Say("ERROR: button label cannot be blank", 2147483647);
                     return;
@@ -380,7 +382,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
         #region Supporting Functions
 
         // Helper functions to understand if object has cut, hollow, dimple, and other affecting number of faces
-        private static void hasCutHollowDimpleProfileCut(int primType, PrimitiveBaseShape shape, out bool hasCut,
+        static void hasCutHollowDimpleProfileCut(int primType, PrimitiveBaseShape shape, out bool hasCut,
                                                          out bool hasHollow,
                                                          out bool hasDimple, out bool hasProfileCut)
         {
@@ -399,7 +401,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
             hasProfileCut = hasDimple; // is it the same thing?
         }
 
-        private static int getScriptPrimType(PrimitiveBaseShape primShape)
+        static int getScriptPrimType(PrimitiveBaseShape primShape)
         {
             if (primShape.SculptEntry)
                 return (int) PrimType.Sculpt;
@@ -432,7 +434,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
             return (int) PrimType.NotPrimitive;
         }
 
-        private static int getNumberOfSides(ISceneChildEntity part)
+        static int getNumberOfSides(ISceneChildEntity part)
         {
             int ret;
             bool hasCut;
@@ -652,9 +654,9 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 
         #region Implementation of IObjectShape
 
-        private UUID m_sculptMap = UUID.Zero;
+        UUID m_sculptMap = UUID.Zero;
 
-        private SculptType m_sculptType = SculptType.Default;
+        SculptType m_sculptType = SculptType.Default;
 
         public UUID SculptMap
         {
@@ -700,7 +702,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
             set { throw new NotImplementedException(); }
         }
 
-        private void SetPrimitiveSculpted(UUID map, byte type)
+        void SetPrimitiveSculpted(UUID map, byte type)
         {
             ObjectShapePacket.ObjectDataBlock shapeBlock = new ObjectShapePacket.ObjectDataBlock();
 
@@ -752,12 +754,12 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
         ///     It is utilized in nearly every property and method.
         /// </summary>
         /// <returns></returns>
-        private ISceneChildEntity GetSOP()
+        ISceneChildEntity GetSOP()
         {
             return m_rootScene.GetSceneObjectPart(m_localID);
         }
 
-        private bool CanEdit()
+        bool CanEdit()
         {
             if (!m_security.CanEditObject(this))
             {
@@ -768,7 +770,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 
         #region OnTouch
 
-        private bool _OnTouchActive;
+        bool _OnTouchActive;
 
         public event OnTouchDelegate OnTouch
         {
@@ -801,7 +803,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 
         private event OnTouchDelegate _OnTouch;
 
-        private void EventManager_OnObjectGrab(ISceneChildEntity part, ISceneChildEntity child, Vector3 offsetPos,
+        void EventManager_OnObjectGrab(ISceneChildEntity part, ISceneChildEntity child, Vector3 offsetPos,
                                                IClientAPI remoteClient, SurfaceTouchEventArgs surfaceArgs)
         {
             if (_OnTouchActive && m_localID == part.LocalId)

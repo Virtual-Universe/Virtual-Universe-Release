@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -32,6 +34,7 @@ using OpenMetaverse.Imaging;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services.ClassHelpers.Assets;
+using Universe.Framework.Utilities;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
@@ -62,23 +65,30 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
                 Description = "MRM Image",
                 Flags = (temporary) ? AssetFlags.Temporary : 0
             };
-            asset.ID = m_scene.AssetService.Store (asset);
 
-            return asset.ID;
+            var assetID = m_scene.AssetService.Store (asset);
+            asset.Dispose ();
+            return assetID;
         }
 
         public Bitmap LoadBitmap (UUID assetID)
         {
-            // from AssetCaps
-            const string MISSING_TEXTURE_ID = "41fcdbb9-0896-495d-8889-1eb6fad88da3";       // texture to use when all else fails...
 
             byte[] bmp = m_scene.AssetService.GetData (assetID.ToString ());
             if (bmp == null)
-                bmp = m_scene.AssetService.GetData (MISSING_TEXTURE_ID);
-            
-            Image img = m_scene.RequestModuleInterface<IJ2KDecoder> ().DecodeToImage (bmp);
+                bmp = m_scene.AssetService.GetData (Constants.MISSING_TEXTURE_ID);
 
-            return new Bitmap (img);
+            if (bmp == null)    // something reqlly wrong here
+                return null;
+
+            Image img = m_scene.RequestModuleInterface<IJ2KDecoder> ().DecodeToImage (bmp);
+            if (img == null)
+                return null;
+            
+            var retbmp = new Bitmap (img);
+            img.Dispose ();
+
+            return retbmp;
         }
 
         #endregion

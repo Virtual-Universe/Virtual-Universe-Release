@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -29,9 +31,9 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
-using Universe.ScriptEngine.VirtualScript.MiniModule;
 using Microsoft.CSharp;
 using OpenMetaverse;
+using Universe.ScriptEngine.VirtualScript.MiniModule;
 
 //using Microsoft.JScript;
 
@@ -39,7 +41,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
 {
     public class MRMConverter : IScriptConverter
     {
-        private readonly CSharpCodeProvider CScodeProvider = new CSharpCodeProvider();
+        readonly CSharpCodeProvider CScodeProvider = new CSharpCodeProvider();
 
         #region IScriptConverter Members
 
@@ -69,7 +71,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
             string[] lines = Script.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
             List<string> libraries = new List<string>();
             foreach (string s in lines)
-                if (s.StartsWith("//@DEPENDS:"))
+                if (s.StartsWith ("//@DEPENDS:", StringComparison.Ordinal))
                     libraries.Add(s.Replace("//@DEPENDS:", ""));
 
             string rootPath =
@@ -145,12 +147,12 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
         {
         }
 
-        private string CreateCompilerScript(string compileScript)
+        string CreateCompilerScript(string compileScript)
         {
             return ConvertMRMKeywords(compileScript);
         }
 
-        private string ConvertMRMKeywords(string script)
+        string ConvertMRMKeywords(string script)
         {
             script = script.Replace("microthreaded void", "IEnumerable");
             script = script.Replace("relax;", "yield return null;");

@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -79,8 +81,8 @@ namespace Universe.Modules.Web
                 ? int.Parse (httpRequest.Query ["cardid"].ToString ())
                 : int.Parse (requestParameters ["cardid"].ToString ());
             
-
             rpt = abuseModule.GetAbuseReport (cardID);
+
             if (rpt == null)
             {
                 vars.Add ("NoDetailsText", noDetails);
@@ -108,27 +110,27 @@ namespace Universe.Modules.Web
 
                     infoMessage = translator.GetTranslatedString ("ChangesSavedSuccessfully");
                 }
-
             }
 
             // get admin users
             var adminUsers = accountService.GetUserAccounts (null, Constants.USER_GOD_CUSTOMER_SERVICE, 0);
             var adminUsersList = new List<Dictionary<string, object>> ();
+
             if (adminUsers != null)
             {
-
                 foreach (var user in adminUsers)
                 {
                     if (!Utilities.IsSystemUser (user.PrincipalID))
                         adminUsersList.Add (new Dictionary<string, object> { { "Value", user.Name } });
                 }
+
                 adminUsersList.Add (new Dictionary<string, object> { { "Value", "No One" } });
             }
+
             vars.Add ("AdminUsersList", adminUsersList);
                 
             // details
             vars.Add ("CardNumber", rpt.Number);
-            //vars.Add("Date"), Culture.LocaleDate (transaction.TransferDate.ToLocalTime(), "MMM dd, hh:mm:ss tt");
             vars.Add ("Details", rpt.AbuseDetails);
             vars.Add ("AbuseLocation", rpt.AbuseLocation);
             vars.Add ("Summary", rpt.AbuseSummary);
@@ -185,4 +187,3 @@ namespace Universe.Modules.Web
         }
     }
 }
-

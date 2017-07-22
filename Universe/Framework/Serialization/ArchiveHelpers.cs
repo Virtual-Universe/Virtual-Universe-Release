@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -44,9 +46,9 @@ namespace Universe.Framework.Serialization
         /// </summary>
         /// <param name="sog"></param>
         /// <returns></returns>
-        public static string CreateObjectFilename(ISceneEntity sog)
+        public static string CreateObjectFilename (ISceneEntity sog)
         {
-            return ArchiveConstants.CreateOarObjectFilename(sog.Name, sog.UUID, sog.AbsolutePosition);
+            return ArchiveConstants.CreateOarObjectFilename (sog.Name, sog.UUID, sog.AbsolutePosition);
         }
 
         /// <summary>
@@ -54,9 +56,9 @@ namespace Universe.Framework.Serialization
         /// </summary>
         /// <param name="sog"></param>
         /// <returns></returns>
-        public static string CreateObjectPath(ISceneEntity sog)
+        public static string CreateObjectPath (ISceneEntity sog)
         {
-            return ArchiveConstants.CreateOarObjectPath(sog.Name, sog.UUID, sog.AbsolutePosition);
+            return ArchiveConstants.CreateOarObjectPath (sog.Name, sog.UUID, sog.AbsolutePosition);
         }
 
         /// <summary>
@@ -64,48 +66,50 @@ namespace Universe.Framework.Serialization
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static Stream GetStream(string path)
+        public static Stream GetStream (string path)
         {
-            if (File.Exists(path))
-            {
-                return new FileStream(path, FileMode.Open, FileAccess.Read);
+            if (File.Exists (path)) {
+                return new FileStream (path, FileMode.Open, FileAccess.Read);
             }
-            try
-            {
-                Uri uri = new Uri(path);
-                if (uri.Scheme == "file")
-                {
-                    return new FileStream(uri.AbsolutePath, FileMode.Open, FileAccess.Read);
+            try {
+                Uri uri = new Uri (path);
+                if (uri.Scheme == "file") {
+                    return new FileStream (uri.AbsolutePath, FileMode.Open, FileAccess.Read);
                 }
                 if (uri.Scheme != "http" && uri.Scheme != "https")
-                    MainConsole.Instance.Error(string.Format("Unsupported URI scheme ({0})", path));
+                    MainConsole.Instance.Error (string.Format ("Unsupported URI scheme ({0})", path));
 
                 // OK, now we know we have an HTTP URI to work with
-                return URIFetch(uri);
-            }
-            catch (UriFormatException)
-            {
+                return URIFetch (uri);
+            } catch (UriFormatException) {
                 // In many cases the user will put in a plain old filename that cannot be found so assume that
                 // this is the problem rather than confusing the issue with a UriFormatException
                 return null;
             }
         }
 
-        public static Stream URIFetch(Uri uri)
+        public static Stream URIFetch (Uri uri)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create (uri);
+
+            // request.Credentials = credentials;
 
             request.ContentLength = 0;
             request.KeepAlive = false;
 
-            WebResponse response = request.GetResponse();
-            Stream file = response.GetResponseStream();
+            WebResponse response = request.GetResponse ();
+            Stream file = response.GetResponseStream ();
+
+            // justincc: going to ignore the content type for now and just try anything
+            //if (response.ContentType != "application/x-oar")
+            //    throw new Exception(String.Format("{0} does not identify an OAR file", uri.ToString()));
 
             if (response.ContentLength == 0)
-                MainConsole.Instance.Error(string.Format("{0} returned an empty file", uri));
-            response.Dispose();
+                MainConsole.Instance.Error(string.Format ("{0} returned an empty file", uri));
+            response.Dispose ();
 
-            return new BufferedStream(file, 1000000);
+            // return new BufferedStream(file, (int) response.ContentLength);
+            return new BufferedStream (file, 1000000);
         }
     }
 }

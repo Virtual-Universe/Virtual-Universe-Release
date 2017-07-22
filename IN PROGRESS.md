@@ -23,6 +23,7 @@ Scripting:
 Assigned to BritanyannStarfinder
 * Upgrade VirtualScript with latest OSSL / LSL / Universe functions
 * New scriptengine Phlox (Apache 2 License by Inworldz)
+* Consider and implement osGetEngineName() for the physics engines
 
 Physics:
 --------

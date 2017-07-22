@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,45 +27,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-    internal class ObjectCountMonitor : IMonitor
+    class ObjectCountMonitor : IMonitor
     {
-        private readonly IScene m_scene;
+        readonly IScene m_scene;
 
-        public ObjectCountMonitor(IScene scene)
+        public ObjectCountMonitor (IScene scene)
         {
             m_scene = scene;
         }
 
         #region Implementation of IMonitor
 
-        public double GetValue()
+        public double GetValue ()
         {
-            return m_scene.RequestModuleInterface<IEntityCountModule>().Objects;
+            return m_scene.RequestModuleInterface<IEntityCountModule> ().Objects;
         }
 
-        public string GetName()
+        public string GetName ()
         {
             return "Total Objects Count";
         }
 
-        public string GetInterfaceName()
+        public string GetInterfaceName ()
         {
             return "";
         }
 
-        public string GetFriendlyValue()
+        public string GetFriendlyValue ()
         {
-            return m_scene.RequestModuleInterface<IEntityCountModule>().Objects + " Object(s), " +
-                   m_scene.RequestModuleInterface<IEntityCountModule>().ActiveObjects + " active Object(s)";
+            return m_scene.RequestModuleInterface<IEntityCountModule> ().Objects + " Object(s), " +
+                   m_scene.RequestModuleInterface<IEntityCountModule> ().ActiveObjects + " active Object(s)";
         }
 
-        public void ResetStats()
+        public void ResetStats ()
         {
         }
 

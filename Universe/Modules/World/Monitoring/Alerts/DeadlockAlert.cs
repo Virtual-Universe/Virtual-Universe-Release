@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,35 +27,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using Universe.Framework.Modules;
 
 namespace Universe.Modules.Monitoring.Alerts
 {
-    internal class DeadlockAlert : IAlert
+    class DeadlockAlert : IAlert
     {
-        private readonly ILastFrameTimeMonitor m_monitor;
+        readonly ILastFrameTimeMonitor m_monitor;
 
-        public DeadlockAlert(ILastFrameTimeMonitor m_monitor)
+        public DeadlockAlert (ILastFrameTimeMonitor m_monitor)
         {
             this.m_monitor = m_monitor;
         }
 
         #region Implementation of IAlert
 
-        public string GetName()
+        public string GetName ()
         {
             return "Potential Deadlock Alert";
         }
 
-        public void Test()
+        public void Test ()
         {
-            if (m_monitor.GetValue() > 60*1000)
-            {
-                if (OnTriggerAlert != null)
-                {
-                    OnTriggerAlert(typeof (DeadlockAlert),
-                                   (int) (m_monitor.GetValue()/1000) + " second(s) since last frame processed.", true);
+            if (m_monitor.GetValue () > 60 * 1000) {
+                if (OnTriggerAlert != null) {
+                    OnTriggerAlert (typeof (DeadlockAlert),
+                                   (int)(m_monitor.GetValue () / 1000) + " second(s) since last frame processed.", true);
                 }
             }
         }

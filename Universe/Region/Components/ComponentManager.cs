@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,18 +27,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Xml;
+using Nini.Config;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Serialization;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse.StructuredData;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Xml;
 
 namespace Universe.Region.Components
 {
@@ -49,33 +51,28 @@ namespace Universe.Region.Components
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="serialized"></param>
-        public void DeserializeComponents(ISceneChildEntity obj, string serialized)
+        public void DeserializeComponents (ISceneChildEntity obj, string serialized)
         {
             //Pull the OSDMap out for components
             OSDMap map;
-            try
-            {
+            try {
                 if (serialized == "")
-                    map = new OSDMap();
+                    map = new OSDMap ();
                 else
-                    map = (OSDMap) OSDParser.DeserializeJson(serialized);
-            }
-            catch
-            {
+                    map = (OSDMap)OSDParser.DeserializeJson (serialized);
+            } catch {
                 //Bad JSON? Just return
                 return;
             }
 
             //Now check against the list of components we have loaded
-            foreach (KeyValuePair<string, OSD> kvp in map)
-            {
-                PropertyInfo property = obj.GetType().GetProperty(kvp.Key);
-                if (property != null)
-                {
-                    property.SetValue(obj, Util.OSDToObject(kvp.Value, property.PropertyType), null);
+            foreach (KeyValuePair<string, OSD> kvp in map) {
+                PropertyInfo property = obj.GetType ().GetProperty (kvp.Key);
+                if (property != null) {
+                    property.SetValue (obj, Util.OSDToObject (kvp.Value, property.PropertyType), null);
                 }
             }
-            map.Clear();
+            map.Clear ();
             map = null;
         }
 
@@ -83,23 +80,19 @@ namespace Universe.Region.Components
 
         #region ISOPSerializerModule Members
 
-        public void Deserialization(ISceneChildEntity obj, XmlTextReader reader)
+        public void Deserialization (ISceneChildEntity obj, XmlTextReader reader)
         {
-            string components = reader.ReadElementContentAsString("Components", String.Empty);
-            if (components != "")
-            {
-                try
-                {
-                    DeserializeComponents(obj, components);
-                }
-                catch (Exception ex)
-                {
-                    MainConsole.Instance.Warn("[COMPONENTMANAGER]: Error on deserializing Components! " + ex);
+            string components = reader.ReadElementContentAsString ("Components", string.Empty);
+            if (components != "") {
+                try {
+                    DeserializeComponents (obj, components);
+                } catch (Exception ex) {
+                    MainConsole.Instance.Warn ("[Component manager]: Error on deserializing Components! " + ex);
                 }
             }
         }
 
-        public string Serialization(ISceneChildEntity part)
+        public string Serialization (ISceneChildEntity part)
         {
             return null;
         }
@@ -108,16 +101,16 @@ namespace Universe.Region.Components
 
         #region IService Members
 
-        public void Initialize(IConfigSource config, IRegistryCore registry)
+        public void Initialize (IConfigSource config, IRegistryCore registry)
         {
-            SceneEntitySerializer.SceneObjectSerializer.AddSerializer("Components", this);
+            SceneEntitySerializer.SceneObjectSerializer.AddSerializer ("Components", this);
         }
 
-        public void Start(IConfigSource config, IRegistryCore registry)
+        public void Start (IConfigSource config, IRegistryCore registry)
         {
         }
 
-        public void FinishedStartup()
+        public void FinishedStartup ()
         {
         }
 

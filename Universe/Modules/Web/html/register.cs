@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -27,6 +29,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Nini.Config;
 using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
@@ -38,12 +41,10 @@ using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
-
 namespace Universe.Modules.Web
 {
     public class RegisterPage : IWebInterfacePage
     {
-
         public string[] FilePath
         {
             get
@@ -98,7 +99,6 @@ namespace Universe.Modules.Web
             }
         }
             
-
         public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
                                                ITranslator translator, out string response)
@@ -160,25 +160,27 @@ namespace Universe.Modules.Web
                 UserDOBMonth = ShortMonthToNumber(UserDOBMonth);
 
                 // revise Type flags
-                int UserFlags = webInterface.UserTypeToUserFlags (UserType);
+                int UserFlags = WebHelpers.UserTypeToUserFlags (UserType);
 
                 // a bit of idiot proofing
                 if (AvatarName == "")  {
                     response = "<h3>" + translator.GetTranslatedString ("AvatarNameError") + "</h3>";   
                     return null;
                 }
+
                 if ( (AvatarPassword == "") || (AvatarPassword != AvatarPasswordCheck) )
                 {
                     response = "<h3>" + translator.GetTranslatedString ("AvatarPasswordError") + "</h3>";   
                     return null;
-                } 
+                }
+                
                 if (UserEmail == "")
                 {
                     response = "<h3>" + translator.GetTranslatedString ("AvatarEmailError") + "</h3>";   
                     return null;
                 }
 
-                // Thish -  Only one space is allowed in the name to seperate First and Last of the avatar name
+                // Only one space is allowed in the name to seperate First and Last of the avatar name
                 if (AvatarName.Split (' ').Length != 2)
                 {
                     response = "<h3>" + translator.GetTranslatedString("AvatarNameSpacingError") + "</h3>";
@@ -190,11 +192,10 @@ namespace Universe.Modules.Web
                 {
                     AvatarPassword = Util.Md5Hash(AvatarPassword);
 
-                    IUserAccountService accountService =
-                        webInterface.Registry.RequestModuleInterface<IUserAccountService>();
+                    IUserAccountService accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService>();
                     UUID userID = UUID.Random();
-                    string error = accountService.CreateUser(userID, settings.DefaultScopeID, AvatarName, AvatarPassword,
-                                                             UserEmail);
+                    string error = accountService.CreateUser(userID, settings.DefaultScopeID, AvatarName, AvatarPassword, UserEmail);
+
                     if (error == "")
                     {
                         // set the user account type
@@ -215,20 +216,15 @@ namespace Universe.Modules.Web
                         agent.OtherAgentInformation ["UserDOBDay"] = UserDOBDay;
                         agent.OtherAgentInformation ["UserDOBYear"] = UserDOBYear;
                         agent.OtherAgentInformation ["UserFlags"] = UserFlags;
-                        /*if (activationRequired)
-                        {
-                            UUID activationToken = UUID.Random();
-                            agent.OtherAgentInformation["WebUIActivationToken"] = Util.Md5Hash(activationToken.ToString() + ":" + PasswordHash);
-                            resp["WebUIActivationToken"] = activationToken;
-                        }*/
                         con.UpdateAgent (agent);
 
                         // create user profile details
-                        IProfileConnector profileData =
-                            Framework.Utilities.DataManager.RequestPlugin<IProfileConnector> ();
+                        IProfileConnector profileData = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector> ();
+
                         if (profileData != null)
                         {
                             IUserProfileInfo profile = profileData.GetUserProfile (userID);
+
                             if (profile == null)
                             {
                                 profileData.CreateNewProfile (userID);
@@ -248,7 +244,8 @@ namespace Universe.Modules.Web
                                 if (snapshotUUID != UUID.Zero)
                                     profile.Image = snapshotUUID;
                             }
-                            profile.MembershipGroup = webInterface.UserFlagToType (UserFlags, webInterface.EnglishTranslator);    // membership is english
+
+                            profile.MembershipGroup = WebHelpers.UserFlagToType (UserFlags, webInterface.EnglishTranslator);    // membership is english
                             profile.IsNewUser = true;
                             profileData.UpdateUserProfile (profile);
                         }
@@ -273,6 +270,7 @@ namespace Universe.Modules.Web
                 }
                 else
                     response = "<h3>You did not accept the Terms of Service agreement.</h3>";
+
                 return null;
             }
 
@@ -280,31 +278,12 @@ namespace Universe.Modules.Web
             for (int i = 1; i <= 31; i++)
                 daysArgs.Add(new Dictionary<string, object> {{"Value", i}});
 
-            List<Dictionary<string, object>> monthsArgs = new List<Dictionary<string, object>>();
-            //for (int i = 1; i <= 12; i++)
-            //    monthsArgs.Add(new Dictionary<string, object> {{"Value", i}});
-
-            monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Jan_Short")}});
-            monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Feb_Short")}});
-            monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Mar_Short")}});
-            monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Apr_Short")}});
-            monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("May_Short")}});
-            monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Jun_Short")}});
-            monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Jul_Short")}});
-            monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Aug_Short")}});
-            monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Sep_Short")}});
-            monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Oct_Short")}});
-            monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Nov_Short")}});
-            monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Dec_Short")}});
-
-
-
             List<Dictionary<string, object>> yearsArgs = new List<Dictionary<string, object>>();
-            for (int i = 1940; i <= 2013; i++)
+            for (int i = 1950; i <= 2013; i++)
                 yearsArgs.Add(new Dictionary<string, object> {{"Value", i}});
 
             vars.Add("Days", daysArgs);
-            vars.Add("Months", monthsArgs);
+            vars.Add ("Months", WebHelpers.ShortMonthSelections (translator)); //.monthsArgs);
             vars.Add("Years", yearsArgs);
 
             var sortBy = new Dictionary<string, bool>();
@@ -318,7 +297,6 @@ namespace Universe.Modules.Web
                 null, null, sortBy);
             foreach (var region in regions)
             {
-
                 RegionListVars.Add (new Dictionary<string, object> {
                     { "RegionName", region.RegionName },
                     { "RegionUUID", region.RegionID }
@@ -328,41 +306,24 @@ namespace Universe.Modules.Web
             vars.Add("RegionList", RegionListVars);
             vars.Add("UserHomeRegionText", translator.GetTranslatedString("UserHomeRegionText"));
 
-
             vars.Add("UserTypeText", translator.GetTranslatedString("UserTypeText"));
-            vars.Add("UserType", webInterface.UserTypeArgs(translator)) ;
+            vars.Add("UserType", WebHelpers.UserTypeArgs(translator)) ;
 
-            List<AvatarArchive> archives = webInterface.Registry.RequestModuleInterface<IAvatarAppearanceArchiver>().GetAvatarArchives();
-
-            List<Dictionary<string, object>> avatarArchives = new List<Dictionary<string, object>>();
-            IWebHttpTextureService webTextureService = webInterface.Registry.
-                                                                    RequestModuleInterface<IWebHttpTextureService>();
-            foreach (var archive in archives)
-                avatarArchives.Add(new Dictionary<string, object>
-                                       {
-                                           {"AvatarArchiveName", archive.FolderName },
-                                           {"AvatarArchiveSnapshotID", archive.Snapshot},
-                                           {
-                                               "AvatarArchiveSnapshotURL",
-                                               webTextureService.GetTextureURL(archive.Snapshot)
-                                           }
-                                       });
-
-            vars.Add("AvatarArchive", avatarArchives);
-
+            vars.Add ("AvatarArchive", WebHelpers.AvatarSelections(webInterface.Registry));
 
             string tosLocation = "";
+
             if (loginServerConfig != null && loginServerConfig.GetBoolean("UseTermsOfServiceOnFirstLogin", false))
             {
                 tosLocation = loginServerConfig.GetString("FileNameOfTOS", "");
                 tosLocation = PathHelpers.VerifyReadFile (tosLocation,  ".txt", simBase.DefaultDataPath);
             }
+
             string ToS = "There are no Terms of Service currently. This may be changed at any point in the future.";
 
             if (tosLocation != "")
             {
-                System.IO.StreamReader reader =
-                    new System.IO.StreamReader(System.IO.Path.Combine(Environment.CurrentDirectory, tosLocation));
+                StreamReader reader = new StreamReader(Path.Combine(Environment.CurrentDirectory, tosLocation));
                 try
                 {
                     ToS = reader.ReadToEnd();
@@ -375,9 +336,11 @@ namespace Universe.Modules.Web
 
             // check for user name seed
             string[] m_userNameSeed = null;
+
             if (loginServerConfig != null)
             {
                 string userNameSeed = loginServerConfig.GetString ("UserNameSeed", "");
+
                 if (userNameSeed != "")
                     m_userNameSeed = userNameSeed.Split (',');
             }
@@ -395,7 +358,6 @@ namespace Universe.Modules.Web
             vars.Add("TermsOfServiceAccept", translator.GetTranslatedString("TermsOfServiceAccept"));
             vars.Add("TermsOfServiceText", translator.GetTranslatedString("TermsOfServiceText"));
             vars.Add("RegistrationsDisabled", "");
-            //vars.Add("RegistrationsDisabled", translator.GetTranslatedString("RegistrationsDisabled"));
             vars.Add("RegistrationText", translator.GetTranslatedString("RegistrationText"));
             vars.Add("AvatarNameText", translator.GetTranslatedString("AvatarNameText"));
             vars.Add("AvatarPasswordText", translator.GetTranslatedString("Password"));

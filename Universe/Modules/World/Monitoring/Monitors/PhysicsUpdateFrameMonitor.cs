@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,7 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
@@ -33,44 +34,44 @@ namespace Universe.Modules.Monitoring.Monitors
 {
     public class PhysicsUpdateFrameMonitor : IPhysicsUpdateFrameMonitor
     {
-        private int MonitorPhysicsUpdateTime;
+        int MonitorPhysicsUpdateTime;
 
-        public PhysicsUpdateFrameMonitor(IScene scene)
+        public PhysicsUpdateFrameMonitor (IScene scene)
         {
         }
 
         #region Implementation of IMonitor
 
-        public double GetValue()
+        public double GetValue ()
         {
             return MonitorPhysicsUpdateTime;
         }
 
-        public string GetName()
+        public string GetName ()
         {
             return "Physics Update Frame Time";
         }
 
-        public string GetInterfaceName()
+        public string GetInterfaceName ()
         {
             return "IPhysicsUpdateFrameMonitor";
         }
 
-        public string GetFriendlyValue()
+        public string GetFriendlyValue ()
         {
-            return (int) GetValue() + "ms";
+            return (int)GetValue () + "ms";
         }
 
         #endregion
 
         #region ITimeMonitor Members
 
-        public void AddTime(int time)
+        public void AddTime (int time)
         {
             MonitorPhysicsUpdateTime += time;
         }
 
-        public void ResetStats()
+        public void ResetStats ()
         {
             MonitorPhysicsUpdateTime = 0;
         }

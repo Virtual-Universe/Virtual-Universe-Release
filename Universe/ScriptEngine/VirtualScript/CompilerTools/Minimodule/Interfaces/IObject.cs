@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,9 +27,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using OpenMetaverse;
 using System;
 using System.Drawing;
+using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
@@ -89,7 +91,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
         /// <summary>
         ///     The description assigned to this object.
         /// </summary>
-        String Description { get; set; }
+        string Description { get; set; }
 
         /// <summary>
         ///     Returns the UUID of the Owner of the Object.
@@ -141,16 +143,16 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
         Vector3 OffsetPosition { get; set; }
 
         Vector3 SitTarget { get; set; }
-        String SitTargetText { get; set; }
+        string SitTargetText { get; set; }
 
-        String TouchText { get; set; }
+        string TouchText { get; set; }
 
         /// <summary>
         ///     Text to be associated with this object, in the
         ///     Second Life(r) viewer, this is shown above the
         ///     object.
         /// </summary>
-        String Text { get; set; }
+        string Text { get; set; }
 
         bool IsRotationLockedX { get; set; } // SetStatus(!ROTATE_X)
         bool IsRotationLockedY { get; set; } // SetStatus(!ROTATE_Y)

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -29,8 +31,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Universe.Framework.SceneInfo;
 using OpenMetaverse;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
@@ -88,7 +90,12 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
         public void Add(UUID key, IInventoryItem value)
         {
             m_publicInventory.Add(key, value);
-            m_privateInventory.Add(key, InventoryItem.FromInterface(value).ToTaskInventoryItem());
+            var invtValue = InventoryItem.FromInterface (value);     // this could retuen null if unable to convert
+            if (invtValue != null)
+                m_privateInventory [key] = invtValue.ToTaskInventoryItem ();
+            else
+                m_privateInventory [key] = null;
+
         }
 
         public bool ContainsKey(UUID key)
@@ -216,7 +223,11 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
             set
             {
                 m_publicInventory[key] = value;
-                m_privateInventory[key] = InventoryItem.FromInterface(value).ToTaskInventoryItem();
+                var invtValue = InventoryItem.FromInterface (value);     // this could retuen null if unable to convert
+                if (invtValue != null) 
+                    m_privateInventory [key] = invtValue.ToTaskInventoryItem ();
+                else
+                    m_privateInventory [key] = null;
             }
         }
 

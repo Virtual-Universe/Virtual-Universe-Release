@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -142,7 +144,7 @@ namespace Universe.Services
             COFVersion = cofversion;
 
             FillOutHomeData(pinfo, home);
-            LookAt = String.Format("[r{0},r{1},r{2}]", lookAt.X, lookAt.Y, lookAt.Z);
+            LookAt = string.Format("[r{0},r{1},r{2}]", lookAt.X, lookAt.Y, lookAt.Z);
 
             FillOutRegionData(aCircuit, destination);
             login = "true";
@@ -164,7 +166,7 @@ namespace Universe.Services
             catch (Exception e)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[LLLOGIN SERVICE]: Error processing inventory skeleton of agent {0} - {1}",
+                    "[LLogin Service]: Error processing inventory skeleton of agent {0} - {1}",
                     agentID, e);
 
                 // ignore and continue
@@ -212,13 +214,15 @@ namespace Universe.Services
             ActiveGestures = list;
         }
 
-        void FillOutHomeData(Framework.Services.UserInfo pinfo, GridRegion home)
+        void FillOutHomeData(Framework.Services.UserInfo pinfo, GridRegion homeRegion)
         {
-            int x = 1000*Constants.RegionSize, y = 1000*Constants.RegionSize;
-            if (home != null)
-            {
-                x = home.RegionLocX;
-                y = home.RegionLocY;
+            // TODO: The region start positions should be retrieved from the SimulationBase MapCenterX/MapCenterY
+            // This is a fallback setting as the user's home region should have been set on login
+            int x = Constants.DEFAULT_REGIONSTART_X * Constants.RegionSize;
+            int y = Constants.DEFAULT_REGIONSTART_Y * Constants.RegionSize;
+            if (homeRegion != null) {
+                x = homeRegion.RegionLocX;
+                y = homeRegion.RegionLocY;
             }
 
             Home = string.Format(
@@ -300,15 +304,15 @@ namespace Universe.Services
                     uiConfigHash["allow_first_life"] = AllowFirstLife;
                 uiConfig.Add(uiConfigHash);
 
-                responseData["sim_port"] = (Int32) SimPort;
+                responseData["sim_port"] = (int) SimPort;
                 responseData["sim_ip"] = SimAddress;
-                responseData["http_port"] = (Int32) SimHttpPort;
+                responseData["http_port"] = (int) SimHttpPort;
 
                 responseData["agent_id"] = AgentID.ToString();
                 responseData["session_id"] = SessionID.ToString();
                 responseData["secure_session_id"] = SecureSessionID.ToString();
                 responseData["circuit_code"] = CircuitCode;
-                responseData["seconds_since_epoch"] = (Int32) (DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+                responseData["seconds_since_epoch"] = (int) (DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
                 responseData["login-flags"] = loginFlags;
                 responseData["seed_capability"] = seedCapability;
 
@@ -345,8 +349,8 @@ namespace Universe.Services
                 responseData["home"] = home;
                 responseData["look_at"] = lookAt;
                 responseData["message"] = Message;
-                responseData["region_x"] = (Int32) (RegionX);
-                responseData["region_y"] = (Int32) (RegionY);
+                responseData["region_x"] = (int) (RegionX);
+                responseData["region_y"] = (int) (RegionY);
                 responseData["region_size_x"] = (RegionSizeX);
                 responseData["region_size_y"] = (RegionSizeY);
                 responseData["cof_version"] = COFVersion;
@@ -363,31 +367,31 @@ namespace Universe.Services
 
                 #endregion Global Textures
 
-                if (SearchURL != String.Empty)
+                if (SearchURL != string.Empty)
                     responseData["search"] = SearchURL;
 
-                if (MapTileURL != String.Empty)
+                if (MapTileURL != string.Empty)
                     responseData["map-server-url"] = MapTileURL;
 
-                if (AgentAppearanceURL != String.Empty)
+                if (AgentAppearanceURL != string.Empty)
                     responseData["agent_appearance_service"] = AgentAppearanceURL;
 
-                if (WebProfileURL != String.Empty)
+                if (WebProfileURL != string.Empty)
                     responseData["web_profile_url"] = WebProfileURL;
 
-                if (HelpURL != String.Empty)
+                if (HelpURL != string.Empty)
                     responseData["help_url_format"] = HelpURL;
 
-                if (SnapshotConfigURL != String.Empty)
+                if (SnapshotConfigURL != string.Empty)
                     responseData["snapshot_config_url"] = SnapshotConfigURL;
 
-                if (OpenIDURL != String.Empty)
+                if (OpenIDURL != string.Empty)
                     responseData["openid_url"] = OpenIDURL;
 
-                if (DestinationURL != String.Empty)
+                if (DestinationURL != string.Empty)
                     responseData["destination_guide_url"] = DestinationURL;
 
-                if (MarketPlaceURL != String.Empty)
+                if (MarketPlaceURL != string.Empty)
                     responseData["marketplace_url"] = MarketPlaceURL;
 
                 if (MaxAgentGroups != 0)
@@ -396,7 +400,7 @@ namespace Universe.Services
                     responseData["max-agent-groups"] = 100;
 
                 //Makes viewers crash...
-                if (VoiceServerType != String.Empty)
+                if (VoiceServerType != string.Empty)
                 {
                     Hashtable voice_config = new Hashtable();
                     voice_config["VoiceServerType"] = VoiceServerType;
@@ -417,46 +421,46 @@ namespace Universe.Services
                     if (gridInfo.GetBoolean("SendGridInfoToViewerOnLogin", false))
                     {
                         string tmp;
-                        tmp = gridInfo.GetString("gridname", String.Empty);
-                        if (tmp != String.Empty) responseData["gridname"] = tmp;
-                        tmp = gridInfo.GetString("login", String.Empty);
-                        if (tmp != String.Empty) responseData["loginuri"] = tmp;
+                        tmp = gridInfo.GetString("gridname", string.Empty);
+                        if (tmp != string.Empty) responseData["gridname"] = tmp;
+                        tmp = gridInfo.GetString("login", string.Empty);
+                        if (tmp != string.Empty) responseData["loginuri"] = tmp;
 
                         // alternate keys of the same thing. (note careful not to overwrite responsedata["welcome"]
-                        tmp = gridInfo.GetString("loginpage", String.Empty);
-                        if (tmp != String.Empty) responseData["loginpage"] = tmp;
-                        tmp = gridInfo.GetString("welcome", String.Empty);
-                        if (tmp != String.Empty) responseData["loginpage"] = tmp;
+                        tmp = gridInfo.GetString("loginpage", string.Empty);
+                        if (tmp != string.Empty) responseData["loginpage"] = tmp;
+                        tmp = gridInfo.GetString("welcome", string.Empty);
+                        if (tmp != string.Empty) responseData["loginpage"] = tmp;
 
                         // alternate keys of the same thing.
-                        tmp = gridInfo.GetString("economy", String.Empty);
-                        if (tmp != String.Empty) responseData["economy"] = tmp;
-                        tmp = gridInfo.GetString("helperuri", String.Empty);
-                        if (tmp != String.Empty) responseData["helperuri"] = tmp;
+                        tmp = gridInfo.GetString("economy", string.Empty);
+                        if (tmp != string.Empty) responseData["economy"] = tmp;
+                        tmp = gridInfo.GetString("helperuri", string.Empty);
+                        if (tmp != string.Empty) responseData["helperuri"] = tmp;
                         
-                        // TODO: Some viewers recognize these values already
-                        // but broadcasting them won't make older viewer crash
-                        tmp = gridInfo.GetString("destination", String.Empty);
-                        if (tmp != String.Empty) responseData["destination"] = tmp;
-                        tmp = gridInfo.GetString("marketplace", String.Empty);
-                        if (tmp != String.Empty) responseData["marketplace"] = tmp;
+                        // Some viewers recognize these values already
+                        // ...but broadcasting them won't make older viewer crash
+                        tmp = gridInfo.GetString("destination", string.Empty);
+                        if (tmp != string.Empty) responseData["destination"] = tmp;
+                        tmp = gridInfo.GetString("marketplace", string.Empty);
+                        if (tmp != string.Empty) responseData["marketplace"] = tmp;
 
-                        tmp = gridInfo.GetString("about", String.Empty);
-                        if (tmp != String.Empty) responseData["about"] = tmp;
-                        tmp = gridInfo.GetString("help", String.Empty);
-                        if (tmp != String.Empty) responseData["help"] = tmp;
-                        tmp = gridInfo.GetString("register", String.Empty);
-                        if (tmp != String.Empty) responseData["register"] = tmp;
-                        tmp = gridInfo.GetString("password", String.Empty);
-                        if (tmp != String.Empty) responseData["password"] = tmp;
-                        tmp = gridInfo.GetString("CurrencySymbol", String.Empty);
-                        if (tmp != String.Empty) responseData["currency"] = tmp;
-                        tmp = gridInfo.GetString("RealCurrencySymbol", String.Empty);
-                        if (tmp != String.Empty) responseData["real_currency"] = tmp;
-                        tmp = gridInfo.GetString("DirectoryFee", String.Empty);
-                        if (tmp != String.Empty) responseData["directory_fee"] = tmp;
-                        tmp = gridInfo.GetString("MaxGroups", String.Empty);
-                        if (tmp != String.Empty) responseData["max_groups"] = tmp;
+                        tmp = gridInfo.GetString("about", string.Empty);
+                        if (tmp != string.Empty) responseData["about"] = tmp;
+                        tmp = gridInfo.GetString("help", string.Empty);
+                        if (tmp != string.Empty) responseData["help"] = tmp;
+                        tmp = gridInfo.GetString("register", string.Empty);
+                        if (tmp != string.Empty) responseData["register"] = tmp;
+                        tmp = gridInfo.GetString("password", string.Empty);
+                        if (tmp != string.Empty) responseData["password"] = tmp;
+                        tmp = gridInfo.GetString("CurrencySymbol", string.Empty);
+                        if (tmp != string.Empty) responseData["currency"] = tmp;
+                        tmp = gridInfo.GetString("RealCurrencySymbol", string.Empty);
+                        if (tmp != string.Empty) responseData["real_currency"] = tmp;
+                        tmp = gridInfo.GetString("DirectoryFee", string.Empty);
+                        if (tmp != string.Empty) responseData["directory_fee"] = tmp;
+                        tmp = gridInfo.GetString("MaxGroups", string.Empty);
+                        if (tmp != string.Empty) responseData["max_groups"] = tmp;
                     }
                 }
 
@@ -466,7 +470,7 @@ namespace Universe.Services
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[CLIENT]: LoginResponse: Error creating Hashtable Response: " + e);
+                MainConsole.Instance.Warn("[LLogin Service]: Error creating Hashtable Response: " + e);
 
                 return LLFailedLoginResponse.InternalError.ToHashtable();
             }
@@ -507,8 +511,8 @@ namespace Universe.Services
                 TempHash = new Hashtable();
                 TempHash["name"] = InvFolder.Name;
                 TempHash["parent_id"] = InvFolder.ParentID.ToString();
-                TempHash["version"] = (Int32) InvFolder.Version;
-                TempHash["type_default"] = (Int32) InvFolder.Type;
+                TempHash["version"] = (int) InvFolder.Version;
+                TempHash["type_default"] = (int) InvFolder.Type;
                 TempHash["folder_id"] = InvFolder.ID.ToString();
                 AgentInventoryArray.Add(TempHash);
             }
@@ -522,7 +526,7 @@ namespace Universe.Services
         protected virtual ArrayList GetInventoryLibrary(ILibraryService library, IInventoryService inventoryService)
         {
             ArrayList AgentInventoryArray = new ArrayList();
-            List<InventoryFolderBase> rootFolders = inventoryService.GetRootFolders(library.LibraryOwner);
+            List<InventoryFolderBase> rootFolders = inventoryService.GetRootFolders(library.LibraryOwnerUUID);
             Hashtable RootHash = new Hashtable();
             RootHash["name"] = library.LibraryName;
             RootHash["parent_id"] = UUID.Zero.ToString();
@@ -532,24 +536,25 @@ namespace Universe.Services
             AgentInventoryArray.Add(RootHash);
 
             List<UUID> rootFolderUUIDs =
-                (from rootFolder in rootFolders where rootFolder.Name != InventoryFolderBase.ROOT_FOLDER_NAME select rootFolder.ID).ToList();
+                (from rootFolder in rootFolders 
+                 where rootFolder.Name != InventoryFolderBase.ROOT_FOLDER_NAME 
+                 select rootFolder.ID).ToList();
 
             if (rootFolderUUIDs.Count != 0)
             {
                 foreach (UUID rootfolderID in rootFolderUUIDs)
                 {
-                    TraverseFolder(library.LibraryOwner, rootfolderID, inventoryService, library, true,
+                    TraverseFolder(library.LibraryOwnerUUID, rootfolderID, inventoryService, library, true,
                                    ref AgentInventoryArray);
                 }
             }
             return AgentInventoryArray;
         }
 
-        void TraverseFolder(UUID agentID, UUID folderID, IInventoryService invService, ILibraryService library,
-                                    bool rootFolder,
-                                    ref ArrayList table)
+        void TraverseFolder(UUID agentIDreq, UUID folderID, IInventoryService invService, ILibraryService library,
+                                    bool rootFolder, ref ArrayList table)
         {
-            List<InventoryFolderBase> folders = invService.GetFolderFolders(agentID, folderID);
+            List<InventoryFolderBase> folders = invService.GetFolderFolders(agentIDreq, folderID);
             foreach (InventoryFolderBase folder in folders)
             {
                 Hashtable TempHash = new Hashtable();
@@ -562,7 +567,7 @@ namespace Universe.Services
                 TempHash["type_default"] = 9;
                 TempHash["folder_id"] = folder.ID.ToString();
                 table.Add(TempHash);
-                TraverseFolder(agentID, folder.ID, invService, library, false, ref table);
+                TraverseFolder(agentIDreq, folder.ID, invService, library, false, ref table);
             }
         }
 
@@ -573,7 +578,7 @@ namespace Universe.Services
         {
             //for now create random inventory library owner
             Hashtable TempHash = new Hashtable();
-            TempHash["agent_id"] = libService.LibraryOwner.ToString(); // libFolder.Owner
+            TempHash["agent_id"] = libService.LibraryOwnerUUID.ToString(); // libFolder.Owner
             ArrayList inventoryLibOwner = new ArrayList {TempHash};
             return inventoryLibOwner;
         }
@@ -630,7 +635,7 @@ namespace Universe.Services
 
         public UUID SecureSessionID { get; set; }
 
-        public Int32 CircuitCode { get; set; }
+        public int CircuitCode { get; set; }
 
         public uint RegionX { get; set; }
 

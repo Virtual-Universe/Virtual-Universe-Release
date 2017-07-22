@@ -1,7 +1,16 @@
+# Attention all users
+If you are using Virtual Universe to run a production level grid open to the public, please use the official stable code in the Virtual-Universe Repository.
+
+The repository is at: https://github.com/Virtual-Universe/Virtual-Universe
+
+Never use the code in the Virtual-Dev repository for your production level grids.  The code in the Development Repository is for development of Virtual Universe and is not considered stable.
+
+The Development Repository at: https://github.com/Virtual-Universe/Virtual-Dev  code should not be used in a production level grid, and should only be used for purposes of testing only.
+
 # Virtual Universe
 
-- Current Version: 1.0.2 RC2
-- Version Release Date: April 30, 2016
+- Current Version: 1.0.3 Release
+- Version Release Date: June 28, 2017
 
 The Virtual Universe Development Team is proud to present Virtual Universe as a rolling release software.
 
@@ -76,9 +85,26 @@ Second Galaxy and Virtual Universe Google + community is for both Second Galaxy 
 
 ## NOTES
 
-*NOTE:
- As of Version 1.0.2, it's advised to Linux users to use a Mono version higher then 4.2.3.4, following a report about  GC.Collect() not cleaning up memory correctly. The most current version of Mono is 4.2.3.4 (Released 1st March 2016)*
+*NOTES:
 
+*- As of March 22, 2017, the LibOMV libraries are included as a submodule of the Virtual Universe repositories. When cloning, ensure that the submodules are included.*
+
+`git clone --recursive https://github.com/Virtual-Universe/Virtual-LibOMV.git`
+
+To update an existing repository that does not have the LibOMV submodule
+
+	cd <your Virtual Universe repository>
+	git submodule init
+	git submodule update
+
+*If you do not know what submodules are, or you are not using git from the command line, PLEASE make sure to fetch the submodules too.*
+
+**If you download the repo using the zip file option, you will also need to download the Virtual-LibOMV submodule and extract it in your local Virtual Universe repo.**
+`https://github.com/Virtual-Universe/Virtual-LibOMV`
+
+*NOTE:
+ As of Version 1.0.2, it's advised to Linux users to use a Mono version higher then 4.2.3.4, following a report about  GC.Collect() not cleaning up memory correctly. The most current version of Mono is 4.6.1.3 (Released 1st August 2016)*
+ Attention Arch Linux Users: by default your Mono version is 4.4.1.0 and is customized to work on Arch Linux.  YOu should not experience any problems.
  More information can be found here: http://www.mono-project.com/docs/getting-started/install/linux/
 
 *NOTE:

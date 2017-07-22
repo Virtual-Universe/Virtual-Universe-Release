@@ -20,7 +20,7 @@ Contributing code to Virtual Universe is actually really easy to do.  Just follo
 2. If you are contributing code which:
 
 2-A. Requires the addition of a new .cs file please use the file in BuildingTools/EmptyClass.cs
- then move to next step.
+ then move to next step.  Be sure to rename the EmptyClass.cs file to the correct file name for the new file you are proposing.
 
 2-B. Adds, Edits, or Removes code from a current .cs file move to next step.
 
@@ -56,6 +56,8 @@ For the development architecture repository:
 
 Then click the Create Pull Request button when your commit shows up and press the green button to submit the request.
   Be sure to reference your issue number in your pull request.
+
+NOTE: When submitting a pull request we strongly recommend you create a branch in your local repository and use that branch when submitting the pull request to us.  In this way your master branch will stay clean.
 
 5. After submitting the pull request you will see a 2 step test process begin. Wait for the process to complete.
   Don't panic this could take up to 15 minutes to complete.  Our repos will test build all pull requests.

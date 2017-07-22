@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -35,9 +37,9 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
 {
     public class LSLConverter : IScriptConverter
     {
-        private readonly CSharpCodeProvider CScodeProvider = new CSharpCodeProvider();
-        private CSCodeGenerator LSL_Converter;
-        private Compiler m_compiler;
+        readonly CSharpCodeProvider CScodeProvider = new CSharpCodeProvider();
+        CSCodeGenerator LSL_Converter;
+        Compiler m_compiler;
 
         #region IScriptConverter Members
 
@@ -49,7 +51,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
         public void Initialize(Compiler compiler)
         {
             m_compiler = compiler;
-            new CSCodeGenerator(compiler);
+            //? // new CSCodeGenerator(compiler);
 
             //Add new LSL events that haven't been added into the parser
             LSL2CSCodeTransformer.AddLSLEvent(new EventInfo("experience_permissions", new [] {

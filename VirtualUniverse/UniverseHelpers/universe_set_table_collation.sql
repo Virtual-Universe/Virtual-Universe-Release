@@ -69,9 +69,11 @@ ALTER TABLE `user_profile` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci
 # If you use currency include these as well
 # -----------------------------------------
 
-#ALTER TABLE `simple_currency` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-#ALTER TABLE `simple_currency_history`  CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-#ALTER TABLE `simple_purchased` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+#ALTER TABLE `user_currency` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+#ALTER TABLE `currency_history`  CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+#ALTER TABLE `user_purchased` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+#ALTER TABLE `group_currency` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+#ALTER TABLE `group_currency_history` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

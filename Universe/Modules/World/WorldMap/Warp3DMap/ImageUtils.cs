@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -43,9 +45,9 @@ namespace Universe.Modules.WorldMap.Warp3DMap
         /// <param name="xPercent">Interpolation value on the X axis, between 0.0 and 1.0</param>
         /// <param name="yPercent">Interpolation value on the Y axis, between 0.0 and 1.0</param>
         /// <returns>The bilinearly interpolated result</returns>
-        public static float Bilinear(float v00, float v01, float v10, float v11, float xPercent, float yPercent)
+        public static float Bilinear (float v00, float v01, float v10, float v11, float xPercent, float yPercent)
         {
-            return Utils.Lerp(Utils.Lerp(v00, v01, xPercent), Utils.Lerp(v10, v11, xPercent), yPercent);
+            return Utils.Lerp (Utils.Lerp (v00, v01, xPercent), Utils.Lerp (v10, v11, xPercent), yPercent);
         }
 
         /// <summary>
@@ -55,18 +57,17 @@ namespace Universe.Modules.WorldMap.Warp3DMap
         /// <param name="width">New width</param>
         /// <param name="height">New height</param>
         /// <returns>Resized image</returns>
-        public static Bitmap ResizeImage(Image image, int width, int height)
+        public static Bitmap ResizeImage (Image image, int width, int height)
         {
-            Bitmap result = new Bitmap(width, height);
+            Bitmap result = new Bitmap (width, height);
 
-            using (Graphics graphics = Graphics.FromImage(result))
-            {
+            using (Graphics graphics = Graphics.FromImage (result)) {
                 graphics.CompositingQuality = CompositingQuality.HighQuality;
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphics.SmoothingMode = SmoothingMode.HighQuality;
                 graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                graphics.DrawImage(image, 0, 0, result.Width, result.Height);
+                graphics.DrawImage (image, 0, 0, result.Width, result.Height);
             }
 
             return result;

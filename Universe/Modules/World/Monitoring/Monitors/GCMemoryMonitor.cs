@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -26,36 +28,35 @@
  */
 
 using System;
-
 using Universe.Framework.Modules;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-    internal class GCMemoryMonitor : IMonitor
+    class GCMemoryMonitor : IMonitor
     {
         #region Implementation of IMonitor
 
-        public double GetValue()
+        public double GetValue ()
         {
-            return GC.GetTotalMemory(false);
+            return GC.GetTotalMemory (false);
         }
 
-        public string GetName()
+        public string GetName ()
         {
             return "GC Reported Memory";
         }
 
-        public string GetInterfaceName()
+        public string GetInterfaceName ()
         {
             return "";
         }
 
-        public string GetFriendlyValue()
+        public string GetFriendlyValue ()
         {
-            return (int) (GetValue()/(1024*1024)) + "MB (Global)";
+            return (int)(GetValue () / (1024 * 1024)) + "MB (Global)";
         }
 
-        public void ResetStats()
+        public void ResetStats ()
         {
         }
 

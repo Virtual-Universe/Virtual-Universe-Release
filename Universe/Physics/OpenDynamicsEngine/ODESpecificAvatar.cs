@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -97,7 +99,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
             if (!localPos.IsFinite())
             {
-                MainConsole.Instance.Warn("[PHYSICS]: Avatar Position is non-finite!");
+                MainConsole.Instance.Warn("[ODE Physics]: Avatar Position is non-finite!");
 
                 _parent_scene.BadCharacter(this);
                 return;
@@ -412,14 +414,14 @@ namespace Universe.Physics.OpenDynamicsEngine
             if (CAPSULE_LENGTH <= 0)
             {
                 MainConsole.Instance.Warn(
-                    "[PHYSICS]: The capsule size you specified in Universe.ini is invalid!  Setting it to the smallest possible size!");
+                    "[ODE Physics]: The capsule size you specified in Universe.ini is invalid!  Setting it to the smallest possible size!");
                 CAPSULE_LENGTH = 1.2f;
             }
 
             if (CAPSULE_RADIUS <= 0)
             {
                 MainConsole.Instance.Warn(
-                    "[PHYSICS]: The capsule size you specified in Universe.ini is invalid!  Setting it to the normal size!");
+                    "[ODE Physics]: The capsule size you specified in Universe.ini is invalid!  Setting it to the normal size!");
                 CAPSULE_RADIUS = 0.37f;
             }
             Shell = d.CreateCapsule(_parent_scene.space, CAPSULE_RADIUS, CAPSULE_LENGTH);

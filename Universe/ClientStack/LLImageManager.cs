@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -54,8 +55,8 @@ namespace Universe.ClientStack
             m_assetCache = pAssetCache;
 
             if (pAssetCache != null && m_missingImage == null)
-                m_missingImage = pAssetCache.Get("5748decc-f629-461c-9a36-a35a221fe21f");
-
+                //m_missingImage = pAssetCache.Get("5748decc-f629-461c-9a36-a35a221fe21f"); // this is just a blank texture. Not very useful -greythane-
+                m_missingImage = pAssetCache.Get (Constants.MISSING_TEXTURE_ID);
             if (m_missingImage == null)
                 MainConsole.Instance.Error(
                     "[ClientView] - Couldn't set missing image asset, falling back to missing image packet. This is known to crash the client");
@@ -150,7 +151,8 @@ namespace Universe.ClientStack
                             DiscardLevel = newRequest.DiscardLevel,
                             StartPacket = Math.Max(1, newRequest.PacketNumber),
                             Priority = newRequest.Priority,
-                            TextureID = newRequest.RequestedAssetID
+                            TextureID = newRequest.RequestedAssetID,
+                            MissingImage = m_missingImage
                         };
                         imgrequest.Priority = newRequest.Priority;
 

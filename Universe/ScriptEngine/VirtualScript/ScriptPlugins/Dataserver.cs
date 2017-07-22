@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -28,15 +30,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Universe.Framework.SceneInfo;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.Plugins
 {
     public class DataserverPlugin : IScriptPlugin
     {
-        private readonly Dictionary<string, DataserverRequest> DataserverRequests =
+        readonly Dictionary<string, DataserverRequest> DataserverRequests =
             new Dictionary<string, DataserverRequest>();
 
         public ScriptEngine m_ScriptEngine;
@@ -140,7 +142,7 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
             return ds.ID;
         }
 
-        private void DataserverReply(string identifier, string reply)
+        void DataserverReply(string identifier, string reply)
         {
             DataserverRequest ds;
 
@@ -153,7 +155,7 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
             }
 
             m_ScriptEngine.PostObjectEvent(ds.primID,
-                                           "dataserver", new Object[]
+                                           "dataserver", new object[]
                                                              {
                                                                  new LSL_Types.LSLString(ds.ID.ToString()),
                                                                  new LSL_Types.LSLString(reply)
@@ -168,7 +170,7 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
                 if (DataserverRequests.TryGetValue(handle, out request))
                 {
                     //Wait for the value to be returned in LSL_Api
-                    request.IsCompleteAt = DateTime.Now.AddSeconds(millisecondsToWait/1000 + 0.1);
+                    request.IsCompleteAt = DateTime.Now.AddSeconds((millisecondsToWait / (double)1000) + 0.1);
                     request.Reply = reply;
                     //Make sure that the cmd handler thread is running
                     m_ScriptEngine.MaintenanceThread.PokeThreads(request.itemID);
@@ -182,7 +184,7 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
 
         #region Nested type: DataserverRequest
 
-        private class DataserverRequest
+        class DataserverRequest
         {
             public UUID ID;
             public DateTime IsCompleteAt;

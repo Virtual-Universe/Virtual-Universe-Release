@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -31,19 +33,23 @@ namespace Universe.Framework.Services
 {
     public interface ILibraryService
     {
-        /// <summary>
-        ///     The library owner's UUID
-        /// </summary>
-        UUID LibraryOwner { get; }
-
+    	
+       
         /// <summary>
         ///     The root folderID of the default library
         /// </summary>
         UUID LibraryRootFolderID { get; }
 
         /// <summary>
-        ///     The owner of the library's name
+        /// Gets the library owner's UUID.
         /// </summary>
+        /// <value>The library owner.</value>
+        UUID LibraryOwnerUUID { get; }
+
+        /// <summary>
+        /// Gets the name of the library owner.
+        /// </summary>
+        /// <value>The name of the library owner.</value>
         string LibraryOwnerName { get; }
 
         /// <summary>

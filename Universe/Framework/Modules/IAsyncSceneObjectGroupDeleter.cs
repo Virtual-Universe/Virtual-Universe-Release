@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -26,9 +28,9 @@
  */
 
 using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
-using OpenMetaverse;
 
 namespace Universe.Framework.Modules
 {
@@ -43,8 +45,6 @@ namespace Universe.Framework.Modules
         /// <param name="AgentId">The agent who is deleting the given groups (not the owner of the objects necessarily)</param>
         /// <param name="permissionToDelete">If true, the objects will be deleted from the sim as well</param>
         /// <param name="permissionToTake">If true, the objects will be added to the user's inventory as well</param>
-        void DeleteToInventory(DeRezAction action, UUID folderID,
-                               List<ISceneEntity> objectGroups, UUID AgentId,
-                               bool permissionToDelete, bool permissionToTake);
+        void DeleteToInventory(DeRezAction action, UUID folderID, List<ISceneEntity> objectGroups, UUID AgentId, bool permissionToDelete, bool permissionToTake);
     }
 }

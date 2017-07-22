@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,7 +27,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
@@ -33,9 +37,6 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System;
 
 namespace Universe.Modules.Gestures
 {
@@ -83,13 +84,13 @@ namespace Universe.Modules.Gestures
 
         #endregion
 
-        private void OnNewClient(IClientAPI client)
+        void OnNewClient(IClientAPI client)
         {
             client.OnActivateGesture += ActivateGesture;
             client.OnDeactivateGesture += DeactivateGesture;
         }
 
-        private void OnClosingClient(IClientAPI client)
+        void OnClosingClient(IClientAPI client)
         {
             client.OnActivateGesture -= ActivateGesture;
             client.OnDeactivateGesture -= DeactivateGesture;
@@ -98,18 +99,16 @@ namespace Universe.Modules.Gestures
         public virtual void ActivateGesture(IClientAPI client, UUID assetId, UUID gestureId)
         {
             IInventoryService invService = m_scene.InventoryService;
-			UUID libOwner = new UUID (Constants.LibraryOwner);
+						UUID libOwner = new UUID (Constants.LibraryOwnerUUID);
 
             InventoryItemBase item = invService.GetItem(client.AgentId, gestureId);
-            if (item != null)
-            {
-                item.Flags |= (uint) 1;
+            if (item != null) {
+                item.Flags |= 1;
                 invService.UpdateItem(item);
-            }
-            else {
+            } else {
 				if(invService.GetItem(libOwner, gestureId) == null) {
 					MainConsole.Instance.WarnFormat(
-						"[GESTURES]: Unable to find gesture {0} to activate for {1}", gestureId, client.Name);
+						"[Gestures]: Unable to find gesture {0} to activate for {1}", gestureId, client.Name);
 				}
 			}
         }
@@ -117,19 +116,18 @@ namespace Universe.Modules.Gestures
         public virtual void DeactivateGesture(IClientAPI client, UUID gestureId)
         {
             IInventoryService invService = m_scene.InventoryService;
-			UUID libOwner = new UUID (Constants.LibraryOwner);
+			UUID libOwner = new UUID (Constants.LibraryOwnerUUID);
 
             InventoryItemBase item = invService.GetItem(client.AgentId, gestureId);
-            if (item != null)
-            {
-                item.Flags &= ~(uint) 1;
-                invService.UpdateItem(item);
-            }
-            else
-				if(invService.GetItem(libOwner, gestureId) == null) {
-					MainConsole.Instance.ErrorFormat(
-						"[GESTURES]: Unable to find gesture to deactivate {0} for {1}", gestureId, client.Name);
+            if (item != null) {
+                item.Flags &= ~(uint)1;
+                invService.UpdateItem (item);
+            } else {
+                if (invService.GetItem (libOwner, gestureId) == null) {
+                    MainConsole.Instance.ErrorFormat (
+                        "[Gestures]: Unable to find gesture to deactivate {0} for {1}", gestureId, client.Name);
 				}
+            }
         }
     }
 }

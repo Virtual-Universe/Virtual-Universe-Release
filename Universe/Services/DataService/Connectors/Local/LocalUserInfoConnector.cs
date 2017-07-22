@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -59,11 +61,9 @@ namespace Universe.Services.DataService
                     connectionString = source.Configs[Name].GetString("ConnectionString", defaultConnectionString);
 
                     m_allowDuplicatePresences =
-                        source.Configs[Name].GetBoolean("AllowDuplicatePresences",
-                                                        m_allowDuplicatePresences);
+                        source.Configs[Name].GetBoolean("AllowDuplicatePresences", m_allowDuplicatePresences);
                     m_checkLastSeen =
-                        source.Configs[Name].GetBoolean("CheckLastSeen",
-                                                        m_checkLastSeen);
+                        source.Configs[Name].GetBoolean("CheckLastSeen", m_checkLastSeen);
                 }
                 if (GD != null)
                     GD.ConnectToDatabase(connectionString, "UserInfo",
@@ -209,7 +209,7 @@ namespace Universe.Services.DataService
             DateTime timeNow = DateTime.Now.ToUniversalTime();
             if (checkOnlineStatus && m_checkLastSeen && user.IsOnline && (timeLastSeen.AddHours(1) < timeNow))
             {
-                MainConsole.Instance.Warn("[UserInfoService]: Found a user (" + user.UserID +
+                MainConsole.Instance.Warn("[User Info Service]: Found a user (" + user.UserID +
                                           ") that was not seen within the last hour " +
                                           "(since " + timeLastSeen.ToLocalTime().ToString() + ", time elapsed " +
                                           (timeNow - timeLastSeen).Days + " days, " + (timeNow - timeLastSeen).Hours +
@@ -259,8 +259,7 @@ namespace Universe.Services.DataService
             return uint.Parse (userCount[0]);
         }
 
-        public List<UserInfo> RecentlyOnline(uint secondsAgo, bool stillOnline, Dictionary<string, bool> sort,
-                                             uint start, uint count)
+        public List<UserInfo> RecentlyOnline(uint secondsAgo, bool stillOnline, Dictionary<string, bool> sort)
         {
             //Beware!! login times are UTC!
             int now = Util.ToUnixTime (DateTime.Now.ToUniversalTime ()) - (int)secondsAgo;
@@ -274,13 +273,12 @@ namespace Universe.Services.DataService
                 filter.andFilters["IsOnline"] = "1";
             }
 
-            List<string> query = GD.Query(new string[] { "*" }, m_userInfoTable, filter, sort, start, count);
+            List<string> query = GD.Query(new string[] { "*" }, m_userInfoTable, filter, sort, null, null);
 
             return ParseQuery(query);
         }
 
-        public List<UserInfo> CurrentlyOnline(uint secondsAgo, Dictionary<string, bool> sort, uint start,
-            uint count)
+        public List<UserInfo> CurrentlyOnline(uint secondsAgo, Dictionary<string, bool> sort)
         {
 
             QueryFilter filter = new QueryFilter();
@@ -298,7 +296,7 @@ namespace Universe.Services.DataService
             filter.andFilters["IsOnline"] = "1";
 
 
-            List<string> query = GD.Query(new string[] { "*" }, m_userInfoTable, filter, sort, start, count);
+            List<string> query = GD.Query(new string[] { "*" }, m_userInfoTable, filter, sort, null, null);
 
             return ParseQuery(query);
         }

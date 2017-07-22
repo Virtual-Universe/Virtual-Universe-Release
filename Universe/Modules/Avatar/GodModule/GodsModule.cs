@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.IO;
@@ -59,6 +60,10 @@ namespace Universe.Modules.Gods
         {
             IScenePresence sp = m_scene.GetScenePresence (agentID);
 
+            // NPC's are not allowed
+            if (sp.IsNpcAgent)
+                return;
+            
             if (sp != null) {
                 if (godLike == false) {
                     //Unconditionally remove god levels
@@ -73,12 +78,12 @@ namespace Universe.Modules.Gods
                     if (sp.GodLevel == Constants.USER_NORMAL)
                         sp.GodLevel = Constants.USER_GOD_MAINTENANCE;
 
-                    MainConsole.Instance.InfoFormat ("[GODS]: God level set for {0}, level {1}", sp.Name, sp.GodLevel);
+                    MainConsole.Instance.InfoFormat ("[Gods]: God level set for {0}, level {1}", sp.Name, sp.GodLevel);
                     sp.ControllingClient.SendAdminResponse (token, (uint)sp.GodLevel);
                 } else {
                     if (m_dialogModule != null)
                         m_dialogModule.SendAlertToUser (agentID, "Request for god powers denied. This request has been logged.");
-                    MainConsole.Instance.Info ("[GODS]: God powers requested by " + sp.Name +
+                    MainConsole.Instance.Info ("[Gods]: God powers requested by " + sp.Name +
                         ", user is not allowed to have god powers");
                 }
             }
@@ -196,15 +201,15 @@ namespace Universe.Modules.Gods
 
         public OSDMap RegisterCaps (UUID agentID, IHttpServer server)
         {
+            HttpServerHandle godCaps = delegate (
+                string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse) {
+                return UntrustedSimulatorMessage (agentID, request);
+            };
+
             OSDMap retVal = new OSDMap ();
             retVal ["UntrustedSimulatorMessage"] = CapsUtil.CreateCAPS ("UntrustedSimulatorMessage", "");
 
-            server.AddStreamHandler (new GenericStreamHandler ("POST", retVal ["UntrustedSimulatorMessage"],
-                delegate (string path, Stream request,
-                                                                      OSHttpRequest httpRequest,
-                                                                      OSHttpResponse httpResponse) {
-                                                                          return UntrustedSimulatorMessage (agentID, request);
-                                                                      }));
+            server.AddStreamHandler (new GenericStreamHandler ("POST", retVal ["UntrustedSimulatorMessage"], godCaps));
             return retVal;
         }
 
@@ -213,11 +218,12 @@ namespace Universe.Modules.Gods
             OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml (HttpServerHandlerHelpers.ReadFully (request));
             if (rm ["message"] == "GodKickUser") {
                 OSDArray innerArray = ((OSDArray)((OSDMap)rm ["body"]) ["UserInfo"]);
-                OSDMap innerMap = (OSDMap)innerArray [0];
-                UUID toKick = innerMap ["AgentID"].AsUUID ();
-                UUID sessionID = innerMap ["GodSessionID"].AsUUID ();
-                string reason = innerMap ["Reason"].AsString ();
-                uint kickFlags = innerMap ["KickFlags"].AsUInteger ();
+                var innerMap = (OSDMap)innerArray [0];
+                var toKick = innerMap ["AgentID"].AsUUID ();
+                var sessionID = innerMap ["GodSessionID"].AsUUID ();
+                var reason = innerMap ["Reason"].AsString ();
+                var kickFlags = innerMap ["KickFlags"].AsUInteger ();
+
                 KickUser (AgentID, sessionID, toKick, kickFlags, reason);
             }
             return new byte [0];

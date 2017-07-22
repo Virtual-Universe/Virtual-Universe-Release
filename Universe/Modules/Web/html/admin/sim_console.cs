@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -38,7 +40,7 @@ namespace Universe.Modules.Web
             {
                 return new[]
                            {
-                               "html/sim_console.html"
+                               "html/admin/sim_console.html"
                            };
             }
         }
@@ -59,16 +61,28 @@ namespace Universe.Modules.Web
         {
             response = null;
             var vars = new Dictionary<string, object>();
-            //IGenericsConnector connector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
 
             // Check if we're looking at the standard page or the submitted one
             if (requestParameters.ContainsKey("Submit"))
             {
+                var command = "";
+
+                if (httpRequest.Query.ContainsKey ("command")) {
+                    command = httpRequest.Query ["command"].ToString ();
+                    response = "Command in query";
+                 } else {
+                    if (requestParameters.ContainsKey ("command")) {
+                        command = requestParameters ["command"].ToString ();
+                        response = "Command in parameters";
+                    } else {
+                        response = "<h3>Please enter a valid console command</h3>";
+                    }
+                }
+
+                return null;
             }
             else
             {
-                //vars.Add("ErrorMessage", error);
-
                 vars.Add("SimConsoleText", translator.GetTranslatedString("SimConsoleText"));
                 vars.Add("SimAddressText", translator.GetTranslatedString("SimAddressText"));
                 vars.Add("UserNameText", translator.GetTranslatedString("UserNameText"));
@@ -76,8 +90,8 @@ namespace Universe.Modules.Web
                 vars.Add("SendCommandText", translator.GetTranslatedString("SendCommandText"));
 
                 vars.Add("Login", translator.GetTranslatedString("Login"));
-
             }
+
             return vars;
         }
 

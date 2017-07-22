@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -101,7 +102,7 @@ namespace Universe.Services
         /// <summary>
         ///     This is the /CAPS/UUID 0000/ string
         /// </summary>
-        protected String m_capsUrlBase;
+        protected string m_capsUrlBase;
 
         public UUID AgentID
         {
@@ -134,7 +135,7 @@ namespace Universe.Services
 
         #region Properties
 
-        public String HostUri
+        public string HostUri
         {
             get { return Server.ServerURI; }
         }
@@ -155,7 +156,7 @@ namespace Universe.Services
         /// <summary>
         ///     This is the full URL to the Caps SEED request
         /// </summary>
-        public String CapsUrl
+        public string CapsUrl
         {
             get
             {
@@ -246,7 +247,7 @@ namespace Universe.Services
             string path = RegisteredCAPS[method].AsString();
             if (path != "") //If it doesn't exist...
             {
-                if (path.StartsWith(HostUri)) //Only try to remove local ones
+                if (path.StartsWith (HostUri, StringComparison.Ordinal)) //Only try to remove local ones
                 {
                     path = path.Remove(0, HostUri.Length);
                     Server.RemoveStreamHandler(httpMethod, path);
@@ -278,7 +279,7 @@ namespace Universe.Services
         public virtual byte[] CapsRequest(string path, Stream request, OSHttpRequest httpRequest,
                                           OSHttpResponse httpResponse)
         {
-            MainConsole.Instance.Info("[CapsHandlers]: Handling Seed Cap request at " + CapsUrl);
+            MainConsole.Instance.Debug("[CapsHandlers]: Handling Seed Cap request at " + CapsUrl);
             return OSDParser.SerializeLLSDXmlBytes(RegisteredCAPS);
         }
 

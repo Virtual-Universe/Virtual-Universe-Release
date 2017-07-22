@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -60,11 +62,18 @@ namespace Universe.Services
         static Bitmap m_blankRegionTile = null;
         MapTileIndex m_blankTiles = new MapTileIndex();
         byte[] m_blankRegionTileData;
+        int m_mapcenter_x = Constants.DEFAULT_REGIONSTART_X;
+        int m_mapcenter_y = Constants.DEFAULT_REGIONSTART_Y;
 
         public void Initialize(IConfigSource config, IRegistryCore registry)
         {
             m_registry = registry;
-            IConfig mapConfig = config.Configs["MapService"];
+
+            var simbase = registry.RequestModuleInterface<ISimulationBase> ();
+            m_mapcenter_x = simbase.MapCenterX;
+            m_mapcenter_y = simbase.MapCenterY;
+
+            var mapConfig = config.Configs["MapService"];
             if (mapConfig != null)
             {
                 m_enabled = mapConfig.GetBoolean("Enabled", m_enabled);
@@ -148,6 +157,14 @@ namespace Universe.Services
             get { return m_server.ServerURI + "/MapAPI/"; }
         }
 
+        public int MapCenterX {
+            get { return m_mapcenter_x; }
+        }
+
+        public int MapCenterY {
+            get { return m_mapcenter_y; }
+        }
+
         public byte[] MapAPIRequest(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             byte[] response = MainServer.BlankResponse;
@@ -209,7 +226,7 @@ namespace Universe.Services
         {
             //Remove the /MapService/
             string uri = httpRequest.RawUrl.Remove(0, 12);
-            if (!uri.StartsWith("map"))
+            if (!uri.StartsWith ("map", StringComparison.Ordinal))
             {
                 if (uri == "")
                 {
@@ -219,14 +236,18 @@ namespace Universe.Services
                                   "<Marker/>" +
                                   "<MaxKeys>1000</MaxKeys>" +
                                   "<IsTruncated>true</IsTruncated>";
-                    
-                    var thSize = 1000 * Constants.RegionSize;       // TODO:  Why 1000?  Should this be relative to the view??
+
+                    // TODO:  Why specific (was 1000)? Assumes the center of the map is here.
+                    //  Should this be relative to the view?? i.e a passed map center location
+                    var txSize = m_mapcenter_x * Constants.RegionSize;
+                    var tySize = m_mapcenter_x * Constants.RegionSize;
                     var etSize = 8 * Constants.RegionSize;
                     List<GridRegion> regions = m_gridService.GetRegionRange (
-                                                   null, (thSize - etSize), (thSize + etSize), (thSize - etSize), (thSize + etSize));
+                                                   null, (txSize - etSize), (txSize + etSize), (tySize - etSize), (tySize + etSize));
                     foreach (var region in regions)
                     {
-                        resp += "<Contents><Key>map-1-" + region.RegionLocX / Constants.RegionSize + "-" + region.RegionLocY / Constants.RegionSize +
+                        resp += "<Contents><Key>map-1-" + region.RegionLocX / Constants.RegionSize +
+                                "-" + region.RegionLocY / Constants.RegionSize +
                                 "-objects.jpg</Key>" +
                                 "<LastModified>2012-07-09T21:26:32.000Z</LastModified></Contents>";
                     }
@@ -255,11 +276,13 @@ namespace Universe.Services
 
                             EncoderParameters myEncoderParameters = new EncoderParameters();
                             myEncoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, 95L);
-
-                            // Save bitmap to stream
-                            image.Save(imgstream, GetEncoderInfo("image/jpeg"), myEncoderParameters);
-
+                            var encInfo = GetEncoderInfo ("image/jpeg");
+                            if (encInfo != null) {
+                                // Save bitmap to stream
+                                image.Save (imgstream, encInfo, myEncoderParameters);
+                            }
                             image.Dispose();
+                            myEncoderParameters.Dispose ();
 
                             // Write the stream to a byte array for output
                             return imgstream.ToArray();
@@ -486,7 +509,13 @@ namespace Universe.Services
         // From MSDN
         static ImageCodecInfo GetEncoderInfo(String mimeType)
         {
-            ImageCodecInfo[] encoders = ImageCodecInfo.GetImageEncoders();
+            ImageCodecInfo [] encoders;
+            try {
+                encoders = ImageCodecInfo.GetImageEncoders ();
+            } catch {
+                return null;
+            }
+
             return encoders.FirstOrDefault(t => t.MimeType == mimeType);
         }
 
@@ -550,13 +579,18 @@ namespace Universe.Services
 
             using (MemoryStream imgstream = new MemoryStream())
             {
-                // Save bitmap to stream
-                lock(mapTexture)
-                    mapTexture.Save(imgstream, GetEncoderInfo("image/jpeg"), myEncoderParameters);
-
+                var encInfo = GetEncoderInfo ("image/jpeg");
+                if (encInfo != null) {
+                    // Save bitmap to stream
+                    lock (mapTexture)
+                        mapTexture.Save (imgstream, encInfo, myEncoderParameters);
+                }
                 // Write the stream to a byte array for output
-                jpeg = imgstream.ToArray();
+                jpeg = imgstream.ToArray ();
+
             }
+
+            myEncoderParameters.Dispose ();
             SaveCachedImage(maplayer, regionX, regionY, jpeg);
             return jpeg;
         }

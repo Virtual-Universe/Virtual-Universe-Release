@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -27,16 +29,16 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
+using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.Plugins
 {
     public class ListenerPlugin : IScriptPlugin
     {
-        private readonly List<IWorldComm> m_modules = new List<IWorldComm>();
+        readonly List<IWorldComm> m_modules = new List<IWorldComm>();
         public ScriptEngine m_ScriptEngine;
 
         #region IScriptPlugin Members
@@ -70,13 +72,12 @@ namespace Universe.ScriptEngine.VirtualScript.Plugins
                         IWorldCommListenerInfo lInfo = comms.GetNextMessage();
 
                         //Deliver data to prim's listen handler
-                        object[] resobj = new object[]
-                                              {
-                                                  new LSL_Types.LSLInteger(lInfo.GetChannel()),
-                                                  new LSL_Types.LSLString(lInfo.GetName()),
-                                                  new LSL_Types.LSLString(lInfo.GetID().ToString()),
-                                                  new LSL_Types.LSLString(lInfo.GetMessage())
-                                              };
+                        object[] resobj = {
+                            new LSL_Types.LSLInteger(lInfo.GetChannel()),
+                            new LSL_Types.LSLString(lInfo.GetName()),
+                            new LSL_Types.LSLString(lInfo.GetID().ToString()),
+                            new LSL_Types.LSLString(lInfo.GetMessage())
+                        };
 
                         m_ScriptEngine.PostScriptEvent(
                             lInfo.GetItemID(), lInfo.GetHostID(), new EventParams(

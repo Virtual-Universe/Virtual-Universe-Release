@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,7 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
@@ -33,44 +34,44 @@ namespace Universe.Modules.Monitoring.Monitors
 {
     public class SleepFrameMonitor : ISleepFrameMonitor
     {
-        private int SleepFrame;
+        int SleepFrame;
 
-        public SleepFrameMonitor(IScene scene)
+        public SleepFrameMonitor (IScene scene)
         {
         }
 
         #region Implementation of IMonitor
 
-        public double GetValue()
+        public double GetValue ()
         {
             return SleepFrame;
         }
 
-        public string GetName()
+        public string GetName ()
         {
             return "Sleep Frame Time";
         }
 
-        public string GetInterfaceName()
+        public string GetInterfaceName ()
         {
             return "ISleepFrameMonitor";
         }
 
-        public string GetFriendlyValue()
+        public string GetFriendlyValue ()
         {
-            return GetValue() + "ms";
+            return GetValue () + "ms";
         }
 
         #endregion
 
         #region ITimeMonitor Members
 
-        public void AddTime(int value)
+        public void AddTime (int value)
         {
             SleepFrame += value;
         }
 
-        public void ResetStats()
+        public void ResetStats ()
         {
             SleepFrame = 0;
         }
