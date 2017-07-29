@@ -1128,6 +1128,7 @@ namespace Universe.ScriptEngine.VirtualScript
         public string TestCompileScript(UUID assetID, UUID itemID)
         {
             byte[] asset = m_Scene.AssetService.GetData(assetID.ToString());
+
             if (null == asset)
                 return "Could not find script.";
             else
@@ -1139,7 +1140,8 @@ namespace Universe.ScriptEngine.VirtualScript
                 }
                 catch (Exception e)
                 {
-                    string error = "Error compiling script: " + e;
+                    string error = "Exception when compiling script: " + e;
+
                     if (error.Length > 255)
                         error = error.Substring(0, 255);
                     return error;

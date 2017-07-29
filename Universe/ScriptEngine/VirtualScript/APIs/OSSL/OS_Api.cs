@@ -37,8 +37,12 @@ using System.Net;
 using System.Runtime.Remoting.Lifetime;
 using System.Text;
 using System.Text.RegularExpressions;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
+using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
@@ -48,9 +52,6 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
 using Universe.ScriptEngine.VirtualScript.Runtime;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using Group = System.Text.RegularExpressions.Group;
 using LSL_Float = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLFloat;
@@ -60,7 +61,6 @@ using LSL_List = Universe.ScriptEngine.VirtualScript.LSL_Types.list;
 using LSL_Rotation = Universe.ScriptEngine.VirtualScript.LSL_Types.Quaternion;
 using LSL_String = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLString;
 using LSL_Vector = Universe.ScriptEngine.VirtualScript.LSL_Types.Vector3;
-using Universe.Framework.DatabaseInterfaces;
 
 namespace Universe.ScriptEngine.VirtualScript.APIs
 {
@@ -107,9 +107,9 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
     //            taking money without consent, or allows deletion or
     //            modification of user data, or allows the compromise of
     //            sensitive data by design.
-    
-	[Serializable]
-	public class OS_Api : MarshalByRefObject, IScriptApi
+
+    [Serializable]
+    public class OS_Api : MarshalByRefObject, IScriptApi
     {
         internal ScriptProtectionModule ScriptProtection;
         internal LSL_Api m_LSL_Api; // get a reference to the LSL API so we can call methods housed there
@@ -126,10 +126,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             get { return m_host.ParentEntity.Scene; }
         }
 
-        //
         // OpenSim functions
-        //
-
         #region IOSSL_Api Members
 
         public LSL_Integer osSetTerrainHeight(int x, int y, double val)
@@ -143,15 +140,32 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (World.Permissions.CanTerraformLand(m_host.OwnerID, new Vector3(x, y, 0)))
             {
                 ITerrainChannel heightmap = World.RequestModuleInterface<ITerrainChannel>();
-                heightmap[x, y] = (float) val;
+                heightmap[x, y] = (float)val;
                 ITerrainModule terrainModule = World.RequestModuleInterface<ITerrainModule>();
-                if (terrainModule != null) terrainModule.TaintTerrain();
+
+                if (terrainModule != null)
+                    terrainModule.TaintTerrain();
+
                 return 1;
             }
             else
             {
                 return 0;
             }
+        }
+
+        public LSL_Key osGetRezzingObject()
+        {
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "osGetRezzingObject", m_host, "OSSL", m_itemID))
+                return new LSL_Key(UUID.Zero.ToString());
+
+            // this is a hack for the present and may not work correctly -greythane-
+            UUID rezID = m_host.CreatorID;   //.ParentGroup.RezzerID;
+            if (rezID == UUID.Zero || World.GetScenePresence(rezID) != null)
+                return new LSL_Key(UUID.Zero.ToString());
+
+            return new LSL_Key(rezID.ToString());
+
         }
 
         public LSL_Float osGetTerrainHeight(int x, int y)
@@ -199,7 +213,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 List<int> times = new List<int>();
                 while (seconds > 0)
                 {
-                    times.Add((int) seconds);
+                    times.Add((int)seconds);
                     if (seconds > 300)
                         seconds -= 120;
                     else if (seconds > 30)
@@ -383,7 +397,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 UUID createdTexture =
                     textureManager.AddDynamicTextureURL(World.RegionInfo.RegionID, m_host.UUID, UUID.Zero, contentType,
                                                         url,
-                                                        extraParams, timer, true, (byte) alpha);
+                                                        extraParams, timer, true, (byte)alpha);
                 return createdTexture.ToString();
             }
             else
@@ -392,7 +406,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 UUID createdTexture =
                     textureManager.AddDynamicTextureURL(World.RegionInfo.RegionID, m_host.UUID, oldAssetID, contentType,
                                                         url,
-                                                        extraParams, timer, true, (byte) alpha);
+                                                        extraParams, timer, true, (byte)alpha);
                 return createdTexture.ToString();
             }
         }
@@ -410,7 +424,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 UUID createdTexture =
                     textureManager.AddDynamicTextureURL(World.RegionInfo.RegionID, m_host.UUID, UUID.Zero, contentType,
                                                         url,
-                                                        extraParams, timer, blend, disp, (byte) alpha, face);
+                                                        extraParams, timer, blend, disp, (byte)alpha, face);
                 return createdTexture.ToString();
             }
             else
@@ -419,7 +433,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 UUID createdTexture =
                     textureManager.AddDynamicTextureURL(World.RegionInfo.RegionID, m_host.UUID, oldAssetID, contentType,
                                                         url,
-                                                        extraParams, timer, blend, disp, (byte) alpha, face);
+                                                        extraParams, timer, blend, disp, (byte)alpha, face);
                 return createdTexture.ToString();
             }
         }
@@ -477,7 +491,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     UUID createdTexture =
                         textureManager.AddDynamicTextureData(World.RegionInfo.RegionID, m_host.UUID, UUID.Zero,
                                                              contentType, data,
-                                                             extraParams, timer, true, (byte) alpha);
+                                                             extraParams, timer, true, (byte)alpha);
                     return createdTexture.ToString();
                 }
                 else
@@ -486,7 +500,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     UUID createdTexture =
                         textureManager.AddDynamicTextureData(World.RegionInfo.RegionID, m_host.UUID, oldAssetID,
                                                              contentType, data,
-                                                             extraParams, timer, true, (byte) alpha);
+                                                             extraParams, timer, true, (byte)alpha);
                     return createdTexture.ToString();
                 }
             }
@@ -520,12 +534,12 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             string verb = "/json_grid_info";
             OSDMap json = new OSDMap();
 
-            OSDMap info = (OSDMap) Util.CombineParams(new[] {String.Format("{0}{1}", url, verb)}, 3000);
+            OSDMap info = (OSDMap)Util.CombineParams(new[] { String.Format("{0}{1}", url, verb) }, 3000);
 
             if (info["Success"] != true)
                 return "Get GridInfo Failed!";
 
-            json = (OSDMap) OSDParser.DeserializeJson(info["_RawResult"].AsString());
+            json = (OSDMap)OSDParser.DeserializeJson(info["_RawResult"].AsString());
 
             switch (type)
             {
@@ -600,7 +614,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osGetGridGatekeeperURI", m_host, "OSSL", m_itemID))
                 return "";
-            
+
             string gatekeeperURI = String.Empty;
             IConfigSource config = m_ScriptEngine.ConfigSource;
             if (config.Configs["GridService"] != null)
@@ -612,7 +626,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osForceAttachToAvatar", m_host, "OSSL", m_itemID))
                 return;
-            
+
             InitLSL();
             m_LSL_Api.AttachToAvatar(attachmentPoint, false);
         }
@@ -621,8 +635,8 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osForceDetachFromAvatar", m_host, "OSSL", m_itemID))
                 return;
-            
-        	InitLSL();
+
+            InitLSL();
             m_LSL_Api.DetachFromAvatar();
         }
 
@@ -645,7 +659,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     UUID createdTexture =
                         textureManager.AddDynamicTextureData(World.RegionInfo.RegionID, m_host.UUID, UUID.Zero,
                                                              contentType, data,
-                                                             extraParams, timer, blend, disp, (byte) alpha, face);
+                                                             extraParams, timer, blend, disp, (byte)alpha, face);
                     return createdTexture.ToString();
                 }
                 else
@@ -654,7 +668,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     UUID createdTexture =
                         textureManager.AddDynamicTextureData(World.RegionInfo.RegionID, m_host.UUID, oldAssetID,
                                                              contentType, data,
-                                                             extraParams, timer, blend, disp, (byte) alpha, face);
+                                                             extraParams, timer, blend, disp, (byte)alpha, face);
                     return createdTexture.ToString();
                 }
             }
@@ -706,8 +720,8 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
                 ulong regionHandle = regInfo.RegionHandle;
                 return TeleportAgent(m_host.OwnerID, regionHandle,
-                                     new Vector3((float) position.x, (float) position.y, (float) position.z),
-                                     new Vector3((float) lookat.x, (float) lookat.y, (float) lookat.z));
+                                     new Vector3((float)position.x, (float)position.y, (float)position.z),
+                                     new Vector3((float)lookat.x, (float)lookat.y, (float)lookat.z));
             }
             return DateTime.Now;
         }
@@ -723,15 +737,15 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 return DateTime.Now;
 
             GridRegion regInfo = World.GridService.GetRegionByPosition(World.RegionInfo.AllScopeIDs,
-                                                                       (regionX*Constants.RegionSize),
-                                                                       (regionY*Constants.RegionSize));
+                                                                       (regionX * Constants.RegionSize),
+                                                                       (regionY * Constants.RegionSize));
             // Try to link the region
             if (regInfo != null)
             {
                 ulong regionHandle = regInfo.RegionHandle;
                 return TeleportAgent(m_host.OwnerID, regionHandle,
-                                     new Vector3((float) position.x, (float) position.y, (float) position.z),
-                                     new Vector3((float) lookat.x, (float) lookat.y, (float) lookat.z));
+                                     new Vector3((float)position.x, (float)position.y, (float)position.z),
+                                     new Vector3((float)lookat.x, (float)lookat.y, (float)lookat.z));
             }
             return DateTime.Now;
         }
@@ -771,8 +785,8 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osTeleportAgent", m_host, "OSSL", m_itemID))
                 return DateTime.Now;
 
-            ulong regionHandle = Utils.UIntsToLong(((uint) regionX*Constants.RegionSize),
-                                                   ((uint) regionY*Constants.RegionSize));
+            ulong regionHandle = Utils.UIntsToLong(((uint)regionX * Constants.RegionSize),
+                                                   ((uint)regionY * Constants.RegionSize));
 
 
             UUID agentId = new UUID();
@@ -802,7 +816,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osGetAgentIP", m_host, "OSSL", m_itemID))
                 return new LSL_String();
 
-            UUID avatarID = (UUID) agent;
+            UUID avatarID = (UUID)agent;
 
             IScenePresence target;
             if (World.TryGetScenePresence(avatarID, out target))
@@ -810,7 +824,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 EndPoint ep = target.ControllingClient.GetClientEP();
                 if (ep is IPEndPoint)
                 {
-                    IPEndPoint ip = (IPEndPoint) ep;
+                    IPEndPoint ip = (IPEndPoint)ep;
                     return new LSL_String(ip.Address.ToString());
                 }
             }
@@ -827,7 +841,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 return new LSL_List();
 
             LSL_List result = new LSL_List();
-            World.ForEachScenePresence(delegate(IScenePresence sp)
+            World.ForEachScenePresence(delegate (IScenePresence sp)
                                            {
                                                if (!sp.IsChildAgent)
                                                    result.Add(new LSL_String(sp.Name));
@@ -841,7 +855,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.VeryHigh, "osAvatarPlayAnimation", m_host, "OSSL",
                                                    m_itemID)) return;
 
-            UUID avatarID = (UUID) avatar;
+            UUID avatarID = (UUID)avatar;
 
             IScenePresence target;
             if (World.TryGetScenePresence(avatarID, out target))
@@ -858,7 +872,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                                 KeyValuePair<UUID, TaskInventoryItem> inv in
                                     m_host.TaskInventory.Where(inv => inv.Value.Name == animation))
                             {
-                                if (inv.Value.Type == (int) AssetType.Animation)
+                                if (inv.Value.Type == (int)AssetType.Animation)
                                     animID = inv.Value.AssetID;
                                 continue;
                             }
@@ -878,7 +892,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.VeryHigh, "osAvatarStopAnimation", m_host, "OSSL",
                                                    m_itemID)) return;
 
-            UUID avatarID = (UUID) avatar;
+            UUID avatarID = (UUID)avatar;
 
             IScenePresence target;
             if (World.TryGetScenePresence(avatarID, out target))
@@ -892,7 +906,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                             KeyValuePair<UUID, TaskInventoryItem> inv in
                                 m_host.TaskInventory.Where(inv => inv.Value.Name == animation))
                         {
-                            if (inv.Value.Type == (int) AssetType.Animation)
+                            if (inv.Value.Type == (int)AssetType.Animation)
                                 animID = inv.Value.AssetID;
                             continue;
                         }
@@ -1083,7 +1097,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             //World.Permissions.GenericEstatePermission(
             if (World.Permissions.IsGod(m_host.OwnerID))
             {
-                World.EventManager.TriggerRequestChangeWaterHeight((float) height);
+                World.EventManager.TriggerRequestChangeWaterHeight((float)height);
             }
         }
 
@@ -1114,7 +1128,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 World.RegionInfo.RegionSettings.FixedSun = sunFixed;
 
                 World.EventManager.TriggerEstateToolsSunUpdate(World.RegionInfo.RegionHandle, sunFixed, useEstateSun,
-                                                               (float) sunHour);
+                                                               (float)sunHour);
             }
         }
 
@@ -1146,7 +1160,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
                 World.EventManager.TriggerEstateToolsSunUpdate(World.RegionInfo.RegionHandle, sunFixed,
                                                                World.RegionInfo.RegionSettings.UseEstateSun,
-                                                               (float) sunHour);
+                                                               (float)sunHour);
             }
         }
 
@@ -1176,7 +1190,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "osGetSunParam", m_host, "OSSL", m_itemID))
                 return 0;
-            
+
             return GetSunParam(param);
         }
 
@@ -1223,7 +1237,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         public void osSetSunParam(string param, double value)
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "osSetSunParam", m_host, "OSSL", m_itemID)) return;
-            
+
             SetSunParam(param, value);
         }
 
@@ -1260,7 +1274,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             {
                 try
                 {
-                    module.WindParamSet(plugin, param, (float) value.value);
+                    module.WindParamSet(plugin, param, (float)value.value);
                 }
                 catch (Exception)
                 {
@@ -1287,10 +1301,10 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osParcelJoin", m_host, "OSSL", m_itemID)) return;
 
-            int startx = (int) (pos1.x < pos2.x ? pos1.x : pos2.x);
-            int starty = (int) (pos1.y < pos2.y ? pos1.y : pos2.y);
-            int endx = (int) (pos1.x > pos2.x ? pos1.x : pos2.x);
-            int endy = (int) (pos1.y > pos2.y ? pos1.y : pos2.y);
+            int startx = (int)(pos1.x < pos2.x ? pos1.x : pos2.x);
+            int starty = (int)(pos1.y < pos2.y ? pos1.y : pos2.y);
+            int endx = (int)(pos1.x > pos2.x ? pos1.x : pos2.x);
+            int endy = (int)(pos1.y > pos2.y ? pos1.y : pos2.y);
 
             IParcelManagementModule parcelManagement = World.RequestModuleInterface<IParcelManagementModule>();
             if (parcelManagement != null)
@@ -1304,10 +1318,10 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osParcelSubdivide", m_host, "OSSL", m_itemID))
                 return;
 
-            int startx = (int) (pos1.x < pos2.x ? pos1.x : pos2.x);
-            int starty = (int) (pos1.y < pos2.y ? pos1.y : pos2.y);
-            int endx = (int) (pos1.x > pos2.x ? pos1.x : pos2.x);
-            int endy = (int) (pos1.y > pos2.y ? pos1.y : pos2.y);
+            int startx = (int)(pos1.x < pos2.x ? pos1.x : pos2.x);
+            int starty = (int)(pos1.y < pos2.y ? pos1.y : pos2.y);
+            int endx = (int)(pos1.x > pos2.x ? pos1.x : pos2.x);
+            int endy = (int)(pos1.y > pos2.y ? pos1.y : pos2.y);
 
             IParcelManagementModule parcelManagement = World.RequestModuleInterface<IParcelManagementModule>();
             if (parcelManagement != null)
@@ -1327,7 +1341,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             IParcelManagementModule parcelManagement = World.RequestModuleInterface<IParcelManagementModule>();
             if (parcelManagement != null)
             {
-                ILandObject startLandObject = parcelManagement.GetLandObject((int) pos.x, (int) pos.y);
+                ILandObject startLandObject = parcelManagement.GetLandObject((int)pos.x, (int)pos.y);
                 if (startLandObject == null)
                 {
                     OSSLShoutError("There is no land at that location");
@@ -1428,7 +1442,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 // estate module is required
                 IEstateModule estate = World.RequestModuleInterface<IEstateModule>();
                 if (estate != null)
-                    estate.setEstateTerrainTextureHeights(corner, (float) low, (float) high);
+                    estate.setEstateTerrainTextureHeights(corner, (float)low, (float)high);
             }
         }
 
@@ -1576,27 +1590,27 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (decoded is OSDString)
             {
-                return (string) decoded.AsString();
+                return (string)decoded.AsString();
             }
             else if (decoded is OSDInteger)
             {
-                return (int) decoded.AsInteger();
+                return (int)decoded.AsInteger();
             }
             else if (decoded is OSDReal)
             {
-                return (float) decoded.AsReal();
+                return (float)decoded.AsReal();
             }
             else if (decoded is OSDBoolean)
             {
-                return (bool) decoded.AsBoolean();
+                return (bool)decoded.AsBoolean();
             }
             else if (decoded is OSDMap)
             {
-                return osdToHashtable((OSDMap) decoded);
+                return osdToHashtable((OSDMap)decoded);
             }
             else if (decoded is OSDArray)
             {
-                return osdToArray((OSDArray) decoded);
+                return osdToArray((OSDArray)decoded);
             }
             else
             {
@@ -1608,7 +1622,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "osParseJSONNew", m_host, "OSSL", m_itemID))
                 return new object();
-            
+
             try
             {
                 OSD decoded = OSDParser.DeserializeJson(JSON);
@@ -1652,13 +1666,13 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                             else if (objectStack.Peek().ToString() == "System.Collections.ArrayList")
                             {
                                 // add it to the parent array
-                                ((ArrayList) objectStack.Peek()).Add(currentObject);
+                                ((ArrayList)objectStack.Peek()).Add(currentObject);
                                 objectStack.Push(currentObject);
                             }
                             else
                             {
                                 // add it to the parent hashtable
-                                if (currentKey != null) ((Hashtable) objectStack.Peek()).Add(currentKey, currentObject);
+                                if (currentKey != null) ((Hashtable)objectStack.Peek()).Add(currentKey, currentObject);
                                 objectStack.Push(currentObject);
                             }
 
@@ -1693,17 +1707,17 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                             // ok we've got a string, if we've got an array on the top of the stack then we store it
                             if (objectStack.Peek().ToString() == "System.Collections.ArrayList")
                             {
-                                ((ArrayList) objectStack.Peek()).Add(tokenValue);
+                                ((ArrayList)objectStack.Peek()).Add(tokenValue);
                             }
                             else if (currentKey == null)
-                                // no key stored and its not an array this must be a key so store it
+                            // no key stored and its not an array this must be a key so store it
                             {
                                 currentKey = tokenValue;
                             }
                             else
                             {
                                 // we have a key so lets store this value
-                                ((Hashtable) objectStack.Peek()).Add(currentKey, tokenValue);
+                                ((Hashtable)objectStack.Peek()).Add(currentKey, tokenValue);
                                 // now lets clear the key, we're done with it and moving on
                                 currentKey = null;
                             }
@@ -1723,11 +1737,11 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
                             if (objectStack.Peek().ToString() == "System.Collections.ArrayList")
                             {
-                                ((ArrayList) objectStack.Peek()).Add(currentArray);
+                                ((ArrayList)objectStack.Peek()).Add(currentArray);
                             }
                             else
                             {
-                                if (currentKey != null) ((Hashtable) objectStack.Peek()).Add(currentKey, currentArray);
+                                if (currentKey != null) ((Hashtable)objectStack.Peek()).Add(currentKey, currentArray);
                                 // clear the key
                                 currentKey = null;
                             }
@@ -1748,11 +1762,11 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
                             if (objectStack.Peek().ToString() == "System.Collections.ArrayList")
                             {
-                                ((ArrayList) objectStack.Peek()).Add(true);
+                                ((ArrayList)objectStack.Peek()).Add(true);
                             }
                             else
                             {
-                                if (currentKey != null) ((Hashtable) objectStack.Peek()).Add(currentKey, true);
+                                if (currentKey != null) ((Hashtable)objectStack.Peek()).Add(currentKey, true);
                                 currentKey = null;
                             }
 
@@ -1764,11 +1778,11 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
                             if (objectStack.Peek().ToString() == "System.Collections.ArrayList")
                             {
-                                ((ArrayList) objectStack.Peek()).Add(false);
+                                ((ArrayList)objectStack.Peek()).Add(false);
                             }
                             else
                             {
-                                if (currentKey != null) ((Hashtable) objectStack.Peek()).Add(currentKey, false);
+                                if (currentKey != null) ((Hashtable)objectStack.Peek()).Add(currentKey, false);
                                 currentKey = null;
                             }
                             //advance the counter to the letter 'e'
@@ -1801,12 +1815,12 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                             // ok we've got a string, if we've got an array on the top of the stack then we store it
                             if (objectStack.Peek().ToString() == "System.Collections.ArrayList")
                             {
-                                ((ArrayList) objectStack.Peek()).Add(numberValue);
+                                ((ArrayList)objectStack.Peek()).Add(numberValue);
                             }
                             else
                             {
                                 // we have a key so lets store this value
-                                if (currentKey != null) ((Hashtable) objectStack.Peek()).Add(currentKey, numberValue);
+                                if (currentKey != null) ((Hashtable)objectStack.Peek()).Add(currentKey, numberValue);
                                 // now lets clear the key, we're done with it and moving on
                                 currentKey = null;
                             }
@@ -1830,7 +1844,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.Low, "osMessageObject", m_host, "OSSL", m_itemID))
                 return;
 
-            object[] resobj = new object[] {new LSL_Key(m_host.UUID.ToString()), new LSL_Key(message)};
+            object[] resobj = new object[] { new LSL_Key(m_host.UUID.ToString()), new LSL_Key(message) };
 
             ISceneChildEntity sceneOP = World.GetSceneObjectPart(objectUUID);
 
@@ -1849,11 +1863,11 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
             // Create new asset
             AssetBase asset = new AssetBase(UUID.Random(), notecardName, AssetType.Notecard, m_host.OwnerID)
-                                  {
-                                      Description
+            {
+                Description
                                           =
                                           "Script Generated Notecard"
-                                  };
+            };
             string notecardData = String.Empty;
 
             for (int i = 0; i < contents.Length; i++)
@@ -1873,17 +1887,17 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
             taskItem.ResetIDs(m_host.UUID);
             taskItem.ParentID = m_host.UUID;
-            taskItem.CreationDate = (uint) Util.UnixTimeSinceEpoch();
+            taskItem.CreationDate = (uint)Util.UnixTimeSinceEpoch();
             taskItem.Name = asset.Name;
             taskItem.Description = asset.Description;
-            taskItem.Type = (int) AssetType.Notecard;
-            taskItem.InvType = (int) InventoryType.Notecard;
+            taskItem.Type = (int)AssetType.Notecard;
+            taskItem.InvType = (int)InventoryType.Notecard;
             taskItem.OwnerID = m_host.OwnerID;
             taskItem.CreatorID = m_host.OwnerID;
-            taskItem.BasePermissions = (uint) PermissionMask.All;
-            taskItem.CurrentPermissions = (uint) PermissionMask.All;
+            taskItem.BasePermissions = (uint)PermissionMask.All;
+            taskItem.CurrentPermissions = (uint)PermissionMask.All;
             taskItem.EveryonePermissions = 0;
-            taskItem.NextPermissions = (uint) PermissionMask.All;
+            taskItem.NextPermissions = (uint)PermissionMask.All;
             taskItem.GroupID = m_host.GroupID;
             taskItem.GroupPermissions = 0;
             taskItem.Flags = 0;
@@ -2073,17 +2087,17 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             byte[] c;
 
             b = Util.UTF8.GetBytes(data);
-                       
+
             a = Util.UTF8.GetBytes(
                 "Linden text version 2\n{\nLLEmbeddedItems version 1\n{\ncount 0\n}\nText length " + b.Length + "\n");
 
             c = Util.UTF8.GetBytes("}");
-                        
+
             byte[] d = new byte[a.Length + b.Length + c.Length];
             Buffer.BlockCopy(a, 0, d, 0, a.Length);
             Buffer.BlockCopy(b, 0, d, a.Length, b.Length);
             Buffer.BlockCopy(c, 0, d, a.Length + b.Length, c.Length);
-                        
+
             asset.Data = d;
             World.AssetService.Store(asset);
 
@@ -2181,7 +2195,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
                 string data = Encoding.UTF8.GetString(asset.Data);
                 NotecardCache.Cache(assetID, data);
-                asset.Dispose ();
+                asset.Dispose();
             };
 
             return assetID;
@@ -2382,24 +2396,24 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osAgentSaveAppearance", m_host, "OSSL", m_itemID))
                 return new LSL_Key();
- 
+
             return SaveAppearanceToNotecard(avatarId, notecard);
         }
 
         protected LSL_Key SaveAppearanceToNotecard(IScenePresence sp, string notecard)
         {
-            IAvatarAppearanceModule aa = sp.RequestModuleInterface<IAvatarAppearanceModule> ();
+            IAvatarAppearanceModule aa = sp.RequestModuleInterface<IAvatarAppearanceModule>();
             if (aa != null)
             {
-                var appearance = new AvatarAppearance (aa.Appearance);
-                OSDMap appearancePacked = appearance.Pack ();
- 
+                var appearance = new AvatarAppearance(aa.Appearance);
+                OSDMap appearancePacked = appearance.Pack();
+
                 TaskInventoryItem item
-                = SaveNotecard (notecard, "Avatar Appearance", OSDParser.SerializeLLSDXmlString(appearancePacked), true);
- 
-                return new LSL_Key (item.AssetID.ToString ());
+                = SaveNotecard(notecard, "Avatar Appearance", OSDParser.SerializeLLSDXmlString(appearancePacked), true);
+
+                return new LSL_Key(item.AssetID.ToString());
             }
-        
+
             return new LSL_Key(UUID.Zero.ToString());
         }
 
@@ -2442,7 +2456,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osGetRegionMapTexture", m_host, "OSSL", m_itemID))
                 return new LSL_Key();
-            
+
             IScene scene = m_host.ParentEntity.Scene;
             UUID key = UUID.Zero;
 
@@ -2488,15 +2502,15 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.Moderate, "osGetSimulatorMemory", m_host, "OSSL",
                                                    m_itemID)) return 0;
-            
-        	long pws = Process.GetCurrentProcess().WorkingSet64;
+
+            long pws = Process.GetCurrentProcess().WorkingSet64;
 
             if (pws > Int32.MaxValue)
                 return Int32.MaxValue;
             if (pws < 0)
                 return 0;
 
-            return (int) pws;
+            return (int)pws;
         }
 
         public void osSetSpeed(LSL_Key UUID, LSL_Float SpeedModifier)
@@ -2513,7 +2527,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     if (!World.Permissions.IsGod(m_host.OwnerID))
                         return;
                 }
-                avatar.SpeedModifier = (float) SpeedModifier;
+                avatar.SpeedModifier = (float)SpeedModifier;
             }
         }
 
@@ -2521,8 +2535,8 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.Severe, "osKickAvatar", m_host, "OSSL", m_itemID))
                 return;
-            
-            World.ForEachScenePresence(delegate(IScenePresence sp)
+
+            World.ForEachScenePresence(delegate (IScenePresence sp)
                                            {
                                                if (!sp.IsChildAgent &&
                                                    sp.Name == FirstName + " " + SurName)
@@ -2569,7 +2583,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 m_LSL_Api.SetPrimParams(part, rules, true);
         }
 
-         /// <summary>
+        /// <summary>
         ///     Set parameters for light projection in host prim
         /// </summary>
         public void osSetProjectionParams(bool projection, LSL_Key texture, double fov, double focus, double amb)
@@ -2603,9 +2617,9 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
             obj.Shape.ProjectionEntry = projection;
             obj.Shape.ProjectionTextureUUID = texture;
-            obj.Shape.ProjectionFOV = (float) fov;
-            obj.Shape.ProjectionFocus = (float) focus;
-            obj.Shape.ProjectionAmbiance = (float) amb;
+            obj.Shape.ProjectionFOV = (float)fov;
+            obj.Shape.ProjectionFocus = (float)focus;
+            obj.Shape.ProjectionAmbiance = (float)amb;
 
 
             obj.ParentEntity.HasGroupChanged = true;
@@ -2622,7 +2636,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 return new LSL_List();
 
             LSL_List result = new LSL_List();
-            World.ForEachScenePresence(delegate(IScenePresence avatar)
+            World.ForEachScenePresence(delegate (IScenePresence avatar)
                                            {
                                                if (avatar != null && avatar.UUID != m_host.OwnerID)
                                                {
@@ -2689,10 +2703,10 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.VeryLow, "osUnixTimeToTimestamp", m_host, "OSSL",
                                                    m_itemID)) return new LSL_String();
-            
-        	const long baseTicks = 621355968000000000;
+
+            const long baseTicks = 621355968000000000;
             const long tickResolution = 10000000;
-            long epochTicks = (time*tickResolution) + baseTicks;
+            long epochTicks = (time * tickResolution) + baseTicks;
             DateTime date = new DateTime(epochTicks);
 
             return date.ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ");
@@ -2730,8 +2744,8 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.VeryLow, "osInviteToGroup", m_host, "OSSL", m_itemID))
                 return new LSL_Integer();
-            
-            UUID agent = new UUID((string) agentId);
+
+            UUID agent = new UUID((string)agentId);
             // groups module is required
             IGroupsModule groupsModule = World.RequestModuleInterface<IGroupsModule>();
             if (groupsModule == null) return ScriptBaseClass.FALSE;
@@ -2739,7 +2753,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (m_host.GroupID == UUID.Zero || m_host.GroupID == m_host.OwnerID) return ScriptBaseClass.FALSE;
             // object owner has to be in that group and required permissions
             GroupMembershipData member = groupsModule.GetMembershipData(m_host.GroupID, m_host.OwnerID);
-            if (member == null || (member.GroupPowers & (ulong) GroupPowers.Invite) == 0) return ScriptBaseClass.FALSE;
+            if (member == null || (member.GroupPowers & (ulong)GroupPowers.Invite) == 0) return ScriptBaseClass.FALSE;
             // check if agent is in that group already
             //member = groupsModule.GetMembershipData(agent, m_host.GroupID, agent);
             //if (member != null) return ScriptBaseClass.FALSE;
@@ -2758,8 +2772,8 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.VeryLow, "osInviteToGroup", m_host, "OSSL", m_itemID))
                 return new LSL_Integer();
-            
-            UUID agent = new UUID((string) agentId);
+
+            UUID agent = new UUID((string)agentId);
             // groups module is required
             IGroupsModule groupsModule = World.RequestModuleInterface<IGroupsModule>();
             if (groupsModule == null) return ScriptBaseClass.FALSE;
@@ -2767,7 +2781,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (m_host.GroupID == UUID.Zero || m_host.GroupID == m_host.OwnerID) return ScriptBaseClass.FALSE;
             // object owner has to be in that group and required permissions
             GroupMembershipData member = groupsModule.GetMembershipData(m_host.GroupID, m_host.OwnerID);
-            if (member == null || (member.GroupPowers & (ulong) GroupPowers.Eject) == 0) return ScriptBaseClass.FALSE;
+            if (member == null || (member.GroupPowers & (ulong)GroupPowers.Eject) == 0) return ScriptBaseClass.FALSE;
             // agent has to be in that group
             //member = groupsModule.GetMembershipData(agent, m_host.GroupID, agent);
             //if (member == null) return ScriptBaseClass.FALSE;
@@ -2790,7 +2804,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 if (parcelManagement != null)
                 {
                     LandData land = parcelManagement.GetLandObject(pos.X, pos.Y).LandData;
-                    if ((land.Flags & (uint) ParcelFlags.AllowDamage) == (uint) ParcelFlags.AllowDamage)
+                    if ((land.Flags & (uint)ParcelFlags.AllowDamage) == (uint)ParcelFlags.AllowDamage)
                     {
                         ICombatPresence cp = presence.RequestModuleInterface<ICombatPresence>();
                         cp.IncurDamage(World.GetScenePresence(m_host.OwnerID), damage);
@@ -2814,12 +2828,12 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 if (parcelManagement != null)
                 {
                     LandData land = parcelManagement.GetLandObject(pos.X, pos.Y).LandData;
-                    if ((land.Flags & (uint) ParcelFlags.AllowDamage) == (uint) ParcelFlags.AllowDamage)
+                    if ((land.Flags & (uint)ParcelFlags.AllowDamage) == (uint)ParcelFlags.AllowDamage)
                     {
                         ICombatPresence cp = presence.RequestModuleInterface<ICombatPresence>();
                         cp.IncurDamage(World.GetScenePresence(m_host.OwnerID), damage, regionName,
-                                       new Vector3((float) position.x, (float) position.y, (float) position.z),
-                                       new Vector3((float) lookat.x, (float) lookat.y, (float) lookat.z));
+                                       new Vector3((float)position.x, (float)position.y, (float)position.z),
+                                       new Vector3((float)lookat.x, (float)lookat.y, (float)lookat.z));
                     }
                 }
             }
@@ -2839,7 +2853,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 if (parcelManagement != null)
                 {
                     LandData land = parcelManagement.GetLandObject(pos.X, pos.Y).LandData;
-                    if ((land.Flags & (uint) ParcelFlags.AllowDamage) == (uint) ParcelFlags.AllowDamage)
+                    if ((land.Flags & (uint)ParcelFlags.AllowDamage) == (uint)ParcelFlags.AllowDamage)
                     {
                         ICombatPresence cp = presence.RequestModuleInterface<ICombatPresence>();
                         cp.IncurHealing(healing);
@@ -2863,7 +2877,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (parcelManagement != null)
             {
                 LandData land = parcelManagement.GetLandObject(pos.X, pos.Y).LandData;
-                if ((land.Flags & (uint) ParcelFlags.AllowDamage) == (uint) ParcelFlags.AllowDamage)
+                if ((land.Flags & (uint)ParcelFlags.AllowDamage) == (uint)ParcelFlags.AllowDamage)
                 {
                     ICombatPresence cp = presence.RequestModuleInterface<ICombatPresence>();
                     health = cp.Health;
@@ -2932,7 +2946,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public override Object InitializeLifetimeService()
         {
-            ILease lease = (ILease) base.InitializeLifetimeService();
+            ILease lease = (ILease)base.InitializeLifetimeService();
 
             if (lease.CurrentState == LeaseState.Initial)
             {
@@ -2981,7 +2995,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         /// <returns></returns>
         protected DateTime PScriptSleep(int delay)
         {
-            delay = (int) (delay*m_ScriptDelayFactor);
+            delay = (int)(delay * m_ScriptDelayFactor);
             if (delay == 0)
                 return DateTime.Now;
 
@@ -2999,7 +3013,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (World.Entities.TryGetValue(target, out entity))
             {
                 if (entity is ISceneEntity)
-                    ((ISceneEntity) entity).Rotation = rotation;
+                    ((ISceneEntity)entity).Rotation = rotation;
                 else if (entity is IScenePresence)
                     (entity).Rotation = rotation;
             }
@@ -3025,7 +3039,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                         return DateTime.Now;
                     }
                 }
-                presence.ControllingClient.SendTeleportStart((uint) TeleportFlags.ViaLocation);
+                presence.ControllingClient.SendTeleportStart((uint)TeleportFlags.ViaLocation);
 
                 IEntityTransferModule entityTransfer = World.RequestModuleInterface<IEntityTransferModule>();
                 if (entityTransfer != null)
@@ -3033,7 +3047,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     entityTransfer.RequestTeleportLocation(presence.ControllingClient,
                                                            regionHandle,
                                                            position,
-                                                           lookAt, (uint) TeleportFlags.ViaLocation);
+                                                           lookAt, (uint)TeleportFlags.ViaLocation);
                 }
 
                 return PScriptSleep(5000);
@@ -3144,7 +3158,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         public void osDropAttachment()
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.Moderate, "osDropAttachment", m_host, "OSSL", m_itemID)) return;
-            
+
             DropAttachment(true);
         }
 
@@ -3289,7 +3303,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         // NPC functionality
         public LSL_Key osNpcCreate(string firstname, string lastname, LSL_Types.Vector3 position, string notecard)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcCreate", m_host, "OSSL", m_itemID)) 
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcCreate", m_host, "OSSL", m_itemID))
                 return "";
 
             return NpcCreate(firstname, lastname, position, notecard, true, false);
@@ -3297,7 +3311,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Key osNpcCreate(string firstname, string lastname, LSL_Types.Vector3 position, string notecard, int options)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcCreate", m_host, "OSSL", m_itemID)) 
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcCreate", m_host, "OSSL", m_itemID))
                 return "";
 
             return NpcCreate(
@@ -3313,13 +3327,13 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             IBotManager manager = World.RequestModuleInterface<IBotManager>();
             if (manager != null)
             {
-                MainConsole.Instance.DebugFormat ("Creating NPC: {0} {1}, Position: {2}, Appearence: {3}, Options: {4} {5}",
+                MainConsole.Instance.DebugFormat("Creating NPC: {0} {1}, Position: {2}, Appearence: {3}, Options: {4} {5}",
                     firstname, lastname, position, notecard, owned, senseAsAgent);
 
                 // check for notecard or UUID for appearance...
                 AvatarAppearance appearance = null;
                 UUID appearanceId;
-                UUID.TryParse (notecard, out appearanceId);
+                UUID.TryParse(notecard, out appearanceId);
 
                 if (appearanceId == UUID.Zero)
                 {
@@ -3347,7 +3361,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
                 if (appearance == null)
                 {
-                    newBotId = manager.CreateAvatar (
+                    newBotId = manager.CreateAvatar(
                         firstname,
                         lastname,
                         World,
@@ -3355,9 +3369,10 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                         ownerID,
                         npcPosition
                     );
-                } else
+                }
+                else
                 {
-                    newBotId = manager.CreateAvatar (
+                    newBotId = manager.CreateAvatar(
                         firstname,
                         lastname,
                         World,
@@ -3376,7 +3391,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         public void osNpcRemove(LSL_Key npc)
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcRemove", m_host, "OSSL", m_itemID))
-                return ;
+                return;
 
             IBotManager manager = World.RequestModuleInterface<IBotManager>();
             if (manager != null)
@@ -3392,11 +3407,12 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer osIsNpc(LSL_Key npc)
         {
-            if (!ScriptProtection.CheckThreatLevel (ThreatLevel.None, "osIsNpc", m_host, "OSSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "osIsNpc", m_host, "OSSL", m_itemID))
                 return ScriptBaseClass.FALSE;
 
-            IBotManager manager = World.RequestModuleInterface<IBotManager> ();
-            if (manager != null) {
+            IBotManager manager = World.RequestModuleInterface<IBotManager>();
+            if (manager != null)
+            {
                 UUID npcId;
                 if (UUID.TryParse(npc.m_string, out npcId))
                     if (manager.IsNpcAgent(npcId))
@@ -3414,7 +3430,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         /// <returns>The asset ID of the notecard saved.</returns>
         public LSL_Key osNpcSaveAppearance(LSL_Key npc, string notecard)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcSaveAppearance", m_host, "OSSL", m_itemID)) 
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcSaveAppearance", m_host, "OSSL", m_itemID))
                 return "";
 
             IBotManager manager = World.RequestModuleInterface<IBotManager>();
@@ -3485,18 +3501,18 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Vector osNpcGetPos(LSL_Key npc)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcGetPos", m_host, "OSSL", m_itemID)) 
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcGetPos", m_host, "OSSL", m_itemID))
                 return new LSL_Vector(0, 0, 0);
 
             IBotManager manager = World.RequestModuleInterface<IBotManager>();
             if (manager != null)
             {
                 UUID npcId;
-                if (!UUID.TryParse (npc.m_string, out npcId))
+                if (!UUID.TryParse(npc.m_string, out npcId))
                 {
-                    var pos = manager.GetPosition (npcId, m_host.OwnerID);
+                    var pos = manager.GetPosition(npcId, m_host.OwnerID);
 
-                    return new LSL_Vector (pos); 
+                    return new LSL_Vector(pos);
                 }
             }
 
@@ -3521,7 +3537,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void osNpcMoveToTarget(LSL_Key npc, LSL_Vector target, int options)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcMoveToTarget", m_host, "OSSL", m_itemID)) 
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcMoveToTarget", m_host, "OSSL", m_itemID))
                 return;
 
             IBotManager manager = World.RequestModuleInterface<IBotManager>();
@@ -3533,7 +3549,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
                 Vector3 targetPos = target.ToVector3();
 
-                MainConsole.Instance.DebugFormat ("NPC: {0} moving to position: {1}, region: {2}, Options: {3}",
+                MainConsole.Instance.DebugFormat("NPC: {0} moving to position: {1}, region: {2}, Options: {3}",
                     npcId, targetPos, World, options);
 
                 manager.MoveToTarget(
@@ -3547,7 +3563,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void osNpcStopMoveToTarget(LSL_Key npc)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcStopMoveToTarget", m_host, "OSSL", m_itemID)) 
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcStopMoveToTarget", m_host, "OSSL", m_itemID))
                 return;
 
             IBotManager manager = World.RequestModuleInterface<IBotManager>();
@@ -3558,23 +3574,23 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     return;
 
                 //manager.StopMoveToTarget(npcId, World, m_host.OwnerID);
-                manager.StopMoving (npcId, m_host.OwnerID);               
+                manager.StopMoving(npcId, m_host.OwnerID);
             }
         }
 
         public LSL_Rotation osNpcGetRot(LSL_Key npc)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcGetRot", m_host, "OSSL", m_itemID)) 
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcGetRot", m_host, "OSSL", m_itemID))
                 return new LSL_Rotation(0, 0, 0, 0);
 
             IBotManager manager = World.RequestModuleInterface<IBotManager>();
             if (manager != null)
             {
                 UUID npcId;
-                if (UUID.TryParse (npc.m_string, out npcId))
+                if (UUID.TryParse(npc.m_string, out npcId))
                 {
-                    var rot = manager.GetRotation (npcId, m_host.OwnerID);
-                    var NpcRot = new LSL_Rotation ();
+                    var rot = manager.GetRotation(npcId, m_host.OwnerID);
+                    var NpcRot = new LSL_Rotation();
                     NpcRot.x = rot.X;
                     NpcRot.y = rot.Y;
                     NpcRot.z = rot.Z;
@@ -3583,8 +3599,8 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     return NpcRot;
                 }
             }
-            
-            return new LSL_Rotation( 0,0,0,0);
+
+            return new LSL_Rotation(0, 0, 0, 0);
 
         }
 
@@ -3597,15 +3613,15 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (manager != null)
             {
                 UUID npcId;
-                if (UUID.TryParse (npc.m_string, out npcId))
+                if (UUID.TryParse(npc.m_string, out npcId))
                 {
-                    if (!manager.CheckPermission (npcId, m_host.OwnerID))
+                    if (!manager.CheckPermission(npcId, m_host.OwnerID))
                         return;
 
-                    IScenePresence sp = World.GetScenePresence (npcId);
+                    IScenePresence sp = World.GetScenePresence(npcId);
 
                     if (sp != null)
-                        sp.Rotation = rotation.ToQuaternion ();
+                        sp.Rotation = rotation.ToQuaternion();
                 }
             }
         }
@@ -3632,7 +3648,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void osNpcSay(LSL_Key npc, int channel, string message)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcSay", m_host, "OSSL", m_itemID)) 
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcSay", m_host, "OSSL", m_itemID))
                 return;
 
             IBotManager manager = World.RequestModuleInterface<IBotManager>();
@@ -3668,22 +3684,22 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (manager != null)
             {
                 UUID npcId;
-                if (UUID.TryParse (npc.m_string, out npcId))
+                if (UUID.TryParse(npc.m_string, out npcId))
                 {
-                    if (!manager.CheckPermission (npcId, m_host.OwnerID))
+                    if (!manager.CheckPermission(npcId, m_host.OwnerID))
                         return;
 
-                    IScenePresence sp = World.GetScenePresence (npcId);
+                    IScenePresence sp = World.GetScenePresence(npcId);
                     if (sp == null)
                         return;
 
-                    var sitObjectID = UUID.Parse (target.m_string);
-                    ISceneChildEntity child = World.GetSceneObjectPart (sitObjectID);
+                    var sitObjectID = UUID.Parse(target.m_string);
+                    ISceneChildEntity child = World.GetSceneObjectPart(sitObjectID);
                     if (child == null)
                         //throw new Exception("Failed to find entity to sit on");
                         return;
 
-                    sp.HandleAgentRequestSit (sp.ControllingClient, sitObjectID, new Vector3 (0,0,0));
+                    sp.HandleAgentRequestSit(sp.ControllingClient, sitObjectID, new Vector3(0, 0, 0));
 
                 }
             }
@@ -3698,16 +3714,16 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (manager != null)
             {
                 UUID npcId;
-                if (UUID.TryParse (npc.m_string, out npcId))
+                if (UUID.TryParse(npc.m_string, out npcId))
                 {
-                    if (!manager.CheckPermission (npcId, m_host.OwnerID))
+                    if (!manager.CheckPermission(npcId, m_host.OwnerID))
                         return;
 
-                    IScenePresence sp = World.GetScenePresence (npcId);
+                    IScenePresence sp = World.GetScenePresence(npcId);
                     if (sp == null)
                         return;
-                 
-                    sp.StandUp ();
+
+                    sp.StandUp();
                 }
             }
         }
@@ -3721,32 +3737,32 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (manager != null)
             {
                 UUID npcId;
-                if (UUID.TryParse (npc.m_string, out npcId))
+                if (UUID.TryParse(npc.m_string, out npcId))
                 {
-                    if (manager.CheckPermission (npcId, m_host.OwnerID))
-                        osAvatarPlayAnimation (npcId.ToString (), animation);
+                    if (manager.CheckPermission(npcId, m_host.OwnerID))
+                        osAvatarPlayAnimation(npcId.ToString(), animation);
                 }
             }
         }
 
         public void osNpcStopAnimation(LSL_Key npc, string animation)
         {
-            if (!ScriptProtection.CheckThreatLevel (ThreatLevel.High, "osNpcStopAnimation", m_host, "OSSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcStopAnimation", m_host, "OSSL", m_itemID))
                 return;
 
             IBotManager manager = World.RequestModuleInterface<IBotManager>();
             if (manager != null)
             {
                 UUID npcId;
-                if (UUID.TryParse (npc.m_string, out npcId))
+                if (UUID.TryParse(npc.m_string, out npcId))
                 {
-                    if (manager.CheckPermission (npcId, m_host.OwnerID))
-                        osAvatarStopAnimation (npcId.ToString (), animation);
+                    if (manager.CheckPermission(npcId, m_host.OwnerID))
+                        osAvatarStopAnimation(npcId.ToString(), animation);
                 }
             }
         }
 
-         public void osNpcTouch(LSL_Key npcLSL_Key, LSL_Key object_key, LSL_Integer link_num)
+        public void osNpcTouch(LSL_Key npcLSL_Key, LSL_Key object_key, LSL_Integer link_num)
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcTouch", m_host, "OSSL", m_itemID))
                 return;
@@ -3775,7 +3791,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 World.EventManager.TriggerObjectGrabbing(child.ParentEntity.RootChild, child, Vector3.Zero,
                     sp.ControllingClient, touchArgs);
                 World.EventManager.TriggerObjectDeGrab(child.ParentEntity.RootChild, child, sp.ControllingClient, touchArgs);
-                              
+
             }
         }
     }
