@@ -42,6 +42,7 @@ Pull requests [![Issue Stats](http://www.issuestats.com/github/Virtual-Universe/
 
 Issues closed [![Issue Stats](http://www.issuestats.com/github/Virtual-Universe/Virtual-Universe/badge/issue)](http://www.issuestats.com/github/Virtual-Universe/Virtual-Universe)
 
+Codacy Security Scan: [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7bad0c52ccc0406c853e6dd2a9d876d7)](https://www.codacy.com/app/Virtual-Universe/Virtual-Universe?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Virtual-Universe/Virtual-Universe&amp;utm_campaign=Badge_Grade)
 
 ## Configuration
 *To see how to configure Virtual Universe, look at "Setting up Universe.txt" in the UniverseDocs folder for more information*
