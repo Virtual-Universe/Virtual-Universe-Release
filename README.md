@@ -81,7 +81,8 @@ Support is available from various sources.
 
 IRC channel #galaxyfutures on freenode (http://webchat.freenode.net?channels=%23galaxyfutures)
 Check out http://virtual-planets.org for the latest developments, downloads and forum
-Second Galaxy and Virtual Universe Google + community is for both Second Galaxy and Virtual Universe with a friendly bunch that is happy to answer questions. Find it at https://plus.google.com/communities/106118101750197366605?cfem=1
+Virtual Universe MeWe community is for Virtual Universe with a friendly bunch that is happy to answer questions. Find it at https://mewe.com/join/virtualuniverse
+Discord Server: https://discord.gg/JQb5gEC
 
 
 ## NOTES
