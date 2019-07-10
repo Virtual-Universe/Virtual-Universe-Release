@@ -1,8 +1,8 @@
 ### Notice
 
-**If you are using WhiteCore-Sim please do not submit an issue report to Virtual Universe as we are unable to assist you.  Any issues reported to Virtual Universe which involve your use of WhiteCore-Sim will immediately be closed and you will be referred to WhiteCore-Sim.**
+**If you are using OpenSimulator, Halcyon, OSCore2, WhiteCore-Sim, or any of their forks and derivitave projects, please do not submit an issue report to Virtual Universe if your issue is from one of these projects, as we are unable to assist you.  Any issues reported to Virtual Universe which involve your use of another project will immediately be closed and you will be referred to that project.**
 
-**In addition please do not submit issue reports regarding Virtual Universe to the WhiteCore-Sim issues tracker as they cannot help you and they will be immediately closed and you will be referred to Virtual Universe**
+**In addition please do not submit issue reports regarding Virtual Universe to another project's issues tracker as they cannot help you and they will be immediately closed and you will be referred to Virtual Universe**
 
 ### Notice 2
 
@@ -33,7 +33,7 @@
 
 ### NOTE About Features
 
-**The Second Galaxy Development Team will consider the features after we have seen enough interest by users of Virtual Universe.  The Feature must recieve at least five (5) core developers voting in favor of the feature for it to be included in a future release.**
+**The Second Galaxy Development Team will consider the features after we have seen enough interest by users of Virtual Universe.  The Feature must recieve at least six (6) core developers voting in favor of the feature for it to be included in a future release.**
 
 ### For bugs please answer the following
 
@@ -43,11 +43,11 @@
 2.
 3.
 
-### Expected behaviour
+### Expected behavior
 
 Tell us what should happen
 
-### Actual behaviour
+### Actual behavior
 
 Tell us what happens instead
 

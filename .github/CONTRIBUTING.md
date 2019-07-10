@@ -14,6 +14,8 @@
 
 1-B For contributing to the development version of the architecture use Virtual-Universe/Virtual-Dev
 
+1-c For contributing to the development of the next generation version of the architecture use Virtual-Universe/Virtual-Universe-NXG
+
 2. If you are contributing code which:
 
 2-A. Requires the addition of a new .cs file please use the file in BuildingTools/EmptyClass.cs
@@ -39,6 +41,8 @@ Note: Be sure your code does not contain Windows line endings.  The coding stand
 
 4-C-2. For pull requests being submitted to the development architecture open issue at https://github.com/Virtual-Universe/Virtual-Dev/issues
 
+4-C-3. For pull requests being submitted to the next generation VU architecture open issue at https://github.com/Virtual-Universe/Virtual-Universe-NXG/issues
+
 4-D. Create a pull request.  Make sure to click the "compare across forks" link.  The forks must be as follows:
 
 For the stable architecture repository:
@@ -51,6 +55,11 @@ For the development architecture repository:
  base fork Virtual-Universe/Virtual-Dev base master
  head fork <user>/Virtual-Dev compare master
 
+For the next generation development architecture repository:
+
+ base fork Virtual-Universe/Virtual-Universe-NXG base master
+ head fork <user>/Virtual-Universe-NXG compare master
+
 Then click the Create Pull Request button when your commit shows up and press the green button to submit the request.
   Be sure to reference your issue number in your pull request.
 
@@ -62,7 +71,7 @@ Then click the Create Pull Request button when your commit shows up and press th
 
 6. If step 5 succeeds then all you need to do is wait to see if your pull request is accepted into the Virtual-Universe codebase.
   Your request will be reviewed by the development team including the developer responsible for development of the area your
- pull request covers.  If 3 of the team members agree with your commit then your commit will be accepted and merged.  If your
+ pull request covers.  If 6 of the core developers agree with your commit then your commit will be accepted and merged.  If your
  request is rejected we will let you know the reason when we close the pull request.  Usually the reason will be posted in
  the issue you created.
 
@@ -80,7 +89,7 @@ We hope you enjoy Virtual-Universe and all the great things we are working on to
 
  For more information please see Documentation/Licenses/VirtualUniverseLicense for more information.
 
- The Name WhiteCore, WhiteCore-Sim, Aurora-Sim, Opensimulator, OpenSim are the property of their respective developers and is obtained
+ The Name WhiteCore, WhiteCore-Sim, Aurora-Sim, OpenSimulator, OpenSim, OSCore, Halcyon, MOSES, etc. are the property of their respective developers and is obtained
  by the Virtual Universe project under the open source licenses provided by the respective project.  You can find their licenses in
  the Licenses directory.** 
  
