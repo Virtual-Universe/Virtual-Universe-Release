@@ -1,126 +1,33 @@
-# Attention all users
-If you are using Virtual Universe to run a production level grid open to the public, please use the official stable code in the Virtual-Universe Repository.
+# Virtual-Universe-Release
+Virtual-Universe-Release is the stable release repository of Virtual Universe Open Source Project Arm.  If you are running a production level grid then please use this repository.  All issues you find should be reported on this repository's issue tracker.  
 
-The repository is at: https://github.com/Virtual-Universe/Virtual-Universe
+# Virtual Universe Open Source Project Arm Ownership
+The owner of the Virtual Universe Open Source Project Arm is Virtual World Research Inc.
 
-Never use the code in the Virtual-Dev repository for your production level grids.  The code in the Development Repository is for development of Virtual Universe and is not considered stable.
+Ownership of code contributed to the Virtual Universe Open Source Project Arm by contributers is owned by it's author.  Contributors provide code to the Virtual Universe Open Source Project Arm under the license designated in this project and do so knowing it may be used by the project arm to further enhance and improve the project.  All code is provided AS IS.
 
-The Development Repository at: https://github.com/Virtual-Universe/Virtual-Dev  code should not be used in a production level grid, and should only be used for purposes of testing only.
+# Virtual Universe Open Source Project Arm Support
+If you are not faint of heart or are running a production level grid then you should use this repository.  To get help with an issue or to chat with others who use Virtual Universe you can join the following Virtual Universe Open Source Project Arm communities:
 
-# Virtual Universe
+* IRC channel #galaxyfutures on freenode (http://webchat.freenode.net?channels=%23galaxyfutures)
 
-- Current Version: 1.0.3 Release
-- Version Release Date: June 28, 2017
+* Website: Check out https://virtual-planets.org for the latest developments, downloads and forum
 
-The Virtual Universe Development Team is proud to present Virtual Universe as a rolling release software.
+* MeWe Community: Virtual Universe MeWe community is for Virtual Universe with a friendly bunch that is happy to answer questions. Find it at https://mewe.com/join/virtualuniverse
 
-The Virtual Universe server is an Aurora-Sim/ WhiteCore-Sim derived project with heavy emphasis on supporting all users, 
+* Our Discord Server: https://discord.gg/JQb5gEC
 
-## About Virtual Universe
+* Issue Tracker: https://github.com/Virtual-Universe/Virtual-Universe-Release/issues
 
-The Virtual Universe Software is a Virtual Universe derived project with heavy emphasis on supporting all users, increased technology focus, heavy emphasis on working with other developers, whether it be viewer based developers or server based developers, and a set of features around stability and simplified usability for users.
+* Pull requests must either go to https://github.com/Virtual-Universe/Virtual-Universe-Early-Dev or https://github.com/Virtual-Universe/Virtual-Universe-Stable-Dev
 
-We aren’t just releasing new features, but a new outlook on Virtual Universe Virtual World Technology Development for the average human.
+## Security Scans
 
-Virtual Universe is an experimental and innovative framework containing advanced tools and options for creating virtual world applications.
+Codacy: [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a949ccd47dc4403994f4a927409ff367)](https://www.codacy.com/app/Virtual-World-Research-Inc/Virtual-Universe-Release?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Virtual-Universe/Virtual-Universe-Release&amp;utm_campaign=Badge_Grade)
 
-Virtual Universe is not a virtual world, nor a stand-alone application, it is a scalable and customizable platform containing some basic modules, based on some fundamental innovative pillars (peer-to-peer architecture, secure communication infrastructure, legal framework, powerful scripting language); additional modules, extensions and expansion packs can be built on top of it on demand.
+## Build Tools Status
 
-The core of Virtual Universe is the innovative Virtual Universe Engine based on a hybrid peer-to-peer infrastructure that allows the sharing of computational load in experiencing the virtual environment obtaining infrastructural resource optimization and bandwidth reduction.
+AppVeyor:
 
-It enhances the platform in terms of robustness, availability, scalability, load balancing.
+Travis CI:
 
-and much more....
-
-## Virtual Universe Build Status
-
-Windows .Net 4.5 [![Build status](https://ci.appveyor.com/api/projects/status/a90lejf562n9sxwy?svg=true)](https://ci.appveyor.com/project/emperorstarfinder/virtual-universe)
-
-Linux 64 Bit [![Build Status](https://travis-ci.org/Virtual-Universe/Virtual-Universe.svg?branch=master)](https://travis-ci.org/Virtual-Universe/Virtual-Universe)
-
-Pull requests [![Issue Stats](http://www.issuestats.com/github/Virtual-Universe/Virtual-Universe/badge/pr)](http://www.issuestats.com/github/Virtual-Universe/Virtual-Universe)
-
-Issues closed [![Issue Stats](http://www.issuestats.com/github/Virtual-Universe/Virtual-Universe/badge/issue)](http://www.issuestats.com/github/Virtual-Universe/Virtual-Universe)
-
-Codacy Security Scan: [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7bad0c52ccc0406c853e6dd2a9d876d7)](https://www.codacy.com/app/Virtual-Universe/Virtual-Universe?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Virtual-Universe/Virtual-Universe&amp;utm_campaign=Badge_Grade)
-
-## Configuration
-*To see how to configure Virtual Universe, look at "Setting up Universe.txt" in the UniverseDocs folder for more information*
-
-Windows:
-   Run the 'runprebuild.bat' file.
-   This will check you current system configuration, compile the correct Visual Studio 2010 solution and project files and prompt you to build immediately (if desired)
-   NOTE: Windows users will now find that runprebuild.bat will now automatically detect the operating system architecture version i.e. x86 or x64 as well as the correct .Net Framework version i.e. 4.0 or 4.5 and build accordingly.
-
-*nix:      (Also OSX)
-   Execute the 'runprebuild.sh' form a terminal or console shell.
-   You will be prompted for your desired configuration, the appropriate solution and project files for Mono will be compiled and finally, prompt you to build immediately (if desired)
-   
-OSX:
-   Run the 'runprebuild.command' shell command by 'double clicking' in Finder.
-   You will be prompted for your desired configuration, the appropriate solution and project files for Mono will be compiled and finally, prompt you to build immediately (if desired)
-
-## Compiling Virtual Universe
-
-*To compile Virtual Universe, look at the Compiling.txt in the Docs folder for more information*
-
-*NOTE: For Windows 7 and 8, when compiling, you may see some warnings indicating that the core library does not match what is specified. This is an issue with how Microsoft provides the Net 4.5 packages and can be safely ignored as Windows will actually use the correct library when Virtual Universe is run *
-
-## Virtual Universe Configuration
-
-*To see how to configure Virtual Universe, look at "Setting up Virtual Universe.txt" in the UniverseDocs folder for more information*
-
-## Contribute to Virtual Universe
-If you would like to contribute code to Virtual Universe please see BuildTools/How to contribute Code.txt for more information.
-
-## Router issues
-If you are having issues logging into your simulator, take a look at http://forums.osgrid.org/viewtopic.php?f=14&t=2082 in the Router Configuration section for more information on ways to resolve this issue.
-
-## Virtual Universe Support
-Support is available from various sources.
-
-IRC channel #galaxyfutures on freenode (http://webchat.freenode.net?channels=%23galaxyfutures)
-Check out http://virtual-planets.org for the latest developments, downloads and forum
-Virtual Universe MeWe community is for Virtual Universe with a friendly bunch that is happy to answer questions. Find it at https://mewe.com/join/virtualuniverse
-Discord Server: https://discord.gg/JQb5gEC
-
-
-## NOTES
-
-*NOTES:
-
-*- As of March 22, 2017, the LibOMV libraries are included as a submodule of the Virtual Universe repositories. When cloning, ensure that the submodules are included.*
-
-`git clone --recursive https://github.com/Virtual-Universe/Virtual-LibOMV.git`
-
-To update an existing repository that does not have the LibOMV submodule
-
-	cd <your Virtual Universe repository>
-	git submodule init
-	git submodule update
-
-*If you do not know what submodules are, or you are not using git from the command line, PLEASE make sure to fetch the submodules too.*
-
-**If you download the repo using the zip file option, you will also need to download the Virtual-LibOMV submodule and extract it in your local Virtual Universe repo.**
-`https://github.com/Virtual-Universe/Virtual-LibOMV`
-
-*NOTE:
- As of Version 1.0.2, it's advised to Linux users to use a Mono version higher then 4.2.3.4, following a report about  GC.Collect() not cleaning up memory correctly. The most current version of Mono is 4.6.1.3 (Released 1st August 2016)*
- Attention Arch Linux Users: by default your Mono version is 4.4.1.0 and is customized to work on Arch Linux.  YOu should not experience any problems.
- More information can be found here: http://www.mono-project.com/docs/getting-started/install/linux/
-
-*NOTE:
- We are aware of cases where the grid_console.sh and sim_console.sh are not working properly on Ubuntu 14.04.4 LTS Trusty Tahr.
- This bug claims it cannot find files or permission or access denied.  This is due to an issue with the Version 4.2 of the Linux_Generics libraries distributed by Linux.
- This is not a Virtual Universe specific bug.  The solution here is to cd to VirtualUniverse directory and run the command:
-
-Grid: sudo ./grid_console.sh 
-
-Sim: sudo ./sim_console.sh
-
- This will give the necessary permissions to override this bug and allow the consoles to work correctly.
-
- 
- We are not aware of issues being reported relating to this bug from users of Ubuntu derivatives such as XUbuntu, KUbuntu, Linux Mint, etc.  
- 
- Additionally we have not received any reports to indicate this is happening with Debian (8.0 Jessie), Fedora, Opensuse, Arch Linux, Redhat, etc.
