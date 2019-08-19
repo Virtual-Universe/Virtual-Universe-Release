@@ -1,5 +1,0 @@
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Services.SQLServices.dll
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Services.SQLServices.pdb
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Services\SQLServices\obj\x64\Debug\Universe.Services.SQLServices.dll
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Services\SQLServices\obj\x64\Debug\Universe.Services.SQLServices.pdb
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Services\SQLServices\obj\x64\Debug\Universe.Services.SQLServices.csprojResolveAssemblyReference.cache

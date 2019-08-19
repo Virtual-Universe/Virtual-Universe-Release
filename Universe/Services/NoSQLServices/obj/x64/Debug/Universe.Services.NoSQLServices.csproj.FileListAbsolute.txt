@@ -1,5 +1,0 @@
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Services.NoSQLServices.dll
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Services.NoSQLServices.pdb
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Services\NoSQLServices\obj\x64\Debug\Universe.Services.NoSQLServices.csprojResolveAssemblyReference.cache
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Services\NoSQLServices\obj\x64\Debug\Universe.Services.NoSQLServices.dll
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Services\NoSQLServices\obj\x64\Debug\Universe.Services.NoSQLServices.pdb

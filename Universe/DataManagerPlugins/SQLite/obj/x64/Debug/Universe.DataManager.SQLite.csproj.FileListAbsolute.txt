@@ -1,5 +1,0 @@
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.DataManager.SQLite.dll
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.DataManager.SQLite.pdb
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\DataManagerPlugins\SQLite\obj\x64\Debug\Universe.DataManager.SQLite.csprojResolveAssemblyReference.cache
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\DataManagerPlugins\SQLite\obj\x64\Debug\Universe.DataManager.SQLite.dll
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\DataManagerPlugins\SQLite\obj\x64\Debug\Universe.DataManager.SQLite.pdb

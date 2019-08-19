@@ -1,5 +1,0 @@
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.ScriptEngine.VirtualScript.dll
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.ScriptEngine.VirtualScript.pdb
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\ScriptEngine\VirtualScript\obj\x64\Debug\Universe.ScriptEngine.VirtualScript.csprojResolveAssemblyReference.cache
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\ScriptEngine\VirtualScript\obj\x64\Debug\Universe.ScriptEngine.VirtualScript.dll
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\ScriptEngine\VirtualScript\obj\x64\Debug\Universe.ScriptEngine.VirtualScript.pdb

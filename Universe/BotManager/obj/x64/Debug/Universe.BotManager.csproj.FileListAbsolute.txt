@@ -1,5 +1,0 @@
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.BotManager.dll
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.BotManager.pdb
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\BotManager\obj\x64\Debug\Universe.BotManager.csprojResolveAssemblyReference.cache
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\BotManager\obj\x64\Debug\Universe.BotManager.dll
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\BotManager\obj\x64\Debug\Universe.BotManager.pdb

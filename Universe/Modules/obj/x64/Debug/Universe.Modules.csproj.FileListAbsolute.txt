@@ -1,5 +1,0 @@
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Modules.dll
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Modules.pdb
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Modules\obj\x64\Debug\Universe.Modules.csprojResolveAssemblyReference.cache
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Modules\obj\x64\Debug\Universe.Modules.dll
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Modules\obj\x64\Debug\Universe.Modules.pdb

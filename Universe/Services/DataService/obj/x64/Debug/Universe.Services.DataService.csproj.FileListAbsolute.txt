@@ -1,5 +1,0 @@
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Services.DataService.dll
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Services.DataService.pdb
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Services\DataService\obj\x64\Debug\Universe.Services.DataService.csprojResolveAssemblyReference.cache
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Services\DataService\obj\x64\Debug\Universe.Services.DataService.dll
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Services\DataService\obj\x64\Debug\Universe.Services.DataService.pdb

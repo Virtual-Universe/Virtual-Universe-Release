@@ -1,5 +1,0 @@
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Server.InventoryServer.exe
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Server.InventoryServer.pdb
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Servers\InventoryServer\obj\x64\Debug\Universe.Server.InventoryServer.csprojResolveAssemblyReference.cache
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Servers\InventoryServer\obj\x64\Debug\Universe.Server.InventoryServer.exe
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Servers\InventoryServer\obj\x64\Debug\Universe.Server.InventoryServer.pdb

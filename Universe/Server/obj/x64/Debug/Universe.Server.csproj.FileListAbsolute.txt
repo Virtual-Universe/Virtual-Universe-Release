@@ -1,5 +1,0 @@
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Server.exe
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Server.pdb
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Server\obj\x64\Debug\Universe.Server.csprojResolveAssemblyReference.cache
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Server\obj\x64\Debug\Universe.Server.exe
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Server\obj\x64\Debug\Universe.Server.pdb

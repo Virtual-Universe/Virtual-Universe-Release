@@ -1,5 +1,0 @@
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Server.AssetServer.exe
-C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Server.AssetServer.pdb
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Servers\AssetServer\obj\x64\Debug\Universe.Server.AssetServer.csprojResolveAssemblyReference.cache
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Servers\AssetServer\obj\x64\Debug\Universe.Server.AssetServer.exe
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Servers\AssetServer\obj\x64\Debug\Universe.Server.AssetServer.pdb
