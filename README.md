@@ -1,3 +1,6 @@
+# NOTICE
+As of May 1, 2021 the Virtual Universe Open Source Project Arm of Virtual World Research Inc. has been moved over to the Hyperion Virtual Worlds Open Source Project Arm.  You can find all the latest developments and join our open source project community at: https://github.com/Hyperion-Virtual-Worlds
+
 # Virtual-Universe-Release
 Virtual-Universe-Release is the stable release repository of Virtual Universe Open Source Project Arm.  If you are running a production level grid then please use this repository.  All issues you find should be reported on this repository's issue tracker.  
 
@@ -15,7 +18,7 @@ If you are not faint of heart or are running a production level grid then you sh
 
 * MeWe Community: Virtual Universe MeWe community is for Virtual Universe with a friendly bunch that is happy to answer questions. Find it at https://mewe.com/join/virtualuniverse
 
-* Our Discord Server: https://discord.gg/JQb5gEC
+* Our Discord Server: https://discord.gg/KB9Nca3MhZ
 
 * Issue Tracker: https://github.com/Virtual-Universe/Virtual-Universe-Release/issues
 
